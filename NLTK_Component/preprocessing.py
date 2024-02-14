@@ -14,7 +14,6 @@ class GetPOSClass:
     
     def get_part_of_speech(self, word: str) -> str:
         probable_part_of_speech = wordnet.synsets(word)
-        print(probable_part_of_speech)
         pos_counts = self._count_pos(probable_part_of_speech)
         most_likely_part_of_speech = pos_counts.most_common(1)[0][0]
         return most_likely_part_of_speech
