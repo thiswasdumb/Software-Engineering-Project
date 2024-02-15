@@ -4,7 +4,6 @@ import numpy as np
 from preprocessing import preprocess_text
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer 
 
-# import CountVectorizer, TfidfTransformer, TfidfVectorizer
 
 
 
@@ -42,3 +41,5 @@ df_tf_idf = tf_idf_object.output()
 for i in range(1, 3):  
     top_terms = df_tf_idf[[f'Article {i}']].nlargest(10, columns=[f'Article {i}'])
     print(f"\nTop 10 terms for Article {i}:\n{top_terms}")
+
+
