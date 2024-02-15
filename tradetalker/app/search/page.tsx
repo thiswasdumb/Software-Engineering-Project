@@ -1,7 +1,10 @@
 import React from "react";
+import { Metadata } from "next";
 
-const Search = () => {
-  return <div>Search</div>;
+export const metadata: Metadata = {
+  title: "Search",
 };
 
-export default Search;
+export default function Search() {
+  return <p>Search</p>;
+}

@@ -2,9 +2,9 @@ import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Profile",
 };
 
-export default function Dashboard() {
-  return <p>Dashboard</p>;
+export default function Profile() {
+  return <p>Profile</p>;
 }

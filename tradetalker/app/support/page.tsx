@@ -1,7 +1,10 @@
 import React from "react";
+import { Metadata } from "next";
 
-const Support = () => {
-  return <div>Support</div>;
+export const metadata: Metadata = {
+  title: "Support",
 };
 
-export default Support;
+export default function Support() {
+  return <p>Support</p>;
+}

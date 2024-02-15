@@ -1,7 +1,10 @@
 import React from "react";
+import { Metadata } from "next";
 
-const Notifications = () => {
-  return <div>Notifications</div>;
+export const metadata: Metadata = {
+  title: "Notifications",
 };
 
-export default Notifications;
+export default function Notifications() {
+  return <p>Notifications</p>;
+}

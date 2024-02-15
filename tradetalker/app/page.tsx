@@ -1,14 +1,11 @@
+import React from 'react';
+
 export default function Home() {
   return (
-    <>
-      <div className="container mx-auto px-4">
-        <h1>Hello world</h1>
-        <p>Dummy shape to make our page longer</p>
-        <div className="w-full h-screen bg-blue-300"></div>
-        <p>
-          Dummy text
-        </p>
-      </div>
-    </>
+    <div className="landing-page">
+      <h1>Welcome to TradeTalker.</h1>
+      <p>Stay informed about the latest news sentiment in the financial markets.</p>
+      <button className="">Get Started</button>
+    </div>
   );
 }
