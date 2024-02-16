@@ -16,7 +16,10 @@ export default function NavbarComponent(props: { session: any }) {
     );
   } else {
     return (
-      <ul className="flex md:flex space-x-4">
+      <ul className="flex md:flex gap-x-6">
+        <div className="text-white">
+          <SearchButton />
+        </div>
         <WhiteButtons />
       </ul>
     );

@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 
 export default function Search() {
   return (
-    <Search />
+    <div className="md:p-10">
+      <SearchBar placeholder="Search for an article or company..." />
+    </div>
   );
 }
