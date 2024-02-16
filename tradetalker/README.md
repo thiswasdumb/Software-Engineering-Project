@@ -8,7 +8,6 @@ A financial sentiment news website built with NextJS, Flask and MySQL.
 - [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ## Installation
-- Clone the repository by running `https://github.com/thiswasdumb/SoftEngProject.git`.
 - To run the environment, install the dependencies with `npm i`.
 - Run the development server with `npm run dev` or `pnpm dev`.
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
