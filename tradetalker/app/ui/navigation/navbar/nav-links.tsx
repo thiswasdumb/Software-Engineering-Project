@@ -3,16 +3,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-// Map of links to display in the navbar.
-const links = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Stocks', href: '/stocks' },
-  { name: 'Companies', href: '/companies' },
-  { name: 'Support', href: '/support' },
-];
-
-export default function NavLinks() {
+export default function NavLinks(props: { session: any }) {
+  // Map of links to display in the navbar.
+  const links = [
+    ...(props.session ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
+    { name: 'Stocks', href: '/stocks' },
+    { name: 'Companies', href: '/companies' },
+    { name: 'Support', href: '/support' },
+  ];
   const pathname = usePathname();
+
   return (
     <>
       {links.map((link) => {

@@ -30,7 +30,7 @@ const Navbar = ({ toggle }: { toggle: () => void }) => {
           <div className="flex justify-between items-center h-full">
             <Logo />
             <ul className="hidden md:flex gap-x-6 text-white">
-              <NavLinks />
+              <NavLinks session={session} />
             </ul>
             <NavbarComponent session={session} />
             <button
