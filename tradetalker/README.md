@@ -22,4 +22,4 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The Flask server will be running on [http://127.0.0.1:5328](http://127.0.0.1:5328).
+The Flask server will be running on [http://127.0.0.1:8080](http://127.0.0.1:8080).
