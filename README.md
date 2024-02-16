@@ -1,4 +1,4 @@
-# README - GROUP 1 CS 261 Group Project 
+# Group 1 - CS261 Group Project
 
 ## Members: 
 - Serene Alrawi 
@@ -9,7 +9,12 @@
 - Alara Tindall
 - Xun Khang Tan
 
-## TradeTalker
+<br>
+<img src="/tradetalker/public/images/logo.png" alt="TradeTalker" width="150"/>
+
+### Requirements
+- [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Python 3.11 or higher](https://www.python.org/downloads/)
 
 ### How to run
 - Clone the repository by running `https://github.com/thiswasdumb/SoftEngProject.git`.
