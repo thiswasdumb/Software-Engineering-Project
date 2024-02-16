@@ -11,7 +11,7 @@ const Navigation = () => {
   return (
     <>
       <Sidebar isOpen={isOpen} toggle={toggle} />
-      <Navbar toggle={toggle} />
+      <Navbar />
     </>
   );
 };

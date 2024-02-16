@@ -5,8 +5,7 @@ import logo from '/public/images/logo.png';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const Logo = () => {
-  // Update size of logo based on window width
+export default function Logo() {
   return (
     <>
       <Link className="hover:opacity-70" href="/">
@@ -21,5 +20,3 @@ const Logo = () => {
     </>
   );
 }
-
-export default Logo;
