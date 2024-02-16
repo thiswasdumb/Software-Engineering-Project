@@ -63,19 +63,18 @@ class GetNewsClass:
                 # Handle other exceptions
                 continue
 
-            pro_news_article = self.preprocess_text.preprocess_text(news_article.text)
-
-            for id, text in pro_news_article.items():
-                print("VADER SCORE:", self.s.get_article_sentiment(text))
-
-            print(f"Title: {article['title']}")
-            print("Content:")
-            print(pro_news_article)
-            print("------")
+            article_company = company_name
+            article_sentiment = self.s.get_article_sentiment(processed_news_article)
+            article_title = article['title'] 
+            article_content = news_article.text
+            processed_news_article = self.preprocess_text.preprocess_text()
+            article_summary = news_article.summary
+            article_date = None 
+ 
 
     def get_all_articles(self):
         for company in self.all_articles.keys():
-            pass
+            self.get_articles(company)
 
 
 # Example usage

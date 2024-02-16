@@ -39,15 +39,12 @@ class PreprocessText:
     def _normalize_token(self, token: str) -> str:
         return self.normalizer.lemmatize(token, self.part_of_speech.get_part_of_speech(token))
     
-    def preprocess_text(self, text: str) -> dict:
-        output = {}
-        random_id = random.randint(1000, 9999)
+    def preprocess_text(self, text: str) -> str:
         cleaned = self._clean_text(text)
         tokenized = word_tokenize(cleaned)
         tokenized_wo_stopwords = [word for word in tokenized if word not in self.stop_words]
         normalized = " ".join([self._normalize_token(token) for token in tokenized_wo_stopwords if not re.match(r'\d+', token)])
-        output[random_id] = normalized
-        return output
+        return normalized
 
 c = GetPOSClass()
 t = PreprocessText(c)
