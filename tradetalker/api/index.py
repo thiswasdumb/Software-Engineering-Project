@@ -1,4 +1,5 @@
-from flask import Flask, json, jsonify
+import json
+from flask import Flask, jsonify
 from flask_cors import CORS
 from test import get_json_data
 
