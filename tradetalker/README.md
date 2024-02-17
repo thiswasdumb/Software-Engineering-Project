@@ -1,7 +1,7 @@
 # TradeTalker
 <img src="/tradetalker/public/images/logo.png" alt="TradeTalker" width="150"/>
 
-A financial sentiment news website built with NextJS, Flask and MySQL.
+A financial sentiment news website built with Next.js, Flask and MySQL.
 
 ## Requirements
 - [Python 3.11 or higher](https://www.python.org/downloads/)
