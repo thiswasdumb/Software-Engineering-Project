@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 export default async function CompanyPage({ params }: { params: { id: string } }) {
   const id = params.id;
+  console.log(id);
   const company = true;
 
   if (!company) return notFound();

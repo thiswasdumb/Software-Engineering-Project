@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-export default function SidebarLinks(props: { toggle: any, session: boolean }) {
+export default function SidebarLinks(props: { toggle: () => void, session: boolean }) {
   // Map of links to display in the navbar.
   const links = [
     ...(props.session ? [{ name: 'Dashboard', href: '/dashboard' }] : []),

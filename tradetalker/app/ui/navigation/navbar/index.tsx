@@ -1,10 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Logo from './logo';
 import NavLinks from './nav-links';
 import NavbarComponent from './navbar-auth-comps';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import clsx from 'clsx';
 import Sidebar from '../sidebar';
 import SearchButton from './search-button';
 

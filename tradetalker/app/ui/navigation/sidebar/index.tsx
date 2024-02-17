@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import SidebarLinks from './sidebar-links';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 

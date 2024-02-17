@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Metadata } from 'next';
 import SignupForm from '@/app/ui/signup-form';
 
