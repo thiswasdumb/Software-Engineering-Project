@@ -1,3 +1,0 @@
-[MASTER]
-ignore-patterns = venv/*, pycache/*
-init-hook = 'import sys; sys.path.append(".")'  # Fixes import errors in pylint
