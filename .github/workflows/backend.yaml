@@ -36,8 +36,6 @@ jobs:
 
       - name: Run pylint
         run: |
-          pylint --version
-          which pylint
           cat tradetalker/api/.pylintrc
           cd tradetalker/api
           source venv/bin/activate
