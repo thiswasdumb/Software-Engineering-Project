@@ -8,9 +8,9 @@ export default function SearchButton() {
     <>
       <Link href="/search"
         className={clsx(
-          'flex items-center md:block justify-center p-2 hover:opacity-50',
+          "items-center justify-center p-2 hover:opacity-50",
         )}>
-        <MagnifyingGlassIcon className="w-6 h-6" />
+        <MagnifyingGlassIcon className="w-8 h-8" />
       </Link>
     </>
   );

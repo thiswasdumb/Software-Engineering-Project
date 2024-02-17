@@ -8,7 +8,7 @@ import WhiteButtons from './white-buttons';
 export default function NavbarComponent(props: { session: any }) {
   if (props.session) {
     return (
-      <ul className="flex md:flex gap-x-4 text-white">
+      <ul className="hidden md:flex gap-x-4 text-white">
         <SearchButton />
         <NotifButton />
         <ProfileButton />
@@ -16,7 +16,7 @@ export default function NavbarComponent(props: { session: any }) {
     );
   } else {
     return (
-      <ul className="flex md:flex items-center gap-x-6">
+      <ul className="hidden md:flex items-center gap-x-6">
         <div className="text-white">
           <SearchButton />
         </div>
