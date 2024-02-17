@@ -37,7 +37,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <Sidebar isOpen={menuToggled} toggle={toggleMenu} session={session} />
+      <Sidebar isOpen={menuToggled} toggle={toggleMenu} />
     </div>
   );
 };
