@@ -21,15 +21,22 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip install pylint flake8
+          python3 -m venv venv
+          pip install flake8
           cd tradetalker/api
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Install pylint
+        run: |
+          source venv/bin/activate
+          pip install pylint
 
       - name: Run flake8
         run: flake8 tradetalker/api --count --show-source --statistics
 
-      - name: Run Pylint
+      - name: Run pylint
         run: |
           pylint --version
           which pylint
+          source venv/bin/activate
           pylint tradetalker/api --fail-under=10
