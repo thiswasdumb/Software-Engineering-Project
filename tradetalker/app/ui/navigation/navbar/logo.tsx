@@ -13,8 +13,8 @@ export default function Logo() {
           src={logo}
           alt="TradeTalker Logo"
           width={80}
-          height={45}
           className="relative"
+          priority={true}
         />
       </Link>
     </>
