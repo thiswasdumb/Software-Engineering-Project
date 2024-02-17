@@ -24,4 +24,6 @@ jobs:
           npm install
 
       - name: Run ESLint
-        run: npx eslint tradetalker/app --ext .js,.jsx,.ts,.tsx
+        run: |
+          cd tradetalker
+          npx eslint . --ext .js,.jsx,.ts,.tsx
