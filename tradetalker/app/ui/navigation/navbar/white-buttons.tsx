@@ -19,13 +19,13 @@ export default function WhiteButtons() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "p-3 text-base font-medium hidden md:block items-center justify-center gap-2 rounded-md bg-gray-50 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start",
+              'hidden items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-base font-medium hover:bg-sky-100 hover:text-blue-600 md:block md:flex-none md:justify-start',
               {
-                "bg-sky-100 text-blue-600": pathname === link.href,
-              },
+                'bg-sky-100 text-blue-600': pathname === link.href,
+              }
             )}
           >
-            <p className="hidden md:block">{link.name}</p>
+            <p className='hidden md:block'>{link.name}</p>
           </Link>
         );
       })}

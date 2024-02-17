@@ -14,29 +14,27 @@ export default function Navbar() {
   const session = false; // TODO: replace with actual session
 
   return (
-    { menuToggled } &&
-    <div>
-      <div className="w-full h-20 bg-blue-600 sticky top-0">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex justify-between items-center h-full">
-            <Logo />
-            <ul className="hidden md:flex gap-x-6 text-white">
-              <NavLinks session={session} />
-            </ul>
-            <NavbarComponent session={session} />
-            <div className="text-white inline-flex items-center md:hidden gap-4">
-              <SearchButton />
-              <button
-                type="button"
-                onClick={toggleMenu}
-              >
-                <Bars3Icon className="w-12 h-12 text-white hover:opacity-50" />
-              </button>
+    { menuToggled } && (
+      <div>
+        <div className='sticky top-0 h-20 w-full bg-blue-600'>
+          <div className='container mx-auto h-full px-4'>
+            <div className='flex h-full items-center justify-between'>
+              <Logo />
+              <ul className='hidden gap-x-6 text-white md:flex'>
+                <NavLinks session={session} />
+              </ul>
+              <NavbarComponent session={session} />
+              <div className='inline-flex items-center gap-4 text-white md:hidden'>
+                <SearchButton />
+                <button type='button' onClick={toggleMenu}>
+                  <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
+                </button>
+              </div>
             </div>
           </div>
         </div>
+        <Sidebar isOpen={menuToggled} toggle={toggleMenu} />
       </div>
-      <Sidebar isOpen={menuToggled} toggle={toggleMenu} />
-    </div>
+    )
   );
-};
+}

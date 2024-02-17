@@ -1,8 +1,8 @@
-import React from "react";
-import { Metadata } from "next";
+import React from 'react';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Reset Password",
+  title: 'Reset Password',
 };
 
 export default function ResetPassword() {

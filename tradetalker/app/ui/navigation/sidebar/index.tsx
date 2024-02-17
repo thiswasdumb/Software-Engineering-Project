@@ -13,14 +13,14 @@ const Sidebar = ({
   return (
     <>
       <div
-        className="fixed w-full h-100 md:hidden overflow-hidden justify-center bg-white grid pt-[120px] left-0 z-10"
+        className='h-100 fixed left-0 z-10 grid w-full justify-center overflow-hidden bg-white pt-[120px] md:hidden'
         style={{
-          opacity: `${isOpen ? "1" : "0"}`,
-          top: ` ${isOpen ? "0" : "-100%"}`,
+          opacity: `${isOpen ? '1' : '0'}`,
+          top: ` ${isOpen ? '0' : '-100%'}`,
         }}
       >
-        <button className="absolute right-0 p-5" onClick={toggle}>
-          <XMarkIcon className="w-12 h-12" />
+        <button className='absolute right-0 p-5' onClick={toggle}>
+          <XMarkIcon className='h-12 w-12' />
         </button>
         <SidebarLinks toggle={toggle} session={session} />
       </div>
