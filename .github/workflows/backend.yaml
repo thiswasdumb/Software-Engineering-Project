@@ -29,14 +29,12 @@ jobs:
 
       - name: Run flake8
         run: |
-          cat tradetalker/api/.flake8
           cd tradetalker/api
           source venv/bin/activate
           flake8 . --count --show-source --statistics
 
       - name: Run pylint
         run: |
-          cat tradetalker/api/.pylintrc
           cd tradetalker/api
           source venv/bin/activate
           pylint . --fail-under=10

@@ -1,4 +1,4 @@
-[![Backend](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml) [![Frontend](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml)
+[![Backend checks](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml) [![Frontend checks](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml)
 
 # TradeTalker
 <img src="/tradetalker/public/images/logo.png" alt="TradeTalker" width="150"/>

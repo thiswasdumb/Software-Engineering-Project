@@ -1,3 +1,5 @@
+[![Backend checks](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/backend.yaml) [![Frontend checks](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml/badge.svg)](https://github.com/thiswasdumb/SoftEngProject/actions/workflows/frontend.yaml)
+
 # Group 1 - CS261 Group Project
 
 ## Members: 
