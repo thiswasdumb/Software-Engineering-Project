@@ -1,4 +1,7 @@
+import React from 'react';
 import Link from 'next/link';
+import SidebarLinks from './sidebar-links';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const Sidebar = ({
   isOpen,
@@ -7,57 +10,20 @@ const Sidebar = ({
   isOpen: boolean;
   toggle: () => void;
 }): JSX.Element => {
+  const session = false; // TODO: replace with actual session
   return (
     <>
       <div
-        className="sidebar-container fixed w-full h-full overflow-hidden justify-center bg-white grid pt-[120px] left-0 z-10"
+        className="fixed w-full h-100 md:hidden overflow-hidden justify-center bg-white grid pt-[120px] left-0 z-10"
         style={{
           opacity: `${isOpen ? "1" : "0"}`,
           top: ` ${isOpen ? "0" : "-100%"}`,
         }}
       >
         <button className="absolute right-0 p-5" onClick={toggle}>
-        {/* Close icon */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-          > 
-            <path
-              fill="currentColor"
-              d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
-            />
-          </svg>
+          <XMarkIcon className="w-12 h-12" />
         </button>
-
-        <ul className="sidebar-nav text-center leading-relaxed text-xl">
-          <li>
-            <Link href="/stocks" onClick={toggle}>
-              <p>Stocks</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/companies" onClick={toggle}>
-              <p>Companies</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/support" onClick={toggle}>
-              <p>Support</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/notifications" onClick={toggle}>
-              <p>Notifications</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/logout" onClick={toggle}>
-              <p>Log Out</p>
-            </Link>
-          </li>
-        </ul>
+        <SidebarLinks toggle={toggle} session={session} />
       </div>
     </>
   );
