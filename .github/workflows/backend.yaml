@@ -23,6 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint flake8
           cd tradetalker/api
+          python3 -m venv venv
+          source venv/bin/activate
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run flake8
