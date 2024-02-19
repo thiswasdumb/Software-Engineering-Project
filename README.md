@@ -16,7 +16,7 @@
 
 ## Requirements
 - [Python 3.11 or higher](https://www.python.org/downloads/)
-- [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 21 or higher and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [(Optional) pnpm](https://pnpm.io/installation)
 
 ## Installation
