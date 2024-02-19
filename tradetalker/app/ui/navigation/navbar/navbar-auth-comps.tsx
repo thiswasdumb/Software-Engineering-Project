@@ -1,15 +1,21 @@
 import React from 'react';
-import NotifButton from './notif-icon';
+import NotifButton from './notif-button';
 import ProfileButton from './profile-button';
 import SearchButton from './search-button';
 import WhiteButtons from './white-buttons';
 
-export default function NavbarComponent(props: { session: boolean }) {
+export default function NavbarComponent(props: {
+  notifCount: number;
+  isOpen: boolean;
+  toggle: () => void;
+  session: boolean;
+}) {
   if (props.session) {
     return (
       <ul className='hidden gap-x-4 text-white md:flex'>
-        <SearchButton />
-        <NotifButton />
+        <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
+        <NotifButton notifCount={props.notifCount} />{' '}
+        {/* Will update from db */}
         <ProfileButton />
       </ul>
     );
@@ -17,7 +23,7 @@ export default function NavbarComponent(props: { session: boolean }) {
     return (
       <ul className='hidden items-center gap-x-6 md:flex'>
         <div className='text-white'>
-          <SearchButton />
+          <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
         </div>
         <WhiteButtons />
       </ul>

@@ -11,21 +11,29 @@ export default function Navbar() {
   const [menuToggled, setMenuToggled] = useState(false);
   const toggleMenu = () => setMenuToggled(!menuToggled);
 
-  const session = false; // TODO: replace with actual session
+  const session = true; // TODO: replace with actual session
+  const notifCount = 1; // TODO: replace with actual notification count
 
   return (
-    { menuToggled } && (
+    <>
       <div>
         <div className='sticky top-0 h-20 w-full bg-blue-600'>
-          <div className='container mx-auto h-full px-4'>
+          <div className='h-full px-4'>
             <div className='flex h-full items-center justify-between'>
-              <Logo />
-              <ul className='hidden gap-x-6 text-white md:flex'>
-                <NavLinks session={session} />
-              </ul>
-              <NavbarComponent session={session} />
+              <div className='flex h-full items-center justify-between gap-x-8'>
+                <Logo isOpen={menuToggled} toggle={toggleMenu} />
+                <ul className='hidden gap-x-6 text-white md:flex'>
+                  <NavLinks session={session} />
+                </ul>
+              </div>
+              <NavbarComponent
+                notifCount={notifCount}
+                isOpen={menuToggled}
+                toggle={toggleMenu}
+                session={session}
+              />
               <div className='inline-flex items-center gap-4 text-white md:hidden'>
-                <SearchButton />
+                <SearchButton isOpen={menuToggled} toggle={toggleMenu} />
                 <button type='button' onClick={toggleMenu}>
                   <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
                 </button>
@@ -33,8 +41,21 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        <Sidebar isOpen={menuToggled} toggle={toggleMenu} />
+        {menuToggled && (
+          <>
+            <div
+              className='fixed h-full w-full bg-black opacity-30'
+              onClick={toggleMenu}
+            />
+            <Sidebar
+              isOpen={menuToggled}
+              toggle={toggleMenu}
+              session={session}
+              notifCount={notifCount}
+            />
+          </>
+        )}
       </div>
-    )
+    </>
   );
 }
