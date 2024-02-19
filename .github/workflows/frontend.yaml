@@ -32,7 +32,7 @@ jobs:
       - name: Run ESLint
         run: |
           cd tradetalker
-          npx eslint . --ext .js,.jsx,.ts,.tsx
+          npx eslint .
 
       - name: Run Prettier
         run: |
