@@ -22,7 +22,7 @@ const Navbar = ({ toggle }: { toggle: () => void }) => {
   }, [menuOpen]);
 
 
-  const session = false; // For testing logged in/out state
+  const session = true; // For testing logged in/out state
   return (
     <>
       <div className="w-full h-20 bg-blue-600 sticky top-0">
