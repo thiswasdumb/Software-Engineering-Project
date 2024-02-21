@@ -15,7 +15,6 @@ class SentimentAnalyser:
 
         Arguments:
             - article: A string of pre-processed words in the article. 
-w
         Returns:
             ---
         """

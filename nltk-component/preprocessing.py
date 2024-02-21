@@ -46,7 +46,5 @@ class PreprocessText:
         normalized = " ".join([self._normalize_token(token) for token in tokenized_wo_stopwords if not re.match(r'\d+', token)])
         return normalized
 
-c = GetPOSClass()
-t = PreprocessText(c)
-t.preprocess_text("hi this ohisa jdalsjhd l")
+
 
