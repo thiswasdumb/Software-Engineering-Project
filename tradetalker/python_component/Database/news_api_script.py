@@ -3,7 +3,7 @@ from newspaper import Article, ArticleException
 from preprocessing import PreprocessText, GetPOSClass
 from vader import SentimentAnalyser
 from flask import Flask, jsonify
-from tradetalker.Database.TradeTalker_DB import Database
+from TradeTalker_DB import Database
 
 
 app = Flask(__name__)
@@ -79,10 +79,9 @@ class GetNewsClass:
             article_title = article['title'] 
             article_summary = news_article.summary
             article_publication_date = news_article.publish_date
-
-            db.article_insert_article(article_title,article_content, article_publication_date, article_url, article_summary)
+            with app.app_context():
+                db.article_insert_article(article_title,article_content, article_publication_date, article_url, article_summary)
             
-
             print(article_company, article_title, article_sentiment, article_summary, article_publication_date)
             break 
 
@@ -99,6 +98,6 @@ class GetNewsClass:
             self.get_articles(company)
 
 # Example usage
-if __name__ == 'main':
-    test = GetNewsClass(['google', 'microsoft', 'apple'])
-    test.get_all_articles()
+
+test = GetNewsClass(['google', 'microsoft', 'apple'])
+test.get_all_articles()

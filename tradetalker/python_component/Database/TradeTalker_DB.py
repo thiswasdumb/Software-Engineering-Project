@@ -53,6 +53,7 @@ class Database:
                            "(%s, %s, %s, %s, %s)",
                            (title, content, publication_date, url, summary))
             self.mysql.connection.commit()
+            return
 
             # note for empty fields (CompanyID, PredictionScore)
             # The table has 1 primary key which is the ID (not available in the article text or title itself)
