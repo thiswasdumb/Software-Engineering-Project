@@ -4,6 +4,28 @@ from unittest import result
 from flask_mysqldb import MySQL
 
 
+# ---------------------------------- HOW TO -------------------------------------------#
+"""
+from flask import Flask
+from database import Database
+
+app = Flask(__name__)
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'TradeTalkerDB'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+db = Database(app)
+
+@app.route('/users')
+def get_users():
+    users = db.select_all_users()
+
+"""
+# The bit above @app.route has to be in every code that uses the database
+# the get_users() function is an example of how to use the methods in the class
+
 class Database:
     def __init__(self, app=None):
         self.mysql = MySQL()
