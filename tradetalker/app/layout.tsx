@@ -1,4 +1,4 @@
-import Navigation from './ui/navigation/navbar';
+import Navbar from './ui/navigation/navbar';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { Metadata } from 'next';
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <Navigation />
+        <Navbar />
         {children}
       </body>
     </html>

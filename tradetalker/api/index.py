@@ -1,10 +1,11 @@
-"""
-Contains the Flask application to send data to the TradeTalker frontend.
-"""
+"""Contains the Flask application to send data to the TradeTalker frontend."""
 
 import json
-from flask import Flask, jsonify
+import os
+
+from flask import Flask, Response, jsonify
 from flask_cors import CORS
+
 from test_file import get_json_data
 
 app = Flask(__name__)
@@ -16,11 +17,11 @@ CORS(app)  # Allows backend to communicate with JS frontend
 
 # Example of how to create a route and return JSON data from a function
 @app.route("/api/home", methods=["GET"])
-def index() -> str:
+def index() -> Response:
     """Returns sample JSON data."""
     data = json.loads(get_json_data())
     return jsonify(data)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    app.run(debug=os.environ["ENV"] == "dev", port=8080)

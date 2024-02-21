@@ -6,6 +6,7 @@ import clsx from 'clsx';
 export default function SidebarLinks(props: {
   toggle: () => void;
   session: boolean;
+  notifCount: number;
 }) {
   // Map of links to display in the navbar.
   const links = [
@@ -13,13 +14,19 @@ export default function SidebarLinks(props: {
     { name: 'Stocks', href: '/stocks' },
     { name: 'Companies', href: '/companies' },
     { name: 'Support', href: '/support' },
-    { name: 'Search', href: '/search' },
     ...(props.session
       ? [
-          { name: 'Login', href: '/login' },
-          { name: 'Signup', href: '/signup' },
+          {
+            name: `Notifications (${props.notifCount})`,
+            href: '/notifications',
+          },
+          { name: 'Profile', href: '/profile' },
+          { name: 'Log out', href: '/logout' },
         ]
-      : []),
+      : [
+          { name: 'Login', href: '/login' },
+          { name: 'Sign up', href: '/signup' },
+        ]),
   ];
   const pathname = usePathname();
 
@@ -32,9 +39,9 @@ export default function SidebarLinks(props: {
             href={link.href}
             onClick={props.toggle}
             className={clsx(
-              'p-3 text-base font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start',
+              'sticky flex justify-center bg-white p-4 font-medium outline outline-2 outline-gray-100 hover:bg-sky-100 hover:text-blue-600',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
+                'bg-sky-200 text-blue-600': pathname === link.href,
               }
             )}
           >

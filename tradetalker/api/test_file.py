@@ -1,6 +1,4 @@
-"""
-Test file for data.
-"""
+"""Test file for data."""
 
 import json
 
