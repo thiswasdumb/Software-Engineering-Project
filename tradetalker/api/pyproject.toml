@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.pylint.MASTER]
+ignore-patterns = ['venv/*', 'pycache/*']
+init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
+
+[tool.pyright]
+pythonVersion = "3.11"
+
+[tool.ruff]
+target-version = "py311"
+# Defaults + pyflakes + pycodestyle + pylint + isort
+lint.select = ['ALL']
+# Ignore conflicting docstring errors
+lint.ignore = ['D203', 'D204', 'D213', 'D401']

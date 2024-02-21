@@ -6,13 +6,16 @@ export const metadata: Metadata = {
   title: 'Article title',
 };
 
-export default async function ArticlePage({ params }: { params: { id: string } }) {
+export default async function ArticlePage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const id = params.id;
+  console.log(id);
   const article = true;
 
   if (!article) return notFound();
 
-  return (
-    <div>Article here.</div>
-  );
+  return <div>Article here.</div>;
 }

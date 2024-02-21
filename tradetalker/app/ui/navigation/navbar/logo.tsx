@@ -1,25 +1,24 @@
 'use client';
-
 import Image from 'next/image';
 import logo from '/public/images/logo.png';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const Logo = () => {
-  // Update size of logo based on window width
+export default function Logo(props: { isOpen: boolean; toggle: () => void }) {
   return (
     <>
-      <Link className="hover:opacity-70" href="/">
+      <Link
+        className='hover:opacity-70'
+        href='/'
+        onClick={props.isOpen ? props.toggle : undefined}
+      >
         <Image
           src={logo}
-          alt="TradeTalker Logo"
+          alt='TradeTalker Logo'
           width={80}
-          height={45}
-          className="relative"
+          className='relative'
+          priority={true}
         />
       </Link>
     </>
   );
 }
-
-export default Logo;

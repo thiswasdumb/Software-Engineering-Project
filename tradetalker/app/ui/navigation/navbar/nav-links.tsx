@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-export default function NavLinks(props: { session: any }) {
+export default function NavLinks(props: { session: boolean }) {
   // Map of links to display in the navbar.
   const links = [
     ...(props.session ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
@@ -21,13 +21,13 @@ export default function NavLinks(props: { session: any }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              "p-3 text-base font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start",
+              'bg-blue-600 p-3 text-base font-medium hover:bg-sky-100 hover:bg-opacity-100 hover:text-blue-600 focus:bg-white md:flex-none md:justify-start',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              },
+                'bg-white text-blue-600': pathname === link.href,
+              }
             )}
           >
-            <p className="hidden md:block">{link.name}</p>
+            <p className='hidden md:block'>{link.name}</p>
           </Link>
         );
       })}
