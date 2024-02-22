@@ -1,3 +1,7 @@
+## GitHub
+- Remember to fetch regularly from origin!
+- A GitHub Actions workflow has been implemented for automating CI/CD. If you want to skip the workflow run after pushing one or more commits, add `[skip ci]` after a commit message and it will skip the build for all commits.
+
 ## Backend development
 ### General notes
 - The Python interpreter is using version 3.11.7.
