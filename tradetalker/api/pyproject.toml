@@ -5,6 +5,7 @@ target-version = ['py311']
 [tool.pylint.MASTER]
 ignore-patterns = ['venv/*', 'pycache/*']
 init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
+disable = ['C0301, R0913'] # Disable line length and too many arguments errors
 
 [tool.pyright]
 pythonVersion = "3.11"
@@ -14,4 +15,10 @@ target-version = "py311"
 # Defaults + pyflakes + pycodestyle + pylint + isort
 lint.select = ['ALL']
 # Ignore conflicting docstring errors
-lint.ignore = ['D203', 'D204', 'D213', 'D401']
+lint.ignore = ['ANN101', 'D203', 'D204', 'D213', 'D401']
+
+[tool.ruff.lint.pylint]
+max-args = 9
+
+[tool.ruff.lint.per-file-ignores]
+"db.py" = ['E501'] # Ignore line length error in db.py

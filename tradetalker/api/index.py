@@ -6,10 +6,12 @@ import os
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
 
+from db import Database
 from test_file import get_json_data
 
 app = Flask(__name__)
 CORS(app)  # Allows backend to communicate with JS frontend
+mysql = Database(app)  # Initializes the database connection
 
 # To view the routes, run 'npm run dev' in the terminal and then
 # go to http://127.0.0.1:8080/api/home, for example.
