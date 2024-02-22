@@ -18,3 +18,12 @@ A financial sentiment news website built with Next.js, Flask and MySQL.
 - Run the development server with `npm run dev` or `pnpm dev`.
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 - The Flask server will be running on [http://127.0.0.1:8080](http://127.0.0.1:8080).
+
+## Backend development
+
+- Please make sure to lint all Python code by running the `lint.sh` script before committing. This will install `pipenv` and create a pipenv virtual environment where the required packages will be installed and checks will run.
+
+## Frontend development
+
+- To install a Node package, run `npm install [package]`. Make sure that `pnpm-lock.yaml` is kept up to date by running `pnpm install` after a package installation.
+- Please make sure to lint all JS/TS code by running `npm run lint` before committing.
