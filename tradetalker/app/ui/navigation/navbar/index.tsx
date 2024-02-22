@@ -1,50 +1,61 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Logo from './logo';
 import NavLinks from './nav-links';
 import NavbarComponent from './navbar-auth-comps';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
+import Sidebar from '../sidebar';
+import SearchButton from './search-button';
 
-const Navbar = ({ toggle }: { toggle: () => void }) => {
-  const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
+export default function Navbar() {
+  const [menuToggled, setMenuToggled] = useState(false);
+  const toggleMenu = () => setMenuToggled(!menuToggled);
 
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'auto';
-    } else {
-      document.body.style.overflow = 'hidden';
-    }
-  }, [menuOpen]);
+  const session = true; // TODO: replace with actual session
+  const notifCount = 1; // TODO: replace with actual notification count
 
-
-  const session = true; // For testing logged in/out state
   return (
     <>
-      <div className="w-full h-20 bg-blue-600 sticky top-0">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex justify-between items-center h-full">
-            <Logo />
-            <ul className="hidden md:flex gap-x-6 text-white">
-              <NavLinks session={session} />
-            </ul>
-            <NavbarComponent session={session} />
-            <button
-              type="button"
-              className="inline-flex items-center md:hidden"
-              onClick={toggleMenu}
-            >
-              <Bars3Icon className={clsx("w-12 h-12 text-white hover:opacity-50")} />
-            </button>
+      <div>
+        <div className='sticky top-0 h-20 w-full bg-blue-600'>
+          <div className='h-full px-4'>
+            <div className='flex h-full items-center justify-between'>
+              <div className='flex h-full items-center justify-between gap-x-8'>
+                <Logo isOpen={menuToggled} toggle={toggleMenu} />
+                <ul className='hidden gap-x-6 text-white md:flex'>
+                  <NavLinks session={session} />
+                </ul>
+              </div>
+              <NavbarComponent
+                notifCount={notifCount}
+                isOpen={menuToggled}
+                toggle={toggleMenu}
+                session={session}
+              />
+              <div className='inline-flex items-center gap-4 text-white md:hidden'>
+                <SearchButton isOpen={menuToggled} toggle={toggleMenu} />
+                <button type='button' onClick={toggleMenu}>
+                  <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+        {menuToggled && (
+          <>
+            <div
+              className='fixed h-full w-full bg-black opacity-30'
+              onClick={toggleMenu}
+            />
+            <Sidebar
+              isOpen={menuToggled}
+              toggle={toggleMenu}
+              session={session}
+              notifCount={notifCount}
+            />
+          </>
+        )}
       </div>
     </>
   );
-};
-
-export default Navbar;
+}
