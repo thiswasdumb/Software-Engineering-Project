@@ -5,7 +5,6 @@ from vader import SentimentAnalyser
 from flask import Flask, jsonify
 from TradeTalker_DB import Database
 
-
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
