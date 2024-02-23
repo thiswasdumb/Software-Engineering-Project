@@ -2,17 +2,19 @@ from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
 from preprocessing import PreprocessText, GetPOSClass
 from vader import SentimentAnalyser
-from flask import Flask, jsonify
-from TradeTalker_DB import Database
+from flask import Flask
+from database_connection import DataBaseConnection
+import datetime
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'TradeTalkerDB'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
-db = Database(app)
+db = DataBaseConnection(
+    host="localhost",
+    user="root",
+    passwd="",
+    database="tradetalkerdb"
+)
+
 class GetNewsClass:
     def __init__(self, list_of_companies):
         """
@@ -78,11 +80,13 @@ class GetNewsClass:
             article_title = article['title'] 
             article_summary = news_article.summary
             article_publication_date = news_article.publish_date
+            if not article_publication_date:  # in some cases we got NULL date which would then prevent the insertion
+                article_publication_date = datetime.datetime.now()  # solution?
             with app.app_context():
-                db.article_insert_article(article_title,article_content, article_publication_date, article_url, article_summary)
+                db.article_insert_article(article_title, article_company, article_content, article_publication_date, article_url, article_summary)
             
             print(article_company, article_title, article_sentiment, article_summary, article_publication_date)
-            break 
+            break
 
     def get_all_articles(self):
         """
