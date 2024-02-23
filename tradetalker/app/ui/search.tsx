@@ -26,7 +26,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
         Search
       </label>
       <input
-        className='relative block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-lg outline-2 placeholder:text-gray-500 md:text-sm'
+        className='block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-lg outline-2 placeholder:text-gray-500 md:text-sm'
         placeholder={placeholder}
         onChange={(e) => {
           handleSearch(e.target.value);
