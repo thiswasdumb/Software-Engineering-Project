@@ -29,13 +29,16 @@ class DataBaseConnection:
     # -----------------------------------  User table methods ----------------------------------- #
 
     # test status: OK
-    def user_insert_user(self, username: str, password: str, email: str, preferences=0) -> None:
+    def user_insert_user(self, username: str, password: str, email: str, preferences=0) -> int:
         """
         Inserts into the user table
+        :returns: user_id (int): the user_id of the user just added to the table
         """
         self.cursor.execute("INSERT INTO User (Username, Password, Email, Preferences) VALUES (%s, %s, %s, %s)",
                            (username, password, email, preferences))
+        user_id = self.cursor.lastrowid
         self.db.commit()
+        return user_id
 
     # test status: OK
     def user_select_all(self):
@@ -51,7 +54,7 @@ class DataBaseConnection:
     # -----------------------------------  Article table methods ----------------------------------- #
 
     # test status: OK
-    def article_insert_article(self, title: str, company_name: str, content: str, publication_date: str, url: str, summary: str) -> None:
+    def article_insert_article(self, title: str, company_name: str, content: str, publication_date: str, url: str, summary: str) -> int:
         """
         Inserts a single article in the article table
         :param title:
@@ -60,14 +63,15 @@ class DataBaseConnection:
         :param publication_date:
         :param url:
         :param summary:
-        :return:
+        :return: article_id (int): the article_id of the article just added to the table
         """
         company_id = self.company_get_company_id_by_name(company_name)[0]
         self.cursor.execute("INSERT INTO Article (Title, CompanyID, Content, PublicationDate, URL, Summary) VALUES "
                        "(%s, %s, %s, %s, %s, %s)",
                        (title, company_id, content, publication_date, url, summary))
+        article_id = self.cursor.lastrowid
         self.db.commit()
-        return
+        return article_id
 
     # test status: OK
     def article_select_all(self):
@@ -82,7 +86,7 @@ class DataBaseConnection:
     # -----------------------------------  Company table methods ----------------------------------- #
 
     # test status: OK
-    def company_insert_company(self, company_name: str, stock_symbol: str, stock_price: float, industry: str, company_description: str)->None:
+    def company_insert_company(self, company_name: str, stock_symbol: str, stock_price: float, industry: str, company_description: str)->int:
         """
         Inserts a company into the company table with necessary details
         :param company_name:
@@ -90,12 +94,14 @@ class DataBaseConnection:
         :param stock_price:
         :param industry:
         :param company_description:
-        :return:
+        :return: company_id (int): the company_id of the company just added to the table
         """
         self.cursor.execute("INSERT INTO Company (CompanyName, StockSymbol, StockPrice, Industry, CompanyDescription, PredictedStockPrice, StockVariance, SentimentScore) "
                             "VALUES (%s, %s, %s, %s, %s, NULL, NULL, NULL)",
                            (company_name, stock_symbol, stock_price, industry, company_description))
+        company_id = self.cursor.lastrowid
         self.db.commit()
+        return company_id
 
     # test status: OK
     def company_select_all(self):
@@ -246,6 +252,19 @@ class DataBaseConnection:
             company_ids.append(res[0])
         return company_ids
 
+    def follow_get_company_followers(self, company_id: int) -> list:
+        """
+        Selects all the users that follow a certain company
+        :param company_id:
+        :return:
+        """
+        self.cursor.execute("SELECT UserID FROM Follow WHERE CompanyID = %s", (company_id,))
+        result = self.cursor.fetchall()
+        user_ids = []
+        for res in result:
+            user_ids.append(res[0])
+        return user_ids
+
     # -----------------------------------  Like table methods ----------------------------------- #
 
     # test status: OK
@@ -342,17 +361,19 @@ class DataBaseConnection:
     # -----------------------------------  UserQuestion table methods ----------------------------------- #
 
     # test status: OK
-    def user_question_insert(self, user_id: int, question: str, time: str) -> None:
+    def user_question_insert(self, user_id: int, question: str, time: str) -> int:
         """
         Insert a user query into the table
         :param user_id:
         :param question:
         :param time:
-        :return:
+        :return: user_question_id (int): returns the user_question_id of the query just added to the table
         """
         self.cursor.execute("INSERT INTO UserQuestion (UserID, Question, Time) VALUES (%s, %s, %s)",
                                                                         (user_id, question, time))
+        user_question_id = self.cursor.lastrowid
         self.db.commit()
+        return user_question_id
 
     # test status: OK
     def user_question_mark_answered(self, user_question_id: int) -> None:
@@ -388,7 +409,7 @@ class DataBaseConnection:
     # -----------------------------------  ArticleComment table methods ----------------------------------- #
 
     # test status: OK
-    def article_comment_insert(self, user_id: int, article_id: int, content: str, time: str, parent_comment_id: int) ->None:
+    def article_comment_insert(self, user_id: int, article_id: int, content: str, time: str, parent_comment_id: int) ->int:
         """
         Inserts a comment for an article into the table, parent_comment_id is optional
         :param user_id:
@@ -396,7 +417,7 @@ class DataBaseConnection:
         :param content:
         :param time:
         :param parent_comment_id:
-        :return:
+        :return: article_comment_id (int): returns the article_comment_id for the comment just added to the table
         """
         if parent_comment_id:
             self.cursor.execute("INSERT INTO ArticleComment (UserID, ArticleID, Content, Time, ParentCommentID) "
@@ -404,7 +425,9 @@ class DataBaseConnection:
         else:
             self.cursor.execute("INSERT INTO ArticleComment (UserID, ArticleID, Content, Time) "
                            "VALUES (%s, %s, %s, %s)", (user_id, article_id, content, time))
+        article_comment_id = self.cursor.lastrowid
         self.db.commit()
+        return article_comment_id
 
     # test status: OK
     def article_comment_select_by_article(self, article_id: int) -> list:
@@ -440,17 +463,19 @@ class DataBaseConnection:
 
     # -----------------------------------  Notification table methods ----------------------------------- #
     # Basic insertion into the Notification table
-    def notification_insert(self, article_id: int, content: str, time: str) -> None:
+    def notification_insert(self, article_id: int, content: str, time: str) -> int:
         """
         Inserts a notification into the table
         :param article_id:
         :param content:
         :param time:
-        :return:
+        :return: notification_id (int): returns the notification_id of the notification just added to the table
         """
         self.cursor.execute("INSERT INTO Notification (ArticleID, Content, Time) VALUES (%s, %s, %s)",
                        (article_id, content, time))
+        notification_id = self.cursor.lastrowid
         self.db.commit()
+        return notification_id
 
     def notification_select_all(self) -> list:
         """
