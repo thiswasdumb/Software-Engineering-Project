@@ -51,7 +51,7 @@ export default function Navbar() {
         </div>
         {menuToggled && (
           <>
-            <div className='mt-20'>
+            <div className='fixed z-10 mt-20'>
               <div
                 className='fixed h-full w-full bg-black opacity-30'
                 onClick={toggleMenu}

@@ -10,7 +10,7 @@ export default function Sidebar(props: {
   return (
     <>
       <div
-        className='absolute z-10 block w-full justify-center bg-gray-200 md:hidden'
+        className='fixed block w-full justify-center bg-gray-200 md:hidden'
         style={{
           display: `${props.isOpen ? 'block' : 'none'}`,
         }}
