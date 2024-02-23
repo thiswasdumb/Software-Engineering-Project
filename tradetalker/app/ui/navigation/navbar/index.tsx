@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from './logo';
 import NavLinks from './nav-links';
 import NavbarComponent from './navbar-auth-comps';
@@ -14,10 +14,18 @@ export default function Navbar() {
   const session = true; // TODO: replace with actual session
   const notifCount = 1; // TODO: replace with actual notification count
 
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && menuToggled) {
+        setMenuToggled(false);
+      }
+    });
+  }, [menuToggled]);
+
   return (
     <>
       <div>
-        <div className='sticky top-0 h-20 w-full bg-blue-600'>
+        <div className='fixed top-0 h-20 w-full bg-blue-600'>
           <div className='h-full px-4'>
             <div className='flex h-full items-center justify-between'>
               <div className='flex h-full items-center justify-between gap-x-8'>
@@ -43,16 +51,18 @@ export default function Navbar() {
         </div>
         {menuToggled && (
           <>
-            <div
-              className='fixed h-full w-full bg-black opacity-30'
-              onClick={toggleMenu}
-            />
-            <Sidebar
-              isOpen={menuToggled}
-              toggle={toggleMenu}
-              session={session}
-              notifCount={notifCount}
-            />
+            <div className='mt-20'>
+              <div
+                className='fixed h-full w-full bg-black opacity-30'
+                onClick={toggleMenu}
+              />
+              <Sidebar
+                isOpen={menuToggled}
+                toggle={toggleMenu}
+                session={session}
+                notifCount={notifCount}
+              />
+            </div>
           </>
         )}
       </div>
