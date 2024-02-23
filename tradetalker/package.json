@@ -4,9 +4,11 @@
   "description": "A financial news sentiment website",
   "private": true,
   "scripts": {
+    "mysql": "mysql -u root tradetalkerdb < api/database/tradetalkerdb.sql",
     "flask-dev": "cd api && pipenv install --dev && export ENV=dev && pipenv run python index.py",
     "next-dev": "next dev",
-    "dev": "npx concurrently \"npm run next-dev\" \"npm run flask-dev\"",
+    "flask-next": "npx concurrently \"npm run flask-dev\" \"npm run next-dev\"",
+    "dev": "npm run mysql && npm run flask-next",
     "build": "next build",
     "start": "next start",
     "lint": "npx eslint --fix . && npx prettier --write ."

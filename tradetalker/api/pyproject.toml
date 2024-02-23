@@ -5,7 +5,7 @@ target-version = ['py311']
 [tool.pylint.MASTER]
 ignore-patterns = ['venv/*', 'pycache/*']
 init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
-disable = ['C0301, R0913'] # Disable line length and too many arguments errors
+disable = ['C0301', 'R0913', 'R0904'] # Disable line length, too many arguments and public methods errors
 
 [tool.pyright]
 pythonVersion = "3.11"

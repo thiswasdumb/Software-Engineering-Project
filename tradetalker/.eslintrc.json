@@ -5,5 +5,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["@typescript-eslint", "@stylistic"]
+  "plugins": ["@typescript-eslint", "@stylistic"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": ["off"] // For SQL queries
+  }
 }
