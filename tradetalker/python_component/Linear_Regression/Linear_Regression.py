@@ -26,9 +26,10 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Sample data for testing
 data = {
     'CAPM': [1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.0], 
-    'Sentiment_Score': [0.7, 0.8, 0.6, 0.4, 0.2, 0.7, 0.8, 0.6, 0.4, 0.2, 0.7, 0.8, 0.6, 0.4, 0.2, 0.3], 
+    'Sentiment_Score': [0.7, 0.8, 0.6, 0.4, 0.2, 0.34, 0.85, 0.98, 0.65, 0.56, 0.67, 0.93, 0.48, 0.78, 0.56, 0.23], 
     'stock_price': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160]
 }
+# change in stock price percentage positive and negative, ask chatgpt 
 
 # Creating a DataFrame from the sample data
 df = pd.DataFrame(data)
@@ -69,4 +70,5 @@ plt.title('Linear Regression Model for Stock Price Prediction based on Sentiment
 plt.xlabel('Sentiment Score and CAPM model')
 plt.ylabel('Stock Price')
 plt.legend()
+plt.tight_layout()
 plt.show()
