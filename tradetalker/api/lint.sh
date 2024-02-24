@@ -22,7 +22,7 @@ $PIPENV_CMD black .
 echo "Linting Python code with pylint..."
 $PIPENV_CMD pylint . --fail-under=10
 echo "Linting Python code with ruff..."
-$PIPENV_CMD ruff .
+$PIPENV_CMD ruff --fix .
 echo "Type checking Python code with pyright..."
 $PIPENV_CMD pyright .
 

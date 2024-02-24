@@ -1,4 +1,5 @@
 import Navbar from './ui/navigation/navbar';
+import Footer from './ui/navigation/footer';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { Metadata } from 'next';
@@ -23,7 +24,8 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Navbar />
-        {children}
+        <div className='min-h-screen pb-40 pt-20'>{children}</div>
+        <Footer />
       </body>
     </html>
   );
