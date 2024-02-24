@@ -11,7 +11,7 @@ export default function Navbar() {
   const [menuToggled, setMenuToggled] = useState(false);
   const toggleMenu = () => setMenuToggled(!menuToggled);
 
-  const session = true; // TODO: replace with actual session
+  const session = false; // TODO: replace with actual session
   const notifCount = 1; // TODO: replace with actual notification count
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Navbar() {
   return (
     <>
       <div>
-        <div className='fixed top-0 h-20 w-full bg-blue-600'>
+        <div className='fixed top-0 z-10 h-20 w-full bg-blue-600'>
           <div className='h-full px-4'>
             <div className='flex h-full items-center justify-between'>
               <div className='flex h-full items-center justify-between gap-x-8'>
