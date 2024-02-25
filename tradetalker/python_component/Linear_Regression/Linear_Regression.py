@@ -33,7 +33,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # Generate random data with a weak trend
 np.random.seed(0)
-num_samples = 1000
+num_samples = 100
 CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
 Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
 stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
@@ -63,6 +63,12 @@ print("y_train shape:", y_train.shape)
 print("X_test shape:", X_test.shape)
 print("y_test shape:", y_test.shape)
 
+min_stock_price = y_test.min()
+max_stock_price = y_test.max()
+
+print("Minimum stock price:", min_stock_price)
+print("Maximum stock price:", max_stock_price)
+
 # Creating a Linear Regression model
 model = LinearRegression()
 
@@ -90,10 +96,10 @@ a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
 
 
 # First attempt 
-# plt.plot(sorted_sentiment_score, sorted_predictions, color='blue', linewidth=3, label='Predicted')
+# plt.plot(X_test['Sentiment_Score'], predictions, color='blue', linewidth=3, label='Predicted')
 
 # Second Attempt could work 
-# plt.plot(X_test['Sentiment_Score'], predictions, color='blue', linewidth=3, label='Predicted')
+# plt.plot(sorted_sentiment_score, sorted_predictions, color='blue', linewidth=3, label='Predicted')
 
 # Third Attempt
 # Calculate the endpoints of the line of best fit
