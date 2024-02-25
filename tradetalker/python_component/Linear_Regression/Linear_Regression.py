@@ -70,7 +70,7 @@ print("Minimum stock price:", min_stock_price)
 print("Maximum stock price:", max_stock_price)
 
 # Creating a Linear Regression model
-model = ()
+model = LinearRegression()
 
 # Training the model on the training data
 model.fit(X_train, y_train)
