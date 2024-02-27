@@ -21,7 +21,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   // Check if the user is logged in
   const session = cookies().get('session') !== undefined;
-  console.log('Session at root: ' + session);
   return (
     <>
       <html lang='en'>
