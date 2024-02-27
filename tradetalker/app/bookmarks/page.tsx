@@ -1,17 +1,13 @@
 import React from 'react';
 import { Metadata } from 'next';
-import LoginForm from '@/app/ui/login-form';
 import { cookies } from 'next/headers';
+import BookmarkComponent from '../ui/bookmarks';
 
 export const metadata: Metadata = {
-  title: 'Log In',
+  title: 'Bookmarks',
 };
 
-export default function LoginPage() {
+export default function Bookmarks() {
   const session = cookies().get('session') !== undefined;
-  return (
-    <div className='md:p-10'>
-      <LoginForm isLoggedIn={session} />
-    </div>
-  );
+  return <BookmarkComponent isLoggedIn={session} />;
 }
