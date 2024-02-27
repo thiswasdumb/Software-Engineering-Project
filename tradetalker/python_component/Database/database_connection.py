@@ -1,3 +1,5 @@
+import datetime
+
 import mysql.connector
 
 
@@ -40,8 +42,28 @@ class DataBaseConnection:
         self.db.commit()
         return user_id
 
+    def user_select_by_id(self, user_id: int) -> list:
+        """
+        Selects a user by id
+        :param user_id:
+        :return: (id, username, passwd, email, preferences)
+        """
+        self.cursor.execute("SELECT * FROM User WHERE UserID = %s", (user_id,))
+        result = self.cursor.fetchone()
+        return result
+
+    def user_select_by_name(self, user_name: str) -> list:
+        """
+        Selects a user by name
+        :param user_name:
+        :return: (id, username, passwd, email, preferences)
+        """
+        self.cursor.execute("SELECT * FROM User WHERE UserName = %s", (user_name,))
+        result = self.cursor.fetchone()
+        return result
+
     # test status: OK
-    def user_select_all(self):
+    def user_select_all(self) -> list:
         """
         Selects all user, returns in the form of a list of 5-tuples
         5-tuples : (id, username, passwd, email, preferences)
@@ -77,9 +99,36 @@ class DataBaseConnection:
     def article_select_all(self):
         """
         Returns all the article from the article table
+        Returned object is a list of tuples each describing a company
+        The tuple format: (article_id, company_id, title, content, pub_date, url, source, summary, score)
         :return:
         """
         self.cursor.execute("SELECT * FROM Article")
+        result = self.cursor.fetchall()
+        return result
+
+    def article_select_by_company(self, company_name: str) -> list:
+        """
+        Returns all articles related to a company
+        Returned object is a list of tuples each describing a company
+        The tuple format: (article_id, company_id, title, content, pub_date, url, source, summary, score)
+        :param company_name:
+        :return:
+        """
+        company_id = self.company_get_company_id_by_name(company_name)[0]
+        self.cursor.execute("SELECT * FROM Article WHERE CompanyID = %s", (company_id,))
+        result = self.cursor.fetchall()
+        return result
+
+    def article_select_by_date(self, publication_date: datetime.date) -> list:
+        """
+        Returns all articles from a given date
+        Returned object is a list of tuples each describing a company
+        The tuple format: (article_id, company_id, title, content, pub_date, url, source, summary, score)
+        :param publication_date:
+        :return:
+        """
+        self.cursor.execute("SELECT * FROM Article WHERE PublicationDate = %s", (publication_date,))
         result = self.cursor.fetchall()
         return result
 
@@ -107,6 +156,8 @@ class DataBaseConnection:
     def company_select_all(self):
         """
         Returns all the companies in the company table
+        Returns a list of tuples each representing a company
+        The tuple format: (company_id, company_name, stock_symbol, stock_price, industry, company_description, predicted_stock_price, stock_variance, sentiment_score)
         :return:
         """
         self.cursor.execute("SELECT * FROM Company")
@@ -177,6 +228,8 @@ class DataBaseConnection:
     def company_select_by_name(self, company_name: str) -> list:
         """
         Gives all the data of a company with the name passed as input
+        Returns a tuple representing a company
+        The tuple format: (company_id, company_name, stock_symbol, stock_price, industry, company_description, predicted_stock_price, stock_variance, sentiment_score)
         :param company_name:
         :return:
         """
@@ -188,6 +241,8 @@ class DataBaseConnection:
     def company_select_by_industry(self, industry: str) -> list:
         """
         Gives all data of all companies in a certain industry
+        Returns a list of tuples each representing a company
+        The tuple format: (company_id, company_name, stock_symbol, stock_price, industry, company_description, predicted_stock_price, stock_variance, sentiment_score)
         :param industry:
         :return:
         """
@@ -300,6 +355,17 @@ class DataBaseConnection:
         # returning the result for further functionalities
         return not like_exists
 
+    def like_get_user_liked_articles(self, user_id: int) -> list:
+        """
+        Returns a list of user's liked articles article_id
+        :param user_id:
+        :return:
+        """
+        self.cursor.execute("SELECT ArticleID FROM LikeTable  WHERE UserID = %s", (user_id,))
+        result = self.cursor.fetchall()
+        return result
+
+
     # -----------------------------------  Bookmark table methods ----------------------------------- #
 
     # test status: OK
@@ -335,12 +401,24 @@ class DataBaseConnection:
         # returning the result for further functionalities
         return not bookmark_exists
 
+    def bookmark_get_user_bookmarked_article(self, user_id: int) -> list:
+        """
+        Returns a list of user's bookmarked articles article_id
+        :param user_id:
+        :return:
+        """
+        self.cursor.execute("SELECT ArticleID FROM Bookmark WHERE UserID = %s", (user_id,))
+        result = self.cursor.fetchall()
+        return result
+
     # -----------------------------------  FAQ table methods ----------------------------------- #
 
     # test status: OK
     def faq_select_all(self) -> list:
         """
         Selects all FAQs in the table
+        Returns all FAQs in a list of tuples, each representing one FAQ
+        The tuple format: (faq_id, question, answer)
         :return:
         """
         self.cursor.execute("SELECT * FROM FAQ")
