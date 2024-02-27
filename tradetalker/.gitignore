@@ -10,6 +10,7 @@ next-env.d.ts
 # Python
 /api/venv
 /api/__pycache__/
+/api/database/__pycache__/
 
 # Next.js
 /.next/
