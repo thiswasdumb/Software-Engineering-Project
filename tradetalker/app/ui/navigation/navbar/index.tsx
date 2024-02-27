@@ -6,13 +6,25 @@ import NavbarComponent from './navbar-auth-comps';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from '../sidebar';
 import SearchButton from './search-button';
+import { toast } from 'react-hot-toast';
 
-export default function Navbar() {
+export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [menuToggled, setMenuToggled] = useState(false);
+  const [notifCount, setNotifCount] = useState(0);
   const toggleMenu = () => setMenuToggled(!menuToggled);
 
-  const session = false; // TODO: replace with actual session
-  const notifCount = 1; // TODO: replace with actual notification count
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetch('/api/get_notification_count')
+        .then((response) => response.json())
+        .then((data) => {
+          setNotifCount(data);
+        })
+        .catch(() => {
+          toast.error('Error fetching notifications.');
+        });
+    }
+  }, [notifCount, isLoggedIn]);
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -31,14 +43,14 @@ export default function Navbar() {
               <div className='flex h-full items-center justify-between gap-x-8'>
                 <Logo isOpen={menuToggled} toggle={toggleMenu} />
                 <ul className='hidden gap-x-6 text-white md:flex'>
-                  <NavLinks session={session} />
+                  <NavLinks session={isLoggedIn} />
                 </ul>
               </div>
               <NavbarComponent
                 notifCount={notifCount}
                 isOpen={menuToggled}
                 toggle={toggleMenu}
-                session={session}
+                session={isLoggedIn}
               />
               <div className='inline-flex items-center gap-4 text-white md:hidden'>
                 <SearchButton isOpen={menuToggled} toggle={toggleMenu} />
@@ -59,7 +71,7 @@ export default function Navbar() {
               <Sidebar
                 isOpen={menuToggled}
                 toggle={toggleMenu}
-                session={session}
+                session={isLoggedIn}
                 notifCount={notifCount}
               />
             </div>

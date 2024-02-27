@@ -7,18 +7,6 @@
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
-DROP TABLE IF EXISTS `usernotificationread` CASCADE;
-DROP TABLE IF EXISTS `notification` CASCADE;
-DROP TABLE IF EXISTS `liketable` CASCADE;
-DROP TABLE IF EXISTS `bookmark` CASCADE;
-DROP TABLE IF EXISTS `articlecomment` CASCADE;
-DROP TABLE IF EXISTS `article` CASCADE;
-DROP TABLE IF EXISTS `follow` CASCADE;
-DROP TABLE IF EXISTS `company` CASCADE;
-DROP TABLE IF EXISTS `faq` CASCADE;
-DROP TABLE IF EXISTS `userquestion` CASCADE;
-DROP TABLE IF EXISTS `user` CASCADE;
-
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -408,7 +396,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- Test data
-INSERT INTO user (Username, Password, Email, Preferences) VALUES ("user", "password123", "user@gmail.com", "1");
-INSERT INTO user (Username, Password, Email, Preferences) VALUES ("user2", "password1234", "user2@gmail.com", "2");

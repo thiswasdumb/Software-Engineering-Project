@@ -5,7 +5,14 @@ target-version = ['py311']
 [tool.pylint.MASTER]
 ignore-patterns = ['venv/*', 'pycache/*']
 init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
-disable = ['C0301', 'R0913', 'R0904'] # Disable line length, too many arguments and public methods errors
+disable = [
+    'C0103', # Invalid variable name
+    'C0301', # Constant check
+    'R0903', # Too few public methods
+    'R0904', # Too many public methods
+    'R0911', # Too many return statements
+    'R0913', # Too many arguments
+]
 
 [tool.pyright]
 pythonVersion = "3.11"
@@ -21,4 +28,10 @@ lint.ignore = ['ANN101', 'D203', 'D204', 'D213', 'D401']
 max-args = 9
 
 [tool.ruff.lint.per-file-ignores]
-"db.py" = ['E501'] # Ignore line length error in db.py
+"db.py" = [
+    'E501', # Line too long
+]
+"index.py" = [
+    'S105', # Hardcoded password
+    'PLR0911', # Too many return statements
+]

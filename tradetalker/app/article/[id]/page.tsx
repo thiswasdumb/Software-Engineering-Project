@@ -17,5 +17,12 @@ export default async function ArticlePage({
 
   if (!article) return notFound();
 
-  return <div>Article here.</div>;
+  return (
+    <div>
+      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+        <div className='text-2xl'>Article headline</div>
+        <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      </div>
+    </div>
+  );
 }

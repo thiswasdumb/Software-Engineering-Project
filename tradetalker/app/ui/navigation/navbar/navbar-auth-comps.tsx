@@ -12,21 +12,25 @@ export default function NavbarComponent(props: {
 }) {
   if (props.session) {
     return (
-      <ul className='hidden gap-x-4 text-white md:flex'>
-        <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
-        <NotifButton notifCount={props.notifCount} />{' '}
-        {/* Will update from db */}
-        <ProfileButton />
-      </ul>
+      <>
+        <ul className='hidden gap-x-4 text-white md:flex'>
+          <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
+          <NotifButton notifCount={props.notifCount} />{' '}
+          {/* Will update from db */}
+          <ProfileButton />
+        </ul>
+      </>
     );
   } else {
     return (
-      <ul className='hidden items-center gap-x-6 md:flex'>
-        <div className='text-white'>
-          <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
-        </div>
-        <WhiteButtons />
-      </ul>
+      <>
+        <ul className='hidden items-center gap-x-6 md:flex'>
+          <div className='text-white'>
+            <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
+          </div>
+          <WhiteButtons />
+        </ul>
+      </>
     );
   }
 }

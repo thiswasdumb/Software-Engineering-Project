@@ -7,8 +7,8 @@ export default function Footer() {
     <>
       <footer>
         <div className='min-h-100 flex h-40 w-full flex-grow bg-blue-600'>
-          <div className='m-auto h-full px-4'>
-            <div className='flex h-full items-center justify-between'>
+          <div className='m-auto flex h-full flex-col justify-center px-4'>
+            <div className='flex items-center justify-between'>
               <div className='flex h-full items-center justify-between gap-x-8'>
                 <Link href='/'>
                   <Image
@@ -35,19 +35,22 @@ export default function Footer() {
                 </Link>
               </div>
               <div className='flex flex-col'>
-                <Link href='/search' className='text-white'>
+                <Link href='/search' className='text-white hover:opacity-90'>
                   Search
                 </Link>
-                <Link href='/stocks' className='text-white'>
+                <Link href='/stocks' className='text-white hover:opacity-90'>
                   Stocks
                 </Link>
-                <Link href='/companies' className='text-white'>
+                <Link href='/companies' className='text-white hover:opacity-90'>
                   Companies
                 </Link>
-                <Link href='/support' className='text-white'>
+                <Link href='/support' className='text-white hover:opacity-90'>
                   Support
                 </Link>
               </div>
+            </div>
+            <div className='text-center text-sm text-white'>
+              &copy; 2024 TradeTalker Inc.
             </div>
           </div>
         </div>

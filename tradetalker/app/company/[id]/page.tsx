@@ -17,5 +17,11 @@ export default async function CompanyPage({
 
   if (!company) return notFound();
 
-  return <div>Article here.</div>;
+  return (
+    <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='text-2xl'>Company name</div>
+      <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      {/* Company stuff here */}
+    </div>
+  );
 }
