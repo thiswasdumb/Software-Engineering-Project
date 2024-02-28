@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import rectangle from '/public/images/lrectangle.png'
 import logo from '/public/images/logo.png';
 import Link from 'next/link';
 
@@ -11,14 +12,16 @@ export default function Logo(props: { isOpen: boolean; toggle: () => void }) {
         href='/'
         onClick={props.isOpen ? props.toggle : undefined}
       >
-        <Image
-          src={logo}
-          alt='TradeTalker Logo'
-          width={80}
-          className='relative'
-          priority={true}
-        />
-      </Link>
+        <div className="logo-container">
+          <Image
+            src={logo}
+            alt='TradeTalker Logo'
+            width={210}
+            className='relative'
+            priority={true}
+          />
+        </div>
+      </Link >
     </>
   );
 }
