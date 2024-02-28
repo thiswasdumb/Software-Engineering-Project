@@ -64,4 +64,4 @@ The device feels less polished than past first-generation Apple products I’ve 
 
 articles = {article1: "negative", article2: "negative", article3: "negative"}
 
-articles_header = {article1: "Google to fix AI picture bot after 'woke' criticism", article2:"Microsoft looks beyond Xbox hardware for gaming growth", article3: "Vision Pro Review: Apple’s First Headset Lacks Polish and Purpose"}
+articles_header = {0: "Google to fix AI picture bot after 'woke' criticism", 1:"Microsoft looks beyond Xbox hardware for gaming growth", 2: "Vision Pro Review: Apple’s First Headset Lacks Polish and Purpose"}
