@@ -132,6 +132,18 @@ class DataBaseConnection:
         result = self.cursor.fetchall()
         return result
 
+    def article_select_by_title(self, title: str) -> list:
+        """
+        Returns all the articles with the substring given as arg in their title
+        Returned object is a list of tuples each describing a company
+        The tuple format: (article_id, company_id, title, content, pub_date, url, source, summary, score)
+        :param title:
+        :return:
+        """
+        self.cursor.execute("SELECT * FROM Article WHERE Title LIKE %s", (f"%{title}%",))
+        result = self.cursor.fetchall()
+        return result
+
     # -----------------------------------  Company table methods ----------------------------------- #
 
     # test status: OK
@@ -235,6 +247,19 @@ class DataBaseConnection:
         """
         self.cursor.execute("SELECT * FROM Company WHERE CompanyName = %s", (company_name,))
         result = self.cursor.fetchone()
+        return result
+
+    # probably use only this one and not the one above
+    def company_select_by_string_in_name(self, company_name: str) -> list:
+        """
+        Returns all companies with the substring company_name in their name
+        Returns a list of tuples each representing a company
+        The tuple format: (company_id, company_name, stock_symbol, stock_price, industry, company_description, predicted_stock_price, stock_variance, sentiment_score)
+        :param company_name:
+        :return:
+        """
+        self.cursor.execute("SELECT * FROM Company WHERE CompanyName LIKE %s", (f"%{company_name}%",))
+        result = self.cursor.fetchall()
         return result
 
     # test status: OK
