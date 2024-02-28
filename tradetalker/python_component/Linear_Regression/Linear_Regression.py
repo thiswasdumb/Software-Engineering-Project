@@ -111,38 +111,6 @@ sorted_predictions = predictions[sorted_indices]
 # find line of best fit
 a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
 
-
-
-
-# First attempt 
-# plt.plot(X_test['Sentiment_Score'], predictions, color='blue', linewidth=3, label='Predicted')
-
-# Second Attempt could work 
-# plt.plot(sorted_sentiment_score, sorted_predictions, color='blue', linewidth=3, label='Predicted')
-
-# Third Attempt
-# Calculate the endpoints of the line of best fit
-# x_min = X_test['Sentiment_Score'].min()
-# x_max = X_test['Sentiment_Score'].max()
-# y_min = model.predict([[x_min, 0]])[0]
-# y_max = model.predict([[x_max, 0]])[0]
-# plt.plot([x_min, x_max], [y_min, y_max], color='blue', linewidth=3, label='Predicted')
-
-# Fourth Attempt
-# Calculate the endpoints of the line of best fit
-# x_min = sorted_sentiment_score.min()
-# x_max = sorted_sentiment_score.max()
-# y_min = sorted_predictions.min()
-# y_max = sorted_predictions.max()
-# Check if it is a negative or positive trend
-# if x_min == Sentiment_Score[np.argmax(stock_price)]:
-# plt.plot([x_max, x_min], [y_max, y_min], color='blue', linewidth=3, label='Predicted')
-# else:
-# plt.plot([x_min, x_max], [y_min, y_max], color='blue', linewidth=3, label='Predicted')
-
-
-
-
 # Plot the line of best fit
 plt.plot(sorted_sentiment_score, a*sorted_sentiment_score + b, color = 'blue', linewidth=3, label="Predicted")
 plt.title('Linear Regression Model for Stock Price Prediction based on Sentiment Score')
