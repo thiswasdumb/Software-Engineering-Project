@@ -23,14 +23,6 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # db = Database(app)
 
 # Sample data for testing
-#data = {
-#    'CAPM': [1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.0], 
-#    'Sentiment_Score': [0.7, 0.8, 0.6, 0.4, 0.2, 0.34, 0.85, 0.98, 0.65, 0.56, 0.67, 0.93, 0.48, 0.78, 0.56, 0.23], 
-#    'stock_price': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160]
-#} 
-
-# Sample data for testing
-
 # Generate random data with a weak trend
 np.random.seed(0)
 num_samples = 100
@@ -92,6 +84,7 @@ sorted_predictions = predictions[sorted_indices]
 
 # find line of best fit
 a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
+
 
 
 
