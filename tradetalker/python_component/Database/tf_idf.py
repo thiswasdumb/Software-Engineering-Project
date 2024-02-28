@@ -17,19 +17,18 @@ class TF_IDF():
         #returns a matrix of form (row, column) tf_idf_score 
         #returns (i,j), where i = article_index, j = feature_index (each unique word)
         self.feature_names = self.vectorizer.get_feature_names_out()
-        #gets list of all features (words)
+        #generate the tf_idf matrix 
+        self._generate_tf_idf_matrix()
 
-    def generate_tf_idf_matrix(self):
-
-        # get article index
+    def _generate_tf_idf_matrix(self):
+        # get article index array 
         article_index = [f"Article {i+1}" for i in range(len(articles))]
-
-        return pd.DataFrame(self.tfidf_scores.T.todense(), index=self.feature_names, columns=article_index)
-
+        self.df_tf_idf = pd.DataFrame(self.tfidf_scores.T.todense(), index=self.feature_names, columns=article_index)
+        self.get_top_n_terms(10)
 
     def get_top_n_terms(self, n:int):
         for i in range(1, self.num_articles+1):  
-            top_terms = df_tf_idf[[f'Article {i}']].nlargest(n, columns=[f'Article {i}'])
+            top_terms = self.df_tf_idf[[f'Article {i}']].nlargest(n, columns=[f'Article {i}'])
             print(top_terms)
 
 get_pos_class = GetPOSClass() 
@@ -38,7 +37,6 @@ preprocess_text = PreprocessText(get_pos_class)
 processed_articles = [preprocess_text.preprocess_text(a) for a in articles.keys()]
 
 tf_idf_object = TF_IDF(processed_articles)
-df_tf_idf = tf_idf_object.generate_tf_idf_matrix()
 tf_idf_object.get_top_n_terms(5)
 
 

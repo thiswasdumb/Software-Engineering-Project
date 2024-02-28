@@ -221,10 +221,12 @@ def forgot_password() -> Response:
 @app.route("/api/search/<string:query>", methods=["GET"])
 def search(query: str) -> Response:
     """Returns the search results."""
+
     articles = Article.query.filter(Article.Title.like(f"%{query}%")).all()
     companies = Company.query.filter(Company.CompanyName.like(f"%{query}%")).all()
     return jsonify({"articles": articles, "companies": companies})
 
+    
 
 @app.route("/api/dashboard", methods=["GET", "POST"])
 @login_required
