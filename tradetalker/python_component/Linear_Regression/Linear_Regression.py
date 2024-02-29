@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
+import requests
+from datetime import datetime, timedelta
 
 # from database_connection import DataBaseConnection
 # db = DataBaseConnection (
@@ -15,13 +17,56 @@ import matplotlib.pyplot as plt
 #         database="tradetalkerdb"
 #     )
 
-# Work out CAPM equation
-# Importing numpy library and aliasing it as np for ease of use
-import numpy as np
+# Our MarketStack API
+API_KEY = 'f22b6caa5edecd4bdcbc0b962fb54a71'
 
+# Function to fetch market data from API
+def get_data(url):
+    end_date = datetime.today().strftime("%Y-%m-%d")
+    start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+
+    # Parameters for the request (optional)
+    params = {
+        'access_key': API_KEY,
+        'date_from': start_date,
+        'date_to': end_date
+    }
+    
+    try:
+        # Endpoint URL for retrieving stock market data
+        response = requests.get(url, params=params)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+        # Parse the JSON response
+            data = response.json()
+            # Process the data as needed
+            print(data)
+        else:
+            print('Error:', response.status_code)
+        
+        # Extracting relevant information from the response
+        if 'data' in data and len(data['data']) > 0:
+            eod_data = data['data']['eod']
+            close_prices = [day['close'] for day in eod_data]
+            return np.array(close_prices)
+        else:
+            print("No data found for the given symbol.")
+            return None
+    except Exception as e:
+        print("Error fetching data:", e)
+        return None
+
+# Example usage
+company_symbol = 'AAPL'  # Example: Apple Inc.
+company_data = get_data(f'http://api.marketstack.com/v1/tickers/{company_symbol}/eod')
+print(company_data)
+
+# Work out CAPM equation
 # Defining market_data and stock_data arrays using numpy arrays
-market_data = np.array([-0.685,-0.438,-0.302,0.015,-0.623])
-stock_data = np.array([-0.419,-6.791,-0.635,-2.737,1.278])
+market_data = get_data(f'http://api.marketstack.com/v1/{company_symbol + ".INDX"}/eod')
+print(market_data)
+stock_data = company_data
 
 # Defining bond_yield, inflation, and calculating riskfree rate
 bond_yield = 4.65
@@ -51,7 +96,7 @@ print(capm)
 # Sample data for testing
 # Generate random data with a weak trend
 np.random.seed(0)
-num_samples = 100
+num_samples = 1200
 CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
 Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
 stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
@@ -97,7 +142,7 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)
 
 # Calculating Mean Absolute Error (MAE) to evaluate model performance
-mae = mean_absolute_error(y_test, y_train)
+mae = mean_absolute_error(y_test, predictions)
 print(f'Mean Absolute Error: {mae}')
 
 # Visualizing the actual vs predicted values using a scatter plot
