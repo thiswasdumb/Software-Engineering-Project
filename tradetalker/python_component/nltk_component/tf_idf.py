@@ -27,12 +27,18 @@ class TF_IDF():
 
 
     def get_top_n_terms(self, n:int):
-        for i in range(1, self.num_articles+1):  
+        for i in range(1, self.num_articles+1): 
+            #sorting the columns (each article) by their values (tf-idf score) for each term/word/feature
             top_terms = self.df_tf_idf[[f'Article {i}']].nlargest(n, columns=[f'Article {i}'])            
-            # print(top_terms)
-            top_words =  top_terms[f'Article {i}']
-            print(top_words)
-            print(top_words.to_list())
+            #retrieving only the feature names (words)
+            top_words = top_terms[[f'Article {i}']].index
+
+            print(f"Top {n} terms for Article {i}:")
+            for index, score in zip(top_terms.index, top_terms[f'Article {i}']):
+                print(f"{index}: {score}")
+
+            top_words_str = ",".join([w for w in top_words])
+            print(top_words_str)
 
 
 get_pos_class = GetPOSClass() 

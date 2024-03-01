@@ -3,17 +3,23 @@ from newspaper import Article, ArticleException
 from preprocessing import PreprocessText, GetPOSClass
 from vader import SentimentAnalyser
 from flask import Flask
-from database_connection import DataBaseConnection
 import datetime
+import sys 
+
+sys.path.insert(0,'/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/python_component')
+
+# from Database.database_connection import DataBaseConnection
 
 app = Flask(__name__)
 
-db = DataBaseConnection(
-    host="localhost",
-    user="root",
-    passwd="",
-    database="tradetalkerdb"
-)
+
+
+# db = DataBaseConnection(
+#     host="localhost",
+#     user="root",
+#     passwd="",
+#     database="tradetalkerdb"
+# )
 
 class GetNewsClass:
     def __init__(self, list_of_companies):
@@ -76,17 +82,17 @@ class GetNewsClass:
             article_company = company_name
             article_content = news_article.text
             processed_news_article = self.preprocess_text.preprocess_text(article_content)
-            article_sentiment = self.s.get_article_sentiment(processed_news_article)
+            article_sentiment = self.s.get_article_sentiment(processed_news_article)['overall']
             article_title = article['title'] 
             article_summary = news_article.summary
             article_publication_date = news_article.publish_date
             if not article_publication_date:  # in some cases we got NULL date which would then prevent the insertion
                 article_publication_date = datetime.datetime.now()  # solution?
-            with app.app_context():
-                db.article_insert_article(article_title, article_company, article_content, article_publication_date, article_url, article_summary)
+            # with app.app_context():
+            #     db.article_insert_article(article_title, article_company, article_content, article_publication_date, article_url, article_summary)
             
             print(article_company, article_title, article_sentiment, article_summary, article_publication_date)
-            break
+        
 
     def get_all_articles(self):
         """
