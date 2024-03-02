@@ -18,7 +18,6 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug import security
 from werkzeug.wrappers import Response
 
-from database.database_connection import DataBaseConnection
 from database.db_schema import (
     Article,
     ArticleComment,
@@ -65,8 +64,6 @@ if reset:
         db.create_all()
         add_data()
 
-
-sql_db = DataBaseConnection("localhost", "root", "", "tradetalkerdb")
 
 MAX_EMAIL_LENGTH = 100
 MIN_USERNAME_LENGTH = 3
