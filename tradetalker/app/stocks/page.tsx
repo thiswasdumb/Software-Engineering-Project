@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 
 export default function Stocks() {
   return (
-<<<<<<< Updated upstream
     <div className='m-8 rounded-lg bg-slate-200 p-8'>
       <div className='text-2xl'>Stocks</div>
       <hr className='mb-4 mt-2 rounded-lg border-2 border-slate-400' />
@@ -19,11 +18,6 @@ export default function Stocks() {
         {/* Leaderboard */}
         <div className='rounded-lg bg-slate-300 p-4'>[Leaderboard]</div>
       </div>
-=======
-    <div>
-      <FloatingPiecesAnimation /> {/* Include the floating pieces animation */}
-      <p>Stocks</p>
->>>>>>> Stashed changes
     </div>
   );
 }

@@ -36,7 +36,6 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <>
-<<<<<<< Updated upstream
       <div>
         <div className='fixed top-0 z-10 h-20 w-full bg-blue-600'>
           <div className='h-full px-4'>
@@ -61,26 +60,6 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
             </div>
           </div>
-=======
-      <div className="container mx-auto px-4 h-full">
-        <div className="flex justify-between items-center h-full">
-          <Logo isOpen={false} toggle={function (): void {
-            throw new Error('Function not implemented.');
-          }} />
-          <ul className="hidden md:flex gap-x-20 text-white">
-            <NavLinks session={session} />
-          </ul>
-          <NavbarComponent session={session} notifCount={0} isOpen={false} toggle={function (): void {
-            throw new Error('Function not implemented.');
-          }} />
-          <button
-            type="button"
-            className="inline-flex items-center md:hidden"
-            onClick={toggleMenu}
-          >
-            <Bars3Icon className={clsx("w-12 h-12 text-white hover:opacity-50")} />
-          </button>
->>>>>>> Stashed changes
         </div>
         {menuToggled && (
           <>
