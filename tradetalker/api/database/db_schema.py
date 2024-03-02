@@ -3,6 +3,7 @@
 from datetime import UTC, datetime
 from typing import Optional
 
+import yfinance as yf
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
@@ -22,7 +23,6 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
     relationship,
 )
 from werkzeug.security import generate_password_hash
-import yfinance as yf
 
 db = SQLAlchemy()
 
@@ -70,8 +70,15 @@ class Company(db.Model):  # type: ignore [name-defined]
         stock_price: float,
         industry: str,
         company_description: str,
-        predicted_stock_price: float,
-        stock_variance: float,
+        predicted_stock_price: float | None,
+        stock_variance: float | None,
+        stock_price_d_1: float | None,
+        stock_price_d_2: float | None,
+        stock_price_d_3: float | None,
+        stock_price_d_4: float | None,
+        stock_price_d_5: float | None,
+        stock_price_d_6: float | None,
+        stock_price_d_7: float | None,
     ) -> None:
         """Initializes the company object."""
         self.CompanyName = company_name
@@ -81,9 +88,16 @@ class Company(db.Model):  # type: ignore [name-defined]
         self.CompanyDescription = company_description
         self.PredictedStockPrice = predicted_stock_price
         self.StockVariance = stock_variance
+        self.StockPrice_D_1 = stock_price_d_1
+        self.StockPrice_D_2 = stock_price_d_2
+        self.StockPrice_D_3 = stock_price_d_3
+        self.StockPrice_D_4 = stock_price_d_4
+        self.StockPrice_D_5 = stock_price_d_5
+        self.StockPrice_D_6 = stock_price_d_6
+        self.StockPrice_D_7 = stock_price_d_7
 
     def to_dict(self) -> dict:
-        """ Converts a company to a dict object """
+        """Converts a company to a dict object."""
         return {
             "CompanyID": self.CompanyID,
             "CompanyName": self.CompanyName,
@@ -99,7 +113,7 @@ class Company(db.Model):  # type: ignore [name-defined]
             "StockPrice_D_4": self.StockPrice_D_4,
             "StockPrice_D_5": self.StockPrice_D_5,
             "StockPrice_D_6": self.StockPrice_D_6,
-            "StockPrice_D_7": self.StockPrice_D_7
+            "StockPrice_D_7": self.StockPrice_D_7,
         }
 
 
@@ -186,7 +200,7 @@ class User(UserMixin, db.Model):  # type: ignore [name-defined]
             "Email": self.Email,
             "Preferences": self.Preferences,
             "IsVerified": self.IsVerified,
-            "TempToken": self.TempToken
+            "TempToken": self.TempToken,
         }
 
 
@@ -534,44 +548,6 @@ def add_data() -> None:
             0.6,
         ),
     ]
-    company_list = [
-        Company(
-            "Company1",
-            "CMP1",
-            100,
-            "Industry1",
-            "Company1 is a pioneering force in the realm of technology solutions, dedicated to revolutionizing the digital landscape through cutting-edge innovation and unparalleled expertise. Founded on the principles of creativity, integrity, and excellence, Company1 has swiftly emerged as a trailblazer in the industry, setting new standards for technological advancement and customer satisfaction. At the heart of Company1's success lies a relentless commitment to pushing the boundaries of what's possible. With a team of visionary engineers, developers, and strategists at its helm, the company remains at the forefront of innovation, constantly exploring new avenues and embracing emerging technologies to deliver transformative solutions to its clients. From bespoke software development to state-of-the-art cloud computing services, Company1 offers a comprehensive suite of offerings tailored to meet the diverse needs of businesses across sectors. One of Company1's core strengths lies in its unwavering focus on delivering value-driven solutions that drive tangible results. By leveraging a combination of industry insights, technical expertise, and a customer-centric approach, the company works closely with clients to understand their unique challenges and goals, crafting bespoke strategies and solutions that empower them to thrive in an increasingly digital world. With a proven track record of success and a portfolio of satisfied clients, Company1 continues to set the benchmark for excellence in technology solutions, poised to lead the way into a future defined by innovation and opportunity.",
-            100,
-            10,
-        ),
-        Company(
-            "Company2",
-            "Symbol2",
-            200,
-            "Industry2",
-            "Description2",
-            200,
-            20,
-        ),
-        Company(
-            "Company3",
-            "Symbol3",
-            300,
-            "Industry3",
-            "Description3",
-            300,
-            30,
-        ),
-        Company(
-            "Company4",
-            "Symbol4",
-            400,
-            "Industry4",
-            "Description4",
-            400,
-            40,
-        ),
-    ]
     faq_list = [
         Faq(
             "Question1",
@@ -630,7 +606,6 @@ def add_data() -> None:
     ]
     db.session.add_all(user_list)
     db.session.add_all(article_list)
-    db.session.add_all(company_list)
     db.session.add_all(faq_list)
     db.session.add_all(notification_list)
     db.session.add_all(user_notification_read_list)
@@ -639,37 +614,131 @@ def add_data() -> None:
 
 
 def add_base_company_data() -> None:
-    """ Adds initial data of the FTSE100 companies to the database """
-    symbols = ['III.L', 'ADM.L', 'AAF.L', 'AAL.L', 'ANTO.L', 'AHT.L', 'ABF.L', 'AZN.L', 'AUTO.L', 'AV.L', 'BME.L',
-               'BA.L', 'BARC.L', 'BDEV.L', 'BEZ.L', 'BKG.L', 'BP.L', 'BATS.L', 'BT-A.L', 'BNZL.L', 'BRBY.L', 'CNA.L',
-               'CCH.L', 'CPG.L', 'CTEC.L', 'CRDA.L', 'DCC.L', 'DGE.L', 'DPLM.L', 'EDV.L', 'ENT.L', 'EXPN.L', 'FCIT.L',
-               'FLTR.L', 'FRAS.L', 'FRES.L', 'GLEN.L', 'GSK.L', 'HLN.L', 'HLMA.L', 'HIK.L', 'HWDN.L', 'HSBA.L', 'IHG.L',
-               'IMI.L', 'IMB.L', 'INF.L', 'ICP.L', 'IAG.L', 'ITRK.L', 'JD.L', 'KGF.L', 'LAND.L', 'LGEN.L', 'LLOY.L',
-               'LSEG.L', 'MNG.L', 'MKS.L', 'MRO.L', 'MNDI.L', 'NG.L', 'NWG.L', 'NXT.L', 'OCDO.L', 'PSON.L', 'PSH.L',
-               'PSN.L', 'PHNX.L', 'PRU.L', 'RKT.L', 'REL.L', 'RTO.L', 'RMV.L', 'RIO.L', 'RR.L', 'RS1.L', 'SGE.L',
-               'SBRY.L', 'SDR.L', 'SMT.L', 'SGRO.L', 'SVT.L', 'SHEL.L', 'SMDS.L', 'SMIN.L', 'SN.L', 'SKG.L', 'SPX.L',
-               'SSE.L', 'STAN.L', 'STJ.L', 'TW.L', 'TSCO.L', 'ULVR.L', 'UU.L', 'UTG.L', 'VOD.L', 'WEIR.L', 'WTB.L',
-               'WPP.L']
+    """Adds initial data of the FTSE100 companies to the database."""
+    symbols = [
+        "III.L",
+        "ADM.L",
+        "AAF.L",
+        "AAL.L",
+        "ANTO.L",
+        "AHT.L",
+        "ABF.L",
+        "AZN.L",
+        "AUTO.L",
+        "AV.L",
+        "BME.L",
+        "BA.L",
+        "BARC.L",
+        "BDEV.L",
+        "BEZ.L",
+        "BKG.L",
+        "BP.L",
+        "BATS.L",
+        "BT-A.L",
+        "BNZL.L",
+        "BRBY.L",
+        "CNA.L",
+        "CCH.L",
+        "CPG.L",
+        "CTEC.L",
+        "CRDA.L",
+        "DCC.L",
+        "DGE.L",
+        "DPLM.L",
+        "EDV.L",
+        "ENT.L",
+        "EXPN.L",
+        "FCIT.L",
+        "FLTR.L",
+        "FRAS.L",
+        "FRES.L",
+        "GLEN.L",
+        "GSK.L",
+        "HLN.L",
+        "HLMA.L",
+        "HIK.L",
+        "HWDN.L",
+        "HSBA.L",
+        "IHG.L",
+        "IMI.L",
+        "IMB.L",
+        "INF.L",
+        "ICP.L",
+        "IAG.L",
+        "ITRK.L",
+        "JD.L",
+        "KGF.L",
+        "LAND.L",
+        "LGEN.L",
+        "LLOY.L",
+        "LSEG.L",
+        "MNG.L",
+        "MKS.L",
+        "MRO.L",
+        "MNDI.L",
+        "NG.L",
+        "NWG.L",
+        "NXT.L",
+        "OCDO.L",
+        "PSON.L",
+        "PSH.L",
+        "PSN.L",
+        "PHNX.L",
+        "PRU.L",
+        "RKT.L",
+        "REL.L",
+        "RTO.L",
+        "RMV.L",
+        "RIO.L",
+        "RR.L",
+        "RS1.L",
+        "SGE.L",
+        "SBRY.L",
+        "SDR.L",
+        "SMT.L",
+        "SGRO.L",
+        "SVT.L",
+        "SHEL.L",
+        "SMDS.L",
+        "SMIN.L",
+        "SN.L",
+        "SKG.L",
+        "SPX.L",
+        "SSE.L",
+        "STAN.L",
+        "STJ.L",
+        "TW.L",
+        "TSCO.L",
+        "ULVR.L",
+        "UU.L",
+        "UTG.L",
+        "VOD.L",
+        "WEIR.L",
+        "WTB.L",
+        "WPP.L",
+    ]
     companies = []
     for symbol in symbols:
         company = yf.Ticker(symbol)
-        past_8_days_price = company.history(period='8d')['Close'].tolist()
-        companies.append(Company(
-            company.info.get('longName', 'N/A'),  # CompanyName
-            symbol,     # StockSymbol
-            past_8_days_price[0],  # StockPrice
-            company.info.get('industry', 'N/A'),  # Industry
-            company.info.get('longBusinessSummary', 'N/A'),  # CompanyDescription
-            None,  # PredictedStockPrice
-            None,  # StockVariance
-            past_8_days_price[1],  # StockPrice_D_1
-            past_8_days_price[2],  # StockPrice_D_2
-            past_8_days_price[3],  # StockPrice_D_3
-            past_8_days_price[4],  # StockPrice_D_4
-            past_8_days_price[5],  # StockPrice_D_5
-            past_8_days_price[6],  # StockPrice_D_6
-            past_8_days_price[7]   # StockPrice_D_7
-        ))
+        past_8_days_price = company.history(period="8d")["Close"].tolist()
+        companies.append(
+            Company(
+                company.info.get("longName", "N/A"),  # CompanyName
+                symbol,  # StockSymbol
+                past_8_days_price[0],  # StockPrice
+                company.info.get("industry", "N/A"),  # Industry
+                company.info.get("longBusinessSummary", "N/A"),  # CompanyDescription
+                None,  # PredictedStockPrice
+                None,  # StockVariance
+                past_8_days_price[1],  # StockPrice_D_1
+                past_8_days_price[2],  # StockPrice_D_2
+                past_8_days_price[3],  # StockPrice_D_3
+                past_8_days_price[4],  # StockPrice_D_4
+                past_8_days_price[5],  # StockPrice_D_5
+                past_8_days_price[6],  # StockPrice_D_6
+                past_8_days_price[7],  # StockPrice_D_7
+            ),
+        )
 
         db.session.add_all(companies)
         db.session.commit()

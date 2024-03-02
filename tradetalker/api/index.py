@@ -29,8 +29,8 @@ from database.db_schema import (
     Notification,
     User,
     UserNotificationRead,
-    add_data,
     add_base_company_data,
+    add_data,
     db,
 )
 
@@ -295,6 +295,7 @@ def search(query: str | None) -> Response:
 
 
 # ----------------- Dashboard routes -----------------
+
 
 @app.route("/api/dashboard", methods=["GET", "POST"])
 @login_required
@@ -610,6 +611,13 @@ def get_companies() -> Response:
     return jsonify(companies_list)
 
 
+@app.route("/api/companies", methods=["GET"])
+def load_companies() -> Response:
+    """Load all companies for display. Will replace main function with this soon."""
+    companies = Company.query.all()
+    return jsonify([company.to_dict() for company in companies])
+
+
 @app.route("/api/get_company/<string:company_id>", methods=["GET"])
 def get_company(company_id: str) -> Response:
     """Returns the company."""
@@ -842,11 +850,6 @@ def delete_user() -> Response:
         )
     return redirect(url_for("login", error="You are not logged in."))
 
-@app.route("/api/companies", methods=["GET"])
-def load_companies() -> Response:
-    """ Load all companies for display """
-    companies = Company.query.all()
-    return jsonify([company.to_dict() for company in companies])
 
 if __name__ == "__main__":
     app.run(debug=os.environ["ENV"] == "dev", port=8080)
