@@ -56,7 +56,7 @@ jobs:
           cd tradetalker/api
           pipenv run ruff check .
 
-      - name: Run pyright type check
+      - name: Run mypy type check
         run: |
           cd tradetalker/api
-          pipenv run pyright . --verbose
+          pipenv run mypy . --verbose
