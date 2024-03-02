@@ -22,6 +22,7 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
     relationship,
 )
 from werkzeug.security import generate_password_hash
+import yfinance as yf
 
 db = SQLAlchemy()
 
@@ -43,6 +44,13 @@ class Company(db.Model):  # type: ignore [name-defined]
     )
     PredictedStockPrice = mapped_column(Float, nullable=False)
     StockVariance = mapped_column(Float, nullable=False)
+    StockPrice_D_1 = mapped_column(Float, nullable=True)
+    StockPrice_D_2 = mapped_column(Float, nullable=True)
+    StockPrice_D_3 = mapped_column(Float, nullable=True)
+    StockPrice_D_4 = mapped_column(Float, nullable=True)
+    StockPrice_D_5 = mapped_column(Float, nullable=True)
+    StockPrice_D_6 = mapped_column(Float, nullable=True)
+    StockPrice_D_7 = mapped_column(Float, nullable=True)
 
     article: Mapped[list["Article"]] = relationship(
         "Article",
@@ -74,6 +82,26 @@ class Company(db.Model):  # type: ignore [name-defined]
         self.PredictedStockPrice = predicted_stock_price
         self.StockVariance = stock_variance
 
+    def to_dict(self) -> dict:
+        """ Converts a company to a dict object """
+        return {
+            "CompanyID": self.CompanyID,
+            "CompanyName": self.CompanyName,
+            "StockSymbol": self.StockSymbol,
+            "StockPrice": self.StockPrice,
+            "Industry": self.Industry,
+            "CompanyDescription": self.CompanyDescription,
+            "PredictedStockPrice": self.PredictedStockPrice,
+            "StockVariance": self.StockVariance,
+            "StockPrice_D_1": self.StockPrice_D_1,
+            "StockPrice_D_2": self.StockPrice_D_2,
+            "StockPrice_D_3": self.StockPrice_D_3,
+            "StockPrice_D_4": self.StockPrice_D_4,
+            "StockPrice_D_5": self.StockPrice_D_5,
+            "StockPrice_D_6": self.StockPrice_D_6,
+            "StockPrice_D_7": self.StockPrice_D_7
+        }
+
 
 class Faq(db.Model):  # type: ignore [name-defined]
     """Contains the frequently asked questions and their answers."""
@@ -104,6 +132,8 @@ class User(UserMixin, db.Model):  # type: ignore [name-defined]
     Password = mapped_column(String(200, "utf8mb4_general_ci"), nullable=False)
     Email = mapped_column(String(100, "utf8mb4_general_ci"), nullable=False)
     Preferences = mapped_column(Integer, nullable=False, server_default=text("'0'"))
+    IsVerified = mapped_column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    TempToken = mapped_column(String(100, "utf8mb4_general_ci"), nullable=True)
 
     follow: Mapped[list["Follow"]] = relationship(
         "Follow",
@@ -146,6 +176,18 @@ class User(UserMixin, db.Model):  # type: ignore [name-defined]
         self.Username = username
         self.Password = password
         self.Email = email
+
+    def to_dict(self) -> dict:
+        """Converts the user object to a dictionary."""
+        return {
+            "UserID": self.id,
+            "Username": self.Username,
+            "Password": self.Password,
+            "Email": self.Email,
+            "Preferences": self.Preferences,
+            "IsVerified": self.IsVerified,
+            "TempToken": self.TempToken
+        }
 
 
 class Article(db.Model):  # type: ignore [name-defined]
@@ -594,3 +636,40 @@ def add_data() -> None:
     db.session.add_all(user_notification_read_list)
     db.session.add_all(article_comment_list)
     db.session.commit()
+
+
+def add_base_company_data() -> None:
+    """ Adds initial data of the FTSE100 companies to the database """
+    symbols = ['III.L', 'ADM.L', 'AAF.L', 'AAL.L', 'ANTO.L', 'AHT.L', 'ABF.L', 'AZN.L', 'AUTO.L', 'AV.L', 'BME.L',
+               'BA.L', 'BARC.L', 'BDEV.L', 'BEZ.L', 'BKG.L', 'BP.L', 'BATS.L', 'BT-A.L', 'BNZL.L', 'BRBY.L', 'CNA.L',
+               'CCH.L', 'CPG.L', 'CTEC.L', 'CRDA.L', 'DCC.L', 'DGE.L', 'DPLM.L', 'EDV.L', 'ENT.L', 'EXPN.L', 'FCIT.L',
+               'FLTR.L', 'FRAS.L', 'FRES.L', 'GLEN.L', 'GSK.L', 'HLN.L', 'HLMA.L', 'HIK.L', 'HWDN.L', 'HSBA.L', 'IHG.L',
+               'IMI.L', 'IMB.L', 'INF.L', 'ICP.L', 'IAG.L', 'ITRK.L', 'JD.L', 'KGF.L', 'LAND.L', 'LGEN.L', 'LLOY.L',
+               'LSEG.L', 'MNG.L', 'MKS.L', 'MRO.L', 'MNDI.L', 'NG.L', 'NWG.L', 'NXT.L', 'OCDO.L', 'PSON.L', 'PSH.L',
+               'PSN.L', 'PHNX.L', 'PRU.L', 'RKT.L', 'REL.L', 'RTO.L', 'RMV.L', 'RIO.L', 'RR.L', 'RS1.L', 'SGE.L',
+               'SBRY.L', 'SDR.L', 'SMT.L', 'SGRO.L', 'SVT.L', 'SHEL.L', 'SMDS.L', 'SMIN.L', 'SN.L', 'SKG.L', 'SPX.L',
+               'SSE.L', 'STAN.L', 'STJ.L', 'TW.L', 'TSCO.L', 'ULVR.L', 'UU.L', 'UTG.L', 'VOD.L', 'WEIR.L', 'WTB.L',
+               'WPP.L']
+    companies = []
+    for symbol in symbols:
+        company = yf.Ticker(symbol)
+        past_8_days_price = company.history(period='8d')['Close'].tolist()
+        companies.append(Company(
+            company.info.get('longName', 'N/A'),  # CompanyName
+            symbol,     # StockSymbol
+            past_8_days_price[0],  # StockPrice
+            company.info.get('industry', 'N/A'),  # Industry
+            company.info.get('longBusinessSummary', 'N/A'),  # CompanyDescription
+            None,  # PredictedStockPrice
+            None,  # StockVariance
+            past_8_days_price[1],  # StockPrice_D_1
+            past_8_days_price[2],  # StockPrice_D_2
+            past_8_days_price[3],  # StockPrice_D_3
+            past_8_days_price[4],  # StockPrice_D_4
+            past_8_days_price[5],  # StockPrice_D_5
+            past_8_days_price[6],  # StockPrice_D_6
+            past_8_days_price[7]   # StockPrice_D_7
+        ))
+
+        db.session.add_all(companies)
+        db.session.commit()

@@ -4,36 +4,99 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
-# from TradeTalker_DB import Database
+import requests
+from datetime import datetime, timedelta
 
-# Initialising Flask application 
-app = Flask(__name__)
+# from database_connection import DataBaseConnection
+# db = DataBaseConnection (
+#     host="localhost",
+#         user="root",
+#         passwd="",
+#         database="tradetalkerdb"
+#     )
 
-# Configuration for MySQL database connection
-# 'TradeTalkerDB' is the name of the MySQL database
-# 'DictCursor' returns rows as dictionaries, making them easier to work with
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'TradeTalkerDB'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# Our MarketStack API
+API_KEY = 'f22b6caa5edecd4bdcbc0b962fb54a71'
 
-# db = Database(app)
+# Function to fetch market data from API
+def get_data(url):
+    end_date = datetime.today().strftime("%Y-%m-%d")
+    start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+
+    # Parameters for the request (optional)
+    params = {
+        'access_key': API_KEY,
+        'date_from': start_date,
+        'date_to': end_date
+    }
+    
+    try:
+        # Endpoint URL for retrieving stock market data
+        response = requests.get(url, params=params)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+        # Parse the JSON response
+            data = response.json()
+            # Process the data as needed
+            print(data)
+        else:
+            print('Error:', response.status_code)
+        
+        # Extracting relevant information from the response
+        if 'data' in data and len(data['data']) > 0:
+            eod_data = data['data']['eod']
+            close_prices = [day['close'] for day in eod_data]
+            return np.array(close_prices)
+        else:
+            print("No data found for the given symbol.")
+            return None
+    except Exception as e:
+        print("Error fetching data:", e)
+        return None
+
+# Example usage
+company_symbol = 'AAPL'  # Example: Apple Inc.
+company_data = get_data(f'http://api.marketstack.com/v1/tickers/{company_symbol}/eod')
+print(company_data)
+
+# Work out CAPM equation
+# Defining market_data and stock_data arrays using numpy arrays
+market_data = get_data(f'http://api.marketstack.com/v1/{company_symbol + ".INDX"}/eod')
+print(market_data)
+stock_data = company_data
+
+# Defining bond_yield, inflation, and calculating riskfree rate
+bond_yield = 4.65
+inflation = 4.2
+riskfree = bond_yield - inflation
+
+# Calculating covariance, variance, and mean of market_data
+# Covariance between market_data and stock_data
+cv = np.cov(market_data, stock_data)[0][1].item()
+
+# Variance of market_data
+mv = np.var(market_data).item()
+
+# Mean of market_data
+mr = np.mean(market_data).item()
+
+# Calculating beta using CAPM formula
+# Beta coefficient
+b = (mr * cv) / mv
+
+ # Capital Asset Pricing Model (CAPM) calculation
+capm = riskfree + b * (mr - riskfree)
+
+# Printing the calculated CAPM value
+print(capm)
 
 # Sample data for testing
-#data = {
-#    'CAPM': [1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.5, 2.0, 3.0, 4.0, 5.0, 1.0], 
-#    'Sentiment_Score': [0.7, 0.8, 0.6, 0.4, 0.2, 0.34, 0.85, 0.98, 0.65, 0.56, 0.67, 0.93, 0.48, 0.78, 0.56, 0.23], 
-#    'stock_price': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160]
-#} 
-
-# Sample data for testing
-
 # Generate random data with a weak trend
 np.random.seed(0)
-num_samples = 100
+num_samples = 1200
 CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
 Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
 stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
@@ -79,7 +142,7 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)
 
 # Calculating Mean Absolute Error (MAE) to evaluate model performance
-mae = mean_absolute_error(y_test, y_train)
+mae = mean_absolute_error(y_test, predictions)
 print(f'Mean Absolute Error: {mae}')
 
 # Visualizing the actual vs predicted values using a scatter plot
@@ -92,37 +155,6 @@ sorted_predictions = predictions[sorted_indices]
 
 # find line of best fit
 a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
-
-
-
-# First attempt 
-# plt.plot(X_test['Sentiment_Score'], predictions, color='blue', linewidth=3, label='Predicted')
-
-# Second Attempt could work 
-# plt.plot(sorted_sentiment_score, sorted_predictions, color='blue', linewidth=3, label='Predicted')
-
-# Third Attempt
-# Calculate the endpoints of the line of best fit
-# x_min = X_test['Sentiment_Score'].min()
-# x_max = X_test['Sentiment_Score'].max()
-# y_min = model.predict([[x_min, 0]])[0]
-# y_max = model.predict([[x_max, 0]])[0]
-# plt.plot([x_min, x_max], [y_min, y_max], color='blue', linewidth=3, label='Predicted')
-
-# Fourth Attempt
-# Calculate the endpoints of the line of best fit
-# x_min = sorted_sentiment_score.min()
-# x_max = sorted_sentiment_score.max()
-# y_min = sorted_predictions.min()
-# y_max = sorted_predictions.max()
-# Check if it is a negative or positive trend
-# if x_min == Sentiment_Score[np.argmax(stock_price)]:
-# plt.plot([x_max, x_min], [y_max, y_min], color='blue', linewidth=3, label='Predicted')
-# else:
-# plt.plot([x_min, x_max], [y_min, y_max], color='blue', linewidth=3, label='Predicted')
-
-
-
 
 # Plot the line of best fit
 plt.plot(sorted_sentiment_score, a*sorted_sentiment_score + b, color = 'blue', linewidth=3, label="Predicted")

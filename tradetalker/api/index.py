@@ -30,6 +30,7 @@ from database.db_schema import (
     User,
     UserNotificationRead,
     add_data,
+    add_base_company_data,
     db,
 )
 
@@ -63,6 +64,7 @@ if reset:
         db.drop_all()
         db.create_all()
         add_data()
+        add_base_company_data()
 
 
 MAX_EMAIL_LENGTH = 100
@@ -293,7 +295,6 @@ def search(query: str | None) -> Response:
 
 
 # ----------------- Dashboard routes -----------------
-
 
 @app.route("/api/dashboard", methods=["GET", "POST"])
 @login_required
@@ -841,6 +842,11 @@ def delete_user() -> Response:
         )
     return redirect(url_for("login", error="You are not logged in."))
 
+@app.route("/api/companies", methods=["GET"])
+def load_companies() -> Response:
+    """ Load all companies for display """
+    companies = Company.query.all()
+    return jsonify([company.to_dict() for company in companies])
 
 if __name__ == "__main__":
     app.run(debug=os.environ["ENV"] == "dev", port=8080)

@@ -4,6 +4,7 @@ import Loading from '@/app/ui/loading';
 import StockTrends from '@/app/ui/stocks/stock-trends';
 import Leaderboard from '@/app/ui/stocks/leaderboard';
 
+
 export const metadata: Metadata = {
   title: 'Stocks',
 };
