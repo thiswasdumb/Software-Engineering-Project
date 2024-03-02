@@ -23,20 +23,20 @@ export default function Comments({
   return (
     <div>
       <div className='text-xl'>Comments ({comments.length})</div>
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      <hr className='border-slate-400 my-2 rounded-lg border-2' />
       <CommentForm articleId={articleId} isLoggedIn={isLoggedIn} />
       <div>
         {comments.map((comment, index) => (
           <div key={index} className='my-4'>
             <div className='flex flex-row items-end'>
               <div>{comment.username}</div>
-              <div className='ml-2 text-sm text-slate-500'>{comment.time}</div>
+              <div className='text-slate-500 ml-2 text-sm'>{comment.time}</div>
             </div>
             <div className='flex flex-row items-center'>
               <div>{comment.content}</div>
               <div>
                 <button
-                  className='ml-4 rounded-lg bg-blue-500 p-2 text-sm text-white transition hover:bg-blue-600 hover:drop-shadow-lg'
+                  className='bg-blue-500 text-white hover:bg-blue-600 ml-4 rounded-lg p-2 text-sm transition hover:drop-shadow-lg'
                   onClick={() => {}}
                 >
                   Reply

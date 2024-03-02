@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className='m-8 rounded-lg bg-slate-200 p-8'>
+    <div className='bg-slate-200 m-8 rounded-lg p-8'>
       <div className='text-2xl'>404 Not Found</div>
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      <hr className='border-slate-400 my-2 rounded-lg border-2' />
       <div className='text-xl'>Could not find requested resource.</div>
       <Button
         type='button'
-        className='mt-2 justify-center rounded-lg bg-blue-500 p-4 text-lg text-white transition hover:bg-blue-600 '
+        className='bg-blue-500 text-white hover:bg-blue-600 mt-2 justify-center rounded-lg p-4 text-lg transition '
       >
         <Link href='/home'>Return to home</Link>
       </Button>

@@ -18,14 +18,14 @@ export default function Like({ isLiked }: { isLiked: boolean }) {
     <HeartIcon
       type='button'
       cursor='pointer'
-      className={`h-10 w-10 text-gray-400 transition hover:text-red-500 ${liked ? 'text-red-500' : ''}`}
+      className={`text-gray-400 hover:text-red-500 h-10 w-10 transition ${liked ? 'text-red-500' : ''}`}
       onClick={handleClick}
     />
   ) : (
     <SolidHeartIcon
       type='button'
       cursor='pointer'
-      className={`h-10 w-10 text-red-500 transition hover:drop-shadow-lg ${liked ? 'text-red-500' : ''}`}
+      className={`text-red-500 h-10 w-10 transition hover:drop-shadow-lg ${liked ? 'text-red-500' : ''}`}
       onClick={handleClick}
     />
   );

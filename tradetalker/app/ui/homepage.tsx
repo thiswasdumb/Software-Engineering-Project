@@ -21,39 +21,39 @@ export default async function HomeComponent() {
 
   return (
     <>
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='bg-slate-200 m-8 rounded-lg p-8'>
         <div className='text-2xl'>Welcome to TradeTalker.</div>
-        <hr className='my-2 rounded-lg border-2 border-slate-400' />
+        <hr className='border-slate-400 my-2 rounded-lg border-2' />
         <p>
           Stay informed about the latest news sentiment in the financial
           markets.
         </p>
         <br></br>
-        <div className='rounded-lg bg-slate-300 p-4'>
+        <div className='bg-slate-300 rounded-lg p-4'>
           <div className='text-xl'>Recent articles</div>
           {articles.map((article, index) => (
             <div
-              className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'
+              className='bg-slate-100 hover:bg-slate-200 my-2 overflow-scroll rounded-lg p-2 transition hover:drop-shadow-lg'
               key={index}
             >
               <Link href={`/article/${article.id}`}>
                 <div>{article.title}</div>
-                <hr className='border-1 my-2 rounded-lg border-slate-300' />
+                <hr className='border-1 border-slate-300 my-2 rounded-lg' />
                 <div>{article.summary}</div>
                 <div>
                   {article.score > 0.5 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowUpCircleIcon className='h-12 w-12 text-green-500' />
+                      <ArrowUpCircleIcon className='text-green-500 h-12 w-12' />
                       <div className='pl-2'>Positive</div>
                     </div>
                   ) : article.score < 0.5 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
+                      <ArrowDownCircleIcon className='text-red-500 h-12 w-12 ' />
                       <div className='pl-2'>Negative</div>
                     </div>
                   ) : (
                     <div className='flex flex-row items-center'>
-                      <MinusCircleIcon className='h-12 w-12 text-slate-400' />
+                      <MinusCircleIcon className='text-slate-400 h-12 w-12' />
                       <div className='pl-2'>Neutral</div>
                     </div>
                   )}

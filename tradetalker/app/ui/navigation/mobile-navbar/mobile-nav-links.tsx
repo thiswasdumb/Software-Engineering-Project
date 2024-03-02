@@ -43,7 +43,7 @@ export default function MobileNavLinks(props: {
             href={link.href}
             onClick={link.onClick}
             className={clsx(
-              'sticky flex justify-center border-b-2 bg-white p-4 font-medium outline-gray-100 transition hover:bg-sky-100 hover:text-blue-600',
+              'bg-white outline-gray-100 hover:bg-sky-100 hover:text-blue-600 sticky flex justify-center border-b-2 p-4 font-medium transition',
               {
                 'bg-sky-200 text-blue-600': pathname === link.href,
               }

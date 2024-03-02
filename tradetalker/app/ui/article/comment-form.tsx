@@ -37,7 +37,7 @@ export function CommentForm({
       <div className='flex w-full flex-row md:max-w-[80%]'>
         <form onSubmit={handleSubmit} method='post' className='w-full'>
           <input
-            className='w-full rounded-lg bg-white p-2 transition hover:drop-shadow-lg'
+            className='bg-white w-full rounded-lg p-2 transition hover:drop-shadow-lg'
             placeholder='Add a comment...'
             type='text'
             name='comment'
@@ -46,7 +46,7 @@ export function CommentForm({
         </form>
         <button
           type='button'
-          className='ml-2 rounded-lg bg-blue-500 p-2 text-white transition hover:bg-blue-600 hover:drop-shadow-lg'
+          className='bg-blue-500 text-white hover:bg-blue-600 ml-2 rounded-lg p-2 transition hover:drop-shadow-lg'
           onClick={() => handleSubmit}
         >
           Comment
@@ -96,7 +96,7 @@ export function ReplyForm({
   return (
     <form onSubmit={handleReplySubmit} method='post'>
       <input
-        className='w-full rounded-lg bg-blue-600 p-2 hover:drop-shadow-lg'
+        className='bg-blue-600 w-full rounded-lg p-2 hover:drop-shadow-lg'
         placeholder='Enter a reply...'
         type='text'
         name='reply'

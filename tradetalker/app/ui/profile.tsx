@@ -54,9 +54,9 @@ export default function ProfileComponent({
 
   return (
     isLoggedIn && (
-      <div className='m-8 flex flex-col rounded-lg bg-slate-200 p-8'>
+      <div className='bg-slate-200 m-8 flex flex-col rounded-lg p-8'>
         <div className='text-2xl'>Profile</div>
-        <hr className='my-2 rounded-lg border-2 border-slate-400' />
+        <hr className='border-slate-400 my-2 rounded-lg border-2' />
         <div>
           <div className='text-xl'>Username: {data.username}</div>
           <div className='text-xl'>Email: {data.email}</div>
@@ -64,7 +64,7 @@ export default function ProfileComponent({
         <Link href='/api/reset_password'>
           <Button
             type='button'
-            className='mt-4 rounded-lg bg-blue-500 p-4 text-white transition hover:bg-blue-600 hover:shadow-lg'
+            className='bg-blue-500 text-white hover:bg-blue-600 mt-4 rounded-lg p-4 transition hover:shadow-lg'
           >
             Reset password
           </Button>
@@ -72,7 +72,7 @@ export default function ProfileComponent({
         <div onClick={() => Logout(isLoggedIn)}>
           <button
             type='button'
-            className='mt-4 rounded-lg bg-red-500 p-4 text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
+            className='bg-red-500 text-white hover:bg-red-600 active:bg-red-700 mt-4 rounded-lg p-4 transition hover:shadow-lg'
           >
             Log out
           </button>
@@ -80,7 +80,7 @@ export default function ProfileComponent({
         <div onClick={() => DeleteUser(isLoggedIn)}>
           <button
             type='button'
-            className='mt-4 rounded-lg bg-red-500 p-4 text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
+            className='bg-red-500 text-white hover:bg-red-600 active:bg-red-700 mt-4 rounded-lg p-4 transition hover:shadow-lg'
           >
             Delete account
           </button>

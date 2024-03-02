@@ -78,21 +78,21 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               className='space-y-3'
               autoComplete='off'
             >
-              <div className='flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8'>
+              <div className='bg-gray-50 flex-1 rounded-lg px-6 pb-4 pt-8'>
                 <h1 className='mb-3 text-2xl'>
                   Sign up to begin your TradeTalker journey.
                 </h1>
                 <div className='w-full'>
                   <div>
                     <label
-                      className='text-md mb-3 mt-5 block font-medium text-gray-900'
+                      className='text-md text-gray-900 mb-3 mt-5 block font-medium'
                       htmlFor='email'
                     >
                       Email
                     </label>
                     <div className='relative'>
                       <input
-                        className='relative block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
+                        className='border-gray-200 placeholder:text-gray-500 relative block w-full rounded-md border py-[9px] pl-10 text-sm outline-2'
                         id='email'
                         type='email'
                         name='email'
@@ -101,19 +101,19 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                         maxLength={100}
                         required
                       />
-                      <AtSymbolIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
+                      <AtSymbolIcon className='text-gray-500 peer-focus:text-gray-900 pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2' />
                     </div>
                   </div>
                   <div>
                     <label
-                      className='text-md mb-3 mt-5 block font-medium text-gray-900'
+                      className='text-md text-gray-900 mb-3 mt-5 block font-medium'
                       htmlFor='username'
                     >
                       Username
                     </label>
                     <div className='relative'>
                       <input
-                        className='relative block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
+                        className='border-gray-200 placeholder:text-gray-500 relative block w-full rounded-md border py-[9px] pl-10 text-sm outline-2'
                         id='username'
                         type='text'
                         name='username'
@@ -123,19 +123,19 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                         maxLength={50}
                         required
                       />
-                      <UserIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
+                      <UserIcon className='text-gray-500 peer-focus:text-gray-900 pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2' />
                     </div>
                   </div>
                   <div className='mt-4'>
                     <label
-                      className='text-md mb-3 mt-5 block font-medium text-gray-900'
+                      className='text-md text-gray-900 mb-3 mt-5 block font-medium'
                       htmlFor='password'
                     >
                       Password
                     </label>
                     <div className='relative'>
                       <input
-                        className='relative block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
+                        className='border-gray-200 placeholder:text-gray-500 relative block w-full rounded-md border py-[9px] pl-10 text-sm outline-2'
                         id='password'
                         type='password'
                         name='password'
@@ -146,7 +146,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                         maxLength={200}
                         pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
                       />
-                      <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
+                      <KeyIcon className='text-gray-500 peer-focus:text-gray-900 pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2' />
                     </div>
                   </div>
                 </div>
@@ -158,8 +158,8 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                 >
                   {errorMessage && (
                     <>
-                      <ExclamationCircleIcon className='h-5 w-5 text-red-500' />
-                      <p className='text-sm text-red-500'>{errorMessage}</p>
+                      <ExclamationCircleIcon className='text-red-500 h-5 w-5' />
+                      <p className='text-red-500 text-sm'>{errorMessage}</p>
                     </>
                   )}
                 </div>
@@ -177,7 +177,7 @@ function SignupButton() {
   return (
     <Button className='mt-5 w-full' aria-disabled={pending}>
       <div className='text-base'>Sign up</div>{' '}
-      <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
+      <ArrowRightIcon className='text-gray-50 ml-auto h-5 w-5' />
     </Button>
   );
 }

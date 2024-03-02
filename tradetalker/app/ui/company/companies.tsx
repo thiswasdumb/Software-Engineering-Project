@@ -13,15 +13,15 @@ export default async function CompaniesComponent() {
   const companies: any[] = await getCompanies();
 
   return (
-    <div className='m-8 rounded-lg bg-slate-200 p-8'>
+    <div className='bg-slate-200 m-8 rounded-lg p-8'>
       <div className='text-2xl'>Companies</div>
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      <hr className='border-slate-400 my-2 rounded-lg border-2' />
       <div className='flex flex-row flex-wrap justify-between'>
         {companies.map((company, index) => (
           <Link
             href={`/company/${company.id}`}
             key={index}
-            className='max-w-4 opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg md:m-2 md:w-[30%]'
+            className='max-w-4 opacity:30 bg-slate-300 hover:bg-slate-400 my-2 w-full rounded-lg p-2 transition hover:bg-opacity-40 hover:drop-shadow-lg md:m-2 md:w-[30%]'
           >
             {company.name}
             <br></br>

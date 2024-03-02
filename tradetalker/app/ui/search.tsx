@@ -45,31 +45,31 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
           </label>
           <input
             name='search'
-            className='block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-lg outline-2 placeholder:text-gray-500 md:text-sm'
+            className='border-gray-200 placeholder:text-gray-500 block w-full rounded-md border py-[9px] pl-10 text-lg outline-2 md:text-sm'
             placeholder={placeholder}
             onChange={(e) => {
               handleSearch(e.target.value);
             }}
             defaultValue={searchParams.get('query')?.toString()}
           />
-          <MagnifyingGlassIcon className='absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
+          <MagnifyingGlassIcon className='text-gray-500 peer-focus:text-gray-900 absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2' />
         </div>
         <div className='flex justify-center pt-4 text-center'>
-          <div className='text-xs text-gray-500'>
+          <div className='text-gray-500 text-xs'>
             {searchParams.get('query') !== null &&
               `Showing results for "${searchParams.get('query')}"`}
           </div>
         </div>
         {searchParams.get('query') == null && (
-          <div className='flex justify-center pt-20 text-center text-xl text-black '>
+          <div className='text-black flex justify-center pt-20 text-center text-xl '>
             Start typing to search for news articles or companies.
           </div>
         )}
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row'>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
+            <div className='bg-slate-200 m-8 rounded-lg p-8 md:w-[50%]'>
               <div className='text-2xl'>Articles</div>
-              <hr className='my-2 rounded-lg border-2 border-slate-400' />
+              <hr className='border-slate-400 my-2 rounded-lg border-2' />
               {articles.length === 0 && (
                 <div className='text-gray-600'>No matching articles found.</div>
               )}
@@ -77,7 +77,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                 {articles.map((article, index) => (
                   <Link
                     key={index}
-                    className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
+                    className='opacity:30 bg-slate-300 hover:bg-slate-400 my-2 w-full rounded-lg p-2 transition hover:bg-opacity-60'
                     href={`/article/${article.id}`}
                   >
                     <div>
@@ -91,9 +91,9 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                 ))}
               </div>
             </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
+            <div className='bg-slate-200 m-8 rounded-lg p-8 md:w-[50%]'>
               <div className='text-2xl'>Companies</div>
-              <hr className='my-2 rounded-lg border-2 border-slate-400' />
+              <hr className='border-slate-400 my-2 rounded-lg border-2' />
               <div className='md:max-[80%]'>
                 {companies.length === 0 && (
                   <div className='text-gray-600'>
@@ -104,7 +104,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                   {companies.map((company, index) => (
                     <Link
                       key={index}
-                      className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
+                      className='opacity:30 bg-slate-300 hover:bg-slate-400 my-2 w-full rounded-lg p-2 transition hover:bg-opacity-60'
                       href={`/company/${company.id}`}
                     >
                       <div>

@@ -13,7 +13,7 @@ export default function NavbarSessionComponent(props: {
   if (props.session) {
     return (
       <>
-        <ul className='hidden gap-x-4 text-white md:flex'>
+        <ul className='text-white hidden gap-x-4 md:flex'>
           <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
           <NotifButton notifCount={props.notifCount} />{' '}
           {/* Will update from db */}

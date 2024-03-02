@@ -18,7 +18,7 @@ module.exports = {
     },
     colors: {
       'theme-pink': '#995766',
-    }
+    },
   },
   plugins: [],
 };
