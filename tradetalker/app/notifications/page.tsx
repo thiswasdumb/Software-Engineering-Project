@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Metadata } from 'next';
-import NotifComponent from '../ui/notif-component';
 import { cookies } from 'next/headers';
+import Loading from '@/app/ui/loading';
+import NotifClientComponent from '@/app/ui/notifications/notif-component';
 
 export const metadata: Metadata = {
   title: 'Notifications',
@@ -9,5 +10,10 @@ export const metadata: Metadata = {
 
 export default function Notifications() {
   const session = cookies().get('session') !== undefined;
-  return <NotifComponent isLoggedIn={session} />;
+
+  return (
+    <Suspense fallback={<Loading message={'Loading notifications...'} />}>
+      <NotifClientComponent isLoggedIn={session} />
+    </Suspense>
+  );
 }
