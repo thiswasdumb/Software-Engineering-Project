@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <>
       <footer>
-        <div className='min-h-100 bg-blue-600 flex h-40 w-full flex-grow'>
+        <div className='min-h-100 flex h-40 w-full flex-grow bg-blue-600'>
           <div className='m-auto flex h-full flex-col justify-center px-4'>
             <div className='flex items-center justify-between'>
               <div className='flex h-full items-center justify-between gap-x-8'>
@@ -49,7 +49,7 @@ export default function Footer() {
                 </Link>
               </div>
             </div>
-            <div className='text-white text-center text-sm'>
+            <div className='text-center text-sm text-white'>
               &copy; 2024 TradeTalker Inc.
             </div>
           </div>

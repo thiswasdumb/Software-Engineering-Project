@@ -10,9 +10,9 @@ export default function RedirectPage() {
   }, [router]);
 
   return (
-    <div className='bg-slate-200 m-8 rounded-lg p-8'>
+    <div className='m-8 rounded-lg bg-slate-200 p-8'>
       <div className='text-2xl'>Redirecting...</div>
-      <hr className='border-slate-400 my-2 rounded-lg border-2' />
+      <hr className='my-2 rounded-lg border-2 border-slate-400' />
     </div>
   );
 }

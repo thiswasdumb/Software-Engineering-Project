@@ -21,9 +21,9 @@ export default function NavLinks(props: { session: boolean }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              'border-transparent bg-blue-600 hover:border-slate-300 focus:border-white border-b-4 p-2 text-base font-medium transition duration-150 md:flex-none md:justify-start',
+              'border-b-4 border-transparent bg-blue-600 p-2 text-base font-medium transition duration-150 hover:border-slate-300 focus:border-white md:flex-none md:justify-start',
               {
-                'border-white border-b-4': pathname === link.href,
+                'border-b-4 border-white': pathname === link.href,
               }
             )}
           >

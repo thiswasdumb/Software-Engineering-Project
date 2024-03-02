@@ -14,7 +14,7 @@ export default function NotifButton({ notifCount }: { notifCount: number }) {
       >
         <BellIcon className='h-8 w-8 md:h-6 md:w-6' />
         {notifCount > 0 && (
-          <span className='text-md bg-red-500 text-white absolute right-0 top-0 rounded-full px-1 py-0.5 md:text-xs'>
+          <span className='text-md absolute right-0 top-0 rounded-full bg-red-500 px-1 py-0.5 text-white md:text-xs'>
             {notifCount}
           </span>
         )}

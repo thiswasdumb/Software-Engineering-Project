@@ -19,7 +19,7 @@ export default function WhiteButtons() {
             key={link.name}
             href={link.href}
             className={clsx(
-              'bg-gray-50 hover:bg-sky-100 hover:text-blue-600 focus:text-blue-800 items-center justify-center gap-2 rounded-md p-3 text-base font-medium',
+              'items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-base font-medium hover:bg-sky-100 hover:text-blue-600 focus:text-blue-800',
               {
                 'bg-sky-100 text-blue-800': pathname === link.href,
               }

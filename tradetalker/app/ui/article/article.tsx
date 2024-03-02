@@ -61,11 +61,11 @@ export default async function ArticlePage({
   }
 
   return (
-    <div className='bg-slate-200 m-8 rounded-lg p-8'>
+    <div className='m-8 rounded-lg bg-slate-200 p-8'>
       <div className='flex flex-row justify-between'>
         <div>
           <div className='text-2xl'>{articleData.title}</div>
-          <div className='text-slate-500 text-sm'>
+          <div className='text-sm text-slate-500'>
             {formatDate(articleData.publication_date)}
           </div>
         </div>
@@ -77,12 +77,12 @@ export default async function ArticlePage({
         )}
       </div>
 
-      <hr className='border-slate-400 my-2 rounded-lg border-2' />
+      <hr className='my-2 rounded-lg border-2 border-slate-400' />
       <div className='text-lg'>Company: {articleData.company_name}</div>
       <div className='text-lg'>Summary: {articleData.summary}</div>
-      <hr className='border-1 border-slate-400 my-2 rounded-lg' />
+      <hr className='border-1 my-2 rounded-lg border-slate-400' />
       <div className='text-lg'>{articleData.content}</div>
-      <hr className='border-1 border-slate-400 my-2 rounded-lg' />
+      <hr className='border-1 my-2 rounded-lg border-slate-400' />
       <Comments articleId={id} isLoggedIn={isLoggedIn} />
     </div>
   );

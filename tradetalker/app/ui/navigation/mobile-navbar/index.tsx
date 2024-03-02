@@ -11,7 +11,7 @@ export default function MobileNavbar(props: {
   return (
     <>
       <div
-        className='bg-gray-200 fixed block w-full justify-center md:hidden'
+        className='fixed block w-full justify-center bg-gray-200 md:hidden'
         style={{
           display: `${props.isOpen ? 'block' : 'none'}`,
         }}

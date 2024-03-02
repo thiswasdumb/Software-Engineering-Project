@@ -17,7 +17,7 @@ export default async function StockTrends() {
       <div className='text-base'>Top rising stocks</div>
       {stockTrends.map((stock, index) => (
         <Link key={index} href={`/company/${stock.company_id}`}>
-          <div className='bg-slate-300 hover:bg-slate-400 mt-2 rounded-lg p-4 transition hover:bg-opacity-40 hover:drop-shadow-lg'>
+          <div className='mt-2 rounded-lg bg-slate-300 p-4 transition hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg'>
             <div className='font-bold'>{stock.symbol}</div>
             <div className='text-lg'>{stock.stock_price}</div>
             <div>Predicted stock price: {stock.predicted_stock_price}</div>

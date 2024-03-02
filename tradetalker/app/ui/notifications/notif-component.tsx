@@ -53,12 +53,12 @@ export default function NotifClientComponent({
 
   return (
     isLoggedIn && (
-      <div className='bg-slate-200 m-8 rounded-lg p-8'>
+      <div className='m-8 rounded-lg bg-slate-200 p-8'>
         <div className='text-2xl'>Notifications</div>
-        <hr className='border-slate-400 my-2 rounded-lg border-2' />
+        <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {notifs.length === 0 && <p>No notifications.</p>}
         {notifs.length > 0 && (
-          <div className='bg-slate-300 rounded-lg p-2'>
+          <div className='rounded-lg bg-slate-300 p-2'>
             {notifs.map((notif, index) => (
               <div className='flex flex-row justify-between' key={index}>
                 <Link
@@ -71,7 +71,7 @@ export default function NotifClientComponent({
                   <div className='text-lg'>{notif.content}</div>
                 </Link>
                 <button
-                  className='bg-red-500 text-white hover:bg-red-600 active:bg-red-700 float-right m-2 rounded-lg p-2 text-sm transition hover:shadow-lg'
+                  className='float-right m-2 rounded-lg bg-red-500 p-2 text-sm text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
                   onClick={() => deleteNotification(notif.id)}
                 >
                   Delete

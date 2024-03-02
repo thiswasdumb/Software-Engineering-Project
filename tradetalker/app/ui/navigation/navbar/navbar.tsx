@@ -45,12 +45,12 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
 
   return (
     <div>
-      <div className='bg-blue-600 fixed top-0 z-10 h-20 w-full'>
+      <div className='fixed top-0 z-10 h-20 w-full bg-blue-600'>
         <div className='h-full px-4'>
           <div className='flex h-full items-center justify-between'>
             <div className='flex h-full items-center justify-between gap-x-8'>
               <Logo isOpen={menuToggled} toggle={toggleMenu} />
-              <ul className='text-white hidden gap-x-6 md:flex'>
+              <ul className='hidden gap-x-6 text-white md:flex'>
                 <NavLinks session={props.isLoggedIn} />
               </ul>
             </div>
@@ -60,11 +60,11 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
               toggle={toggleMenu}
               session={props.isLoggedIn}
             />
-            <div className='text-white inline-flex items-center gap-4 md:hidden'>
+            <div className='inline-flex items-center gap-4 text-white md:hidden'>
               <SearchButton isOpen={menuToggled} toggle={toggleMenu} />
               {props.isLoggedIn && <NotifButton notifCount={notifs} />}
               <button type='button' onClick={toggleMenu}>
-                <Bars3Icon className='text-white h-12 w-12 hover:opacity-50' />
+                <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
               </button>
             </div>
           </div>
@@ -74,7 +74,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
         <>
           <div className='fixed z-10 mt-20'>
             <div
-              className='bg-black fixed h-full w-full opacity-30'
+              className='fixed h-full w-full bg-black opacity-30'
               onClick={toggleMenu}
             />
             <Sidebar

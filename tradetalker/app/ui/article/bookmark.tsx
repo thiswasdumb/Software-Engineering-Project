@@ -23,14 +23,14 @@ export default function Bookmark({ isBookmarked }: { isBookmarked: boolean }) {
     <BookmarkIcon
       type='button'
       cursor='pointer'
-      className='text-gray-400 hover:text-blue-500 h-10 w-10 transition'
+      className='h-10 w-10 text-gray-400 transition hover:text-blue-500'
       onClick={handleClick}
     />
   ) : (
     <SolidBookmarkIcon
       type='button'
       cursor='pointer'
-      className='text-blue-500 h-10 w-10 transition hover:drop-shadow-lg'
+      className='h-10 w-10 text-blue-500 transition hover:drop-shadow-lg'
       onClick={handleClick}
     />
   );
