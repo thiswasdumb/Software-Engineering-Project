@@ -1,34 +1,23 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'react-hot-toast';
+import React from 'react';
+import Link from 'next/link';
+import {
+  ArrowUpCircleIcon,
+  ArrowDownCircleIcon,
+  MinusCircleIcon,
+} from '@heroicons/react/20/solid';
 
-export default function HomeComponent() {
-  // Showing how to fetch data from the backend
-  const [data, setData] = useState<any[]>([]);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+async function fetchArticles() {
+  const response = await fetch('http://localhost:8080/api/home_articles', {
+    next: { revalidate: 0 },
+  });
+  if (!response.ok) {
+    throw new Error('An error occurred while fetching the users.');
+  }
+  return response.json();
+}
 
-  useEffect(() => {
-    fetch('/api/example')
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-      });
-  }, [setData]);
-
-  useEffect(() => {
-    const error = searchParams.get('error');
-    const success = searchParams.get('success');
-    if (error) {
-      toast.error(error);
-    }
-    if (success) {
-      toast.success(success);
-    }
-    router.replace('/', undefined);
-    router.refresh();
-  }, [router, searchParams]);
+export default async function HomeComponent() {
+  const articles: any[] = await fetchArticles(); // Wait for the promise to resolve
 
   return (
     <>
@@ -40,18 +29,36 @@ export default function HomeComponent() {
           markets.
         </p>
         <br></br>
-        <p>Below should show all users in the database.</p>
         <div className='rounded-lg bg-slate-300 p-4'>
-          {data.map((user, index) => (
+          <div className='text-xl'>Recent articles</div>
+          {articles.map((article, index) => (
             <div
-              className='m-4 overflow-scroll rounded-lg bg-slate-100 p-2'
+              className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'
               key={index}
             >
-              <p>User ID: {user.id}</p>
-              <p>Username: {user.Username}</p>
-              <p>Password: {user.Password}</p>
-              <p>Email: {user.Email}</p>
-              <p>Preferences: {user.Preferences}</p>
+              <Link href={`/article/${article.id}`}>
+                <div>{article.title}</div>
+                <hr className='border-1 my-2 rounded-lg border-slate-300' />
+                <div>{article.summary}</div>
+                <div>
+                  {article.score > 0.5 ? (
+                    <div className='flex flex-row items-center'>
+                      <ArrowUpCircleIcon className='h-12 w-12 text-green-500' />
+                      <div className='pl-2'>Positive</div>
+                    </div>
+                  ) : article.score < 0.5 ? (
+                    <div className='flex flex-row items-center'>
+                      <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
+                      <div className='pl-2'>Negative</div>
+                    </div>
+                  ) : (
+                    <div className='flex flex-row items-center'>
+                      <MinusCircleIcon className='h-12 w-12 text-slate-400' />
+                      <div className='pl-2'>Neutral</div>
+                    </div>
+                  )}
+                </div>
+              </Link>
             </div>
           ))}
         </div>
