@@ -23,8 +23,8 @@ echo "Linting Python code with pylint..."
 $PIPENV_CMD pylint . --fail-under=10
 echo "Linting Python code with ruff..."
 $PIPENV_CMD ruff --fix .
-echo "Type checking Python code with pyright..."
-$PIPENV_CMD pyright .
+echo "Type checking Python code with mypy..."
+$PIPENV_CMD mypy .
 
 # Exit virtual environment
 exit
