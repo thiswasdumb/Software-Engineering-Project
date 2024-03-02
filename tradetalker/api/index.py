@@ -25,6 +25,7 @@ from database.db_schema import (
     UserNotificationRead,
     add_data,
     add_base_company_data,
+    update_all_companies_daily,
     db,
 )
 
@@ -313,6 +314,10 @@ def load_companies() -> Response:
     """ Load all companies for display """
     companies = Company.query.all()
     return jsonify([company.to_dict() for company in companies])
+
+def daily_company_update() -> bool:
+    """ Calling this function once a day (?) to update price_related fields """
+    return update_all_companies_daily()
 
 if __name__ == "__main__":
     app.run(debug=os.environ["ENV"] == "dev", port=8080)
