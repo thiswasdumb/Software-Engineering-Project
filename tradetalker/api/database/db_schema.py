@@ -526,6 +526,72 @@ def add_data() -> None:
             "user2@gmail.com",
         ),
     ]
+    company_list = [
+        Company(
+            "Company1",
+            "Symbol1",
+            1.0,
+            "Industry1",
+            "Description1",
+            10.0,
+            20.0,
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            7.0,
+            8.0,
+        ),
+        Company(
+            "Company2",
+            "Symbol2",
+            2.0,
+            "Industry2",
+            "Description2",
+            20.0,
+            10.0,
+            4.0,
+            6.0,
+            8.0,
+            10.0,
+            12.0,
+            14.0,
+            16.0,
+        ),
+        Company(
+            "Company3",
+            "Symbol3",
+            3.0,
+            "Industry3",
+            "Description3",
+            300.0,
+            30.0,
+            6.0,
+            9.0,
+            12.0,
+            15.0,
+            18.0,
+            21.0,
+            24.0,
+        ),
+        Company(
+            "Company4",
+            "Symbol4",
+            4.0,
+            "Industry4",
+            "Description4",
+            400.0,
+            40.0,
+            8.0,
+            12.0,
+            16.0,
+            20.0,
+            24.0,
+            28.0,
+            32.0,
+        ),
+    ]
     article_list = [
         Article(
             1,
@@ -606,6 +672,7 @@ def add_data() -> None:
     ]
     db.session.add_all(user_list)
     db.session.add_all(article_list)
+    db.session.add_all(company_list)
     db.session.add_all(faq_list)
     db.session.add_all(notification_list)
     db.session.add_all(user_notification_read_list)
