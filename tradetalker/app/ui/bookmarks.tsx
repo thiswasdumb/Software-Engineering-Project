@@ -1,31 +1,19 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-hot-toast';
+import React from 'react';
 
-export default function BookmarkComponent({
+async function getBookmarks() {
+  const response = await fetch('http://localhost:8080/api/get_bookmarks');
+  if (!response.ok) {
+    throw new Error('Error fetching bookmarks');
+  }
+  return response.json();
+}
+
+export default async function BookmarkComponent({
   isLoggedIn,
 }: {
   isLoggedIn: boolean;
 }) {
-  const [data, setData] = useState<any[]>([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetch('/api/get_bookmarks')
-        .then((response) => response.json())
-        .then((data) => {
-          setData(data);
-        })
-        .catch(() => {
-          toast.error('Error fetching bookmarks.');
-        });
-    } else {
-      router.push('/login');
-      toast.error('You must be logged in.');
-    }
-  }, [setData, isLoggedIn, router]);
+  const bookmarks: any[] = await getBookmarks();
 
   return (
     isLoggedIn && (
@@ -33,7 +21,7 @@ export default function BookmarkComponent({
         <div className='text-2xl'>Bookmarks</div>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div>
-          {data.map((bookmark, index) => (
+          {bookmarks.map((bookmark, index) => (
             <div
               className='m-4 overflow-scroll rounded-lg bg-slate-100 p-2'
               key={index}
