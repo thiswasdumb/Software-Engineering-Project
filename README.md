@@ -16,7 +16,7 @@
 
 ## Requirements
 - [Python 3.11 or higher](https://www.python.org/downloads/)
-    - Make sure `pip` and `setuptools` are installed and upgraded to the latest version by running `pip3 install --upgrade pip setuptools`.
+    - Make sure `pip`, `pipenv` and `setuptools` are installed and upgraded to the latest version by running `pip3 install --upgrade pip pipenv setuptools`.
 - [Node.js LTS or higher and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
     - Note: the latest versions of Node.js may output a warning when the website is running.
 - [MySQL 8 or higher](https://dev.mysql.com/downloads/mysql/])
