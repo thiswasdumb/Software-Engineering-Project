@@ -1,31 +1,35 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Logout from 'app/ui/logout';
 import clsx from 'clsx';
 
-export default function SidebarLinks(props: {
+export default function MobileNavLinks(props: {
   toggle: () => void;
   session: boolean;
   notifCount: number;
 }) {
   // Map of links to display in the navbar.
   const links = [
-    ...(props.session ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
-    { name: 'Stocks', href: '/stocks' },
-    { name: 'Companies', href: '/companies' },
-    { name: 'Support', href: '/support' },
+    ...(props.session
+      ? [{ name: 'Dashboard', href: '/dashboard', onClick: props.toggle }]
+      : []),
+    { name: 'Stocks', href: '/stocks', onClick: props.toggle },
+    { name: 'Companies', href: '/companies', onClick: props.toggle },
+    { name: 'Support', href: '/support', onClick: props.toggle },
     ...(props.session
       ? [
           {
             name: `Notifications (${props.notifCount})`,
             href: '/notifications',
+            onClick: props.toggle,
           },
-          { name: 'Profile', href: '/profile' },
-          { name: 'Log out', href: '/api/logout' },
+          { name: 'Profile', href: '/profile', onClick: props.toggle },
+          { name: 'Log out', href: '', onClick: () => Logout(props.session) },
         ]
       : [
-          { name: 'Login', href: '/login' },
-          { name: 'Sign up', href: '/signup' },
+          { name: 'Login', href: '/login', onClick: props.toggle },
+          { name: 'Sign up', href: '/signup', onClick: props.toggle },
         ]),
   ];
   const pathname = usePathname();
@@ -37,7 +41,7 @@ export default function SidebarLinks(props: {
           <Link
             key={link.name}
             href={link.href}
-            onClick={props.toggle}
+            onClick={link.onClick}
             className={clsx(
               'sticky flex justify-center border-b-2 bg-white p-4 font-medium outline-gray-100 transition hover:bg-sky-100 hover:text-blue-600',
               {
