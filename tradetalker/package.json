@@ -4,7 +4,6 @@
   "description": "A financial news sentiment website",
   "private": true,
   "scripts": {
-    "mysql": "mysql -u root tradetalkerdb < api/database/tradetalkerdb.sql",
     "flask-dev": "cd api && pipenv install --dev && export ENV=dev && pipenv run python index.py",
     "next-dev": "next dev",
     "flask-next": "npx concurrently \"npm run flask-dev\" \"npm run next-dev\"",
@@ -16,7 +15,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@types/node": "20.1.4",
-    "@types/react": "^18.2.58",
+    "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
     "autoprefixer": "10.4.14",
     "bcrypt": "^5.1.1",
@@ -31,6 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
+    "react-spinners": "^0.13.8",
     "tailwindcss": "3.3.2",
     "use-debounce": "^10.0.0",
     "zod": "^3.22.4"
