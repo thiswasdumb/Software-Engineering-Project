@@ -1,14 +1,16 @@
 import { Metadata } from 'next';
-import HomeComponent from './ui/homepage';
+import { Suspense, lazy } from 'react';
+import Loading from '@/app/ui/loading';
 
 export const metadata: Metadata = {
   title: 'Welcome!',
 };
 
 export default function Home() {
+  const HomeComponent = lazy(() => import('app/ui/homepage')); // Lazy load the component
   return (
-    <div>
+    <Suspense fallback={<Loading message={'Loading home...'} />}>
       <HomeComponent />
-    </div>
+    </Suspense>
   );
 }

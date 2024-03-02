@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import DashboardComponent from '../ui/dashboard/dashboard';
+import Loading from '@/app/ui/loading';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -9,5 +9,10 @@ export const metadata: Metadata = {
 
 export default function Dashboard() {
   const session = cookies().get('session') !== undefined;
-  return <DashboardComponent isLoggedIn={session} />;
+  const DashboardComponent = lazy(() => import('app/ui/dashboard/dashboard'));
+  return (
+    <Suspense fallback={<Loading message={'Loading dashboard...'} />}>
+      <DashboardComponent isLoggedIn={session} />;
+    </Suspense>
+  );
 }

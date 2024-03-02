@@ -1,23 +1,24 @@
 'use client';
 import { Metadata } from 'next';
-import { useRouter } from 'next/navigation';
+import { Button } from 'app/ui/button';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Not Found',
 };
 
 export default function NotFound() {
-  const router = useRouter();
   return (
-    <div className='flex flex-col justify-center rounded-lg bg-slate-200 p-4'>
-      <p>Could not find requested resource.</p>
-      <button
+    <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='text-2xl'>404 Not Found</div>
+      <hr className='my-2 rounded-lg border-2 border-slate-400' />
+      <div className='text-xl'>Could not find requested resource.</div>
+      <Button
         type='button'
-        onClick={() => router.back()}
-        className='rounded-lg bg-blue-500 p-4 text-white transition hover:bg-blue-600'
+        className='mt-2 justify-center rounded-lg bg-blue-500 p-4 text-lg text-white transition hover:bg-blue-600 '
       >
-        Back
-      </button>
+        <Link href='/home'>Return to home</Link>
+      </Button>
     </div>
   );
 }

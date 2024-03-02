@@ -20,9 +20,9 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-
+  // Handle the form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault(); // Prevent the default refresh
     try {
       const response = await fetch('api/login_form', {
         method: 'POST',
@@ -31,23 +31,24 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
         },
         body: JSON.stringify(data),
       });
-      const error = await response.json(); // Parse the JSON response
-      if (error.error) {
-        setErrorMessage(error.error);
+      const message = await response.json(); // Parse the JSON response
+      if (message.error) {
+        setErrorMessage(message.error);
         setTimeout(() => {
           setErrorMessage('');
         }, 6000);
       }
-      if (error.success) {
+      if (message.success) {
         router.push('/dashboard');
-        toast.success(error.success);
+        toast.success(message.success);
         router.refresh();
       }
     } catch (error) {
       toast.error('An error occurred. Please try again later.');
     }
   };
-  // Set error message if there is an error in the URL parameters
+
+  // Show popup if user not logged in, otherwise redirect to dashboard
   useEffect(() => {
     if (!isLoggedIn) {
       const error = searchParams.get('error');
@@ -149,7 +150,10 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
 function LoginButton() {
   const { pending } = useFormStatus();
   return (
-    <Button className='mt-5 w-full' aria-disabled={pending}>
+    <Button
+      className='mt-5 w-full transition hover:drop-shadow-lg'
+      aria-disabled={pending}
+    >
       <div className='text-base'>Log in</div>
       <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
     </Button>

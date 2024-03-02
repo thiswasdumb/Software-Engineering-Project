@@ -2,23 +2,35 @@
 line-length = 88
 target-version = ['py311']
 
+
 [tool.pylint.MASTER]
 ignore-patterns = ['venv/*', 'pycache/*']
 init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
 disable = [
     'C0103', # Invalid variable name
     'C0301', # Constant check
+    'R0902', # Too many instance attributes
     'R0903', # Too few public methods
     'R0904', # Too many public methods
     'R0911', # Too many return statements
     'R0913', # Too many arguments
 ]
 
-[tool.pyright]
-pythonVersion = "3.11"
+
+[tool.mypy]
+python_version = '3.11'
+
+[[tool.mypy.overrides]]
+module = 'flask_login'
+ignore_missing_imports = true # No typing support for flask_login
+
+[[tool.mypy.overrides]]
+module = 'database.*'
+follow_imports = 'skip' # No typing support for database
+
 
 [tool.ruff]
-target-version = "py311"
+target-version = 'py311'
 # Defaults + pyflakes + pycodestyle + pylint + isort
 lint.select = ['ALL']
 # Ignore conflicting docstring errors
@@ -34,4 +46,10 @@ max-args = 9
 "index.py" = [
     'S105', # Hardcoded password
     'PLR0911', # Too many return statements
+]
+"database/database_connection.py" = [
+    'E501', # Line too long
+]
+"database/db_schema.py" = [
+    'E501', # Line too long
 ]
