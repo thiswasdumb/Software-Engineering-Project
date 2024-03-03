@@ -1,7 +1,8 @@
+'use client';
 import React from 'react';
-import SidebarLinks from './sidebar-links';
+import MobileNavLinks from './mobile-nav-links';
 
-export default function Sidebar(props: {
+export default function MobileNavbar(props: {
   isOpen: boolean;
   toggle: () => void;
   session: boolean;
@@ -15,7 +16,7 @@ export default function Sidebar(props: {
           display: `${props.isOpen ? 'block' : 'none'}`,
         }}
       >
-        <SidebarLinks
+        <MobileNavLinks
           toggle={props.toggle}
           session={props.session}
           notifCount={props.notifCount}

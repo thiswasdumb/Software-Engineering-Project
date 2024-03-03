@@ -1,4 +1,13 @@
-from vader import SentimentAnalyser
+import sys 
+
+sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker')
+
+from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
+
+
+pos = GetPOSClass()
+p = PreprocessText(pos)
+
 
 article1 = """Google has invested $1bn (£790m) to build its first UK data centre.
 The tech giant said construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025.
@@ -21,6 +30,8 @@ Chancellor Jeremy Hunt, who was at the World Economic Forum in Davos, Switzerlan
 "Our country is no different and this major $1bn investment from Google is a huge vote of confidence in Britain as the largest tech economy in Europe."
 """
 
+
+
 article2 = """
 Microsoft looks beyond Xbox hardware for gaming growth: Microsoft is accelerating a push away from its own Xbox hardware, hoping to boost growth by selling more games on rival consoles as the industry reckons with a protracted slowdown.
 The technology group plans to make a handful of games that were previously offered only on its Xbox available on Sony’s PlayStation and Nintendo’s Switch, in a departure from its previous strategy of keeping games developed in-house as exclusives for its own platforms.
@@ -41,20 +52,27 @@ Microsoft has for several years pushed its subscription service, Game Pass, whic
 article3 = """
 Behind Apple’s Doomed Car Project: False Starts and Wrong Turns
 Internal disagreements over the direction of the Apple car led the effort to sputter for years before it was canceled this week. For the last decade, many Apple employees working on the company’s secretive car project, internally code-named Titan, had a less flattering name for it: the Titanic disaster. They knew the project was likely to fail.
-
 Throughout its existence, the car effort was scrapped and rebooted several times, shedding hundreds of workers along the way. As a result of dueling views among leaders about what an Apple car should be, it began as an electric vehicle that would compete against Tesla and morphed into a self-driving car to rival Google’s Waymo.
-
 By the time of its death — Tuesday, when executives announced internally that the project was being killed and that many members of the team were being reassigned to work on artificial intelligence — Apple had burned more than $10 billion on the project and the car had reverted to its beginnings as an electric vehicle with driving-assistance features rivaling Tesla’s, according to a half dozen people who worked on the project over the past decade.
-
 The car project’s demise was a testament to the way Apple has struggled to develop new products in the years since Steve Jobs’s death in 2011. The effort had four different leaders and conducted multiple rounds of layoffs. But it festered and ultimately fizzled in large part because developing the software and algorithms for a car with autonomous driving features proved too difficult.
+"""
+
+article4 = """
+Alphabet’s Google was hit with a €2.1bn ($2.3bn) lawsuit by 32 media groups including Axel Springer and Schibsted on Wednesday, alleging that they had suffered losses due to the company’s practices in digital advertising.
+Google’s Gemini AI illustrations of a 1943 German soldier.
+Google chief admits ‘biased’ AI tool’s photo diversity offended users
+Read moreThe move by the groups – which include publishers in Austria, Belgium, Bulgaria, the Czech Republic, Denmark, Finland, Hungary, Luxembourg, the Netherlands, Norway, Poland, Spain and Sweden – comes as antitrust regulators also crack down on Google’s ad-tech business.
+“The media companies involved have incurred losses due to a less competitive market, which is a direct result of Google’s misconduct,” a statement issued by their lawyers, Geradin Partners and Stek, said.
+“Without Google’s abuse of its dominant position, the media companies would have received significantly higher revenues from advertising and paid lower fees for ad tech services. Crucially, these funds could have been reinvested into strengthening the European media landscape,” the lawyers said.
 """
 
 
 
-s = SentimentAnalyser()
-print(s.get_article_sentiment(article3))
 
 
-articles = {article1: "positive", article2: "positive", article3: "negative"}
 
-articles_header = {article1: "Google has invested $1bn (£790m) to build its first UK data centre", article2:"Microsoft looks beyond Xbox hardware for gaming growth", article3: "Behind Apple’s Doomed Car Project: False Starts and Wrong Turns"}
+a = [article1, article2, article3, article4]
+articles_list = [p.preprocess_text(a) for a in a]
+
+articles = {article1: "positive", article2: "positive", article3: "negative", article4:"negative"}
+articles_header = {article1: "Google has invested $1bn (£790m) to build its first UK data centre", article2:"Microsoft looks beyond Xbox hardware for gaming growth", article3: "Behind Apple’s Doomed Car Project: False Starts and Wrong Turns", article4:"Google sued for $2.3bn by European media groups over digital ad losses"}

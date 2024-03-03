@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import Navbar from './ui/navigation/navbar';
+import React, { Suspense, ReactNode } from 'react';
+import Navbar from './ui/navigation/navbar/navbar';
 import Footer from './ui/navigation/footer';
 import './globals.css';
 import { Inter } from 'next/font/google';
@@ -25,7 +25,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <>
       <html lang='en'>
         <body className={inter.className}>
-          <Navbar isLoggedIn={session} />
+          <Suspense>
+            <Navbar isLoggedIn={session} />
+          </Suspense>
           <main className='min-h-screen pb-40 pt-20'>
             <Toaster position='bottom-left' reverseOrder={false} />
             {children}

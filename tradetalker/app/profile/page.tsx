@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Metadata } from 'next';
-import ProfileComponent from '../ui/profile';
 import { cookies } from 'next/headers';
+import Loading from '@/app/ui/loading';
 
 export const metadata: Metadata = {
   title: 'Profile',
@@ -9,5 +9,10 @@ export const metadata: Metadata = {
 
 export default function Profile() {
   const session = cookies().get('session') !== undefined;
-  return <ProfileComponent isLoggedIn={session} />;
+  const ProfileComponent = lazy(() => import('app/ui/profile'));
+  return (
+    <Suspense fallback={<Loading message={'Loading profile...'} />}>
+      <ProfileComponent isLoggedIn={session} />
+    </Suspense>
+  );
 }

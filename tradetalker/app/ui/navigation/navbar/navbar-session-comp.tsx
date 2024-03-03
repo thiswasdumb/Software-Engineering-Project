@@ -4,7 +4,7 @@ import ProfileButton from './profile-button';
 import SearchButton from './search-button';
 import WhiteButtons from './white-buttons';
 
-export default function NavbarComponent(props: {
+export default function NavbarSessionComponent(props: {
   notifCount: number;
   isOpen: boolean;
   toggle: () => void;
@@ -21,16 +21,15 @@ export default function NavbarComponent(props: {
         </ul>
       </>
     );
-  } else {
-    return (
-      <>
-        <ul className='hidden items-center gap-x-6 md:flex'>
-          <div className='text-white'>
-            <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
-          </div>
-          <WhiteButtons />
-        </ul>
-      </>
-    );
   }
+  return (
+    <>
+      <ul className='hidden items-center gap-x-6 md:flex'>
+        <div className='text-white'>
+          <SearchButton isOpen={props.isOpen} toggle={props.toggle} />
+        </div>
+        <WhiteButtons />
+      </ul>
+    </>
+  );
 }

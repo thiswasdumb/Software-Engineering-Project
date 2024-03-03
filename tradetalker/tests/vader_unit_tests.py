@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker')
 
 from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
-from testing_articles import articles  # Testing dictionary key=article, value= positive/neutral/negative (human classified)
+from testing_articles import articles, articles_header  # Testing dictionary key=article, value= positive/neutral/negative (human classified)
 from vader import SentimentAnalyser
 
 
@@ -33,10 +33,11 @@ class TestSentimentAnalyser(unittest.TestCase):
                 test_sentiment = self.activation_function(test_compound_result)
                 
                 # Assertions with a more informative message
-                msg = f"Failed for article: {article}. Expected: {expected_sentiment}, Got: {test_sentiment, test_compound_result}"
-                self.assertEqual(test_sentiment, expected_sentiment, msg=msg)
+                msg = f"For article: {articles_header[article]}. Expected: {expected_sentiment}, Got: {test_sentiment, test_compound_result}"
+                print(msg)
+                self.assertEqual(test_sentiment, expected_sentiment)
 
-            
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,8 +9,6 @@ import random
 
 class GetPOSClass:
     
-    def __init__(self):
-       pass
     
     def get_part_of_speech(self, word: str) -> str:
         probable_part_of_speech = wordnet.synsets(word)

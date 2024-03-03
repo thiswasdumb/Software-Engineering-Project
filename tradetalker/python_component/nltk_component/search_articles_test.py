@@ -1,3 +1,5 @@
+
+
 article1 = """Google is racing to fix its new AI-powered tool for creating pictures, after claims it was over-correcting against the risk of being racist.
 Users said the firm's Gemini bot supplied images depicting a variety of genders and ethnicities even when doing so was historically inaccurate.
 For example, a prompt seeking images of America's founding fathers turned up women and people of colour.
@@ -46,7 +48,7 @@ Microsoft has for several years pushed its subscription service, Game Pass, whic
 """
 
 
-article3= text = """
+article3= """
 About 17 years ago, Steve Jobs took the stage at a San Francisco convention center and said he was introducing three products: an iPod, a phone and an internet browser.
 
 “These are not three separate devices,” he said. “This is one device, and we are calling it iPhone.”
@@ -62,6 +64,7 @@ Apple declined to provide an early review unit to The New York Times, so I bough
 The device feels less polished than past first-generation Apple products I’ve used. It’s not better for doing work than a computer, and the games I’ve tried so far aren’t fun, which makes it difficult to recommend. An important feature — the ability to place video calls with a humanlike digital avatar that resembles the wearer — terrified children during a family FaceTime call.
 """
 
+articles_list = [article1,article2, article3]
 articles = {article1: "negative", article2: "negative", article3: "negative"}
 
 articles_header = {0: "Google to fix AI picture bot after 'woke' criticism", 1:"Microsoft looks beyond Xbox hardware for gaming growth", 2: "Vision Pro Review: Apple’s First Headset Lacks Polish and Purpose"}

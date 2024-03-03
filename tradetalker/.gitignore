@@ -10,6 +10,8 @@ next-env.d.ts
 # Python
 /api/venv
 /api/__pycache__/
+/api/.mypy_cache/
+/api/.ruff_cache/
 /api/database/__pycache__/
 
 # Next.js

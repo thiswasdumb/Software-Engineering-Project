@@ -12,9 +12,9 @@ export default function NotifButton({ notifCount }: { notifCount: number }) {
           'relative flex items-center justify-center p-2 hover:opacity-50'
         )}
       >
-        <BellIcon className='h-6 w-6' />
+        <BellIcon className='h-8 w-8 md:h-6 md:w-6' />
         {notifCount > 0 && (
-          <span className='absolute right-0 top-0 rounded-full bg-red-500 px-1 py-0.5 text-xs text-white'>
+          <span className='text-md absolute right-0 top-0 rounded-full bg-red-500 px-1 py-0.5 text-white md:text-xs'>
             {notifCount}
           </span>
         )}
