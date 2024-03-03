@@ -269,7 +269,9 @@ def search(query: str | None) -> Response:
     )
     companies = (
         db.session.execute(
-            db.select(Company).filter(Company.CompanyName.like(f"%{query}%")),
+            db.select(Company)
+            .filter(Company.CompanyName.like(f"%{query}%"))
+            .order_by(Company.StockPrice.desc()),
         )
         .scalars()
         .all()
@@ -324,10 +326,9 @@ def get_followed_companies() -> Response:
     """Returns the user's followed companies."""
     followed_companies = (
         db.session.execute(
-            db.select(Follow)
-            .join(Company, Follow.CompanyID == Company.CompanyID)
-            .filter(Follow.UserID == current_user.id)
-            .add_columns(Company.CompanyName),
+            db.select(Company)
+            .join(Follow, Company.CompanyID == Follow.CompanyID)
+            .filter(Follow.UserID == current_user.id),
         )
         .scalars()
         .all()
