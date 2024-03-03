@@ -34,6 +34,7 @@
     - Exit the server by running `exit`.
 
 - Run the development server with `npm run dev` or `pnpm dev`.
+    - If an error shows up containing the message `/bin/sh: pkg-config: command not found`, try installing `pkg-config` by running `brew install pkg-config`.
 - **Wait until the Flask server is ready**, and open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 - The Flask server will be running on [http://127.0.0.1:8080](http://127.0.0.1:8080).
 - When done, stop the MySQL server. (On macOS, run `mysql.server stop`)
