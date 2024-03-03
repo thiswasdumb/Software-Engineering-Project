@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 # from database_connection import DataBaseConnection
 # db = DataBaseConnection (
-#     host="localhost",
+#         host="localhost",
 #         user="root",
 #         passwd="",
 #         database="tradetalkerdb"
@@ -64,13 +64,12 @@ print(company_data)
 
 # Work out CAPM equation
 # Defining market_data and stock_data arrays using numpy arrays
-market_data = get_data(f'http://api.marketstack.com/v1/{company_symbol + ".INDX"}/eod')
-print(market_data)
+market_data = np.array([-0.685,-0.438,-0.302,0.015,-0.623])
 stock_data = company_data
 
 # Defining bond_yield, inflation, and calculating riskfree rate
-bond_yield = 4.65
-inflation = 4.2
+bond_yield = 5.307
+inflation = 4.0
 riskfree = bond_yield - inflation
 
 # Calculating covariance, variance, and mean of market_data
@@ -87,7 +86,7 @@ mr = np.mean(market_data).item()
 # Beta coefficient
 b = (mr * cv) / mv
 
- # Capital Asset Pricing Model (CAPM) calculation
+# Capital Asset Pricing Model (CAPM) calculation
 capm = riskfree + b * (mr - riskfree)
 
 # Printing the calculated CAPM value
@@ -100,6 +99,15 @@ num_samples = 1200
 CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
 Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
 stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
+
+# Access database and api to retrieve CAPM and Sentiment Score
+# CAPM = capm / 100
+# Sentiment_Score = db. 
+# stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
+
+# Combine sentiment score and CAPM value
+# Sentiment_Score = np.append(Sentiment_Score, CAPM)
+# np.insert(Sentiment_Score, CAPM)
 
 # Create the dataset
 data = {
