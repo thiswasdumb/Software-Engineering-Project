@@ -34,7 +34,7 @@
     - Exit the server by running `exit`.
 
 - Run the development server with `npm run dev` or `pnpm dev`.
-- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Wait until the Flask server is ready**, and open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 - The Flask server will be running on [http://127.0.0.1:8080](http://127.0.0.1:8080).
 - When done, stop the MySQL server. (On macOS, run `mysql.server stop`)
 
