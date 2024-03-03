@@ -29,10 +29,11 @@ from database.db_schema import (
     Notification,
     User,
     UserNotificationRead,
-    add_data,
+    UserQuestion,
     add_base_company_data,
-    update_all_companies_daily,
+    add_data,
     db,
+    update_all_companies_daily,
 )
 
 app = Flask(__name__)
@@ -64,6 +65,7 @@ if reset:
     with app.app_context():
         db.drop_all()
         db.create_all()
+        add_base_company_data()
         add_data()
 
 
@@ -334,10 +336,54 @@ def get_followed_companies() -> Response:
         {
             "id": company.CompanyID,
             "name": company.CompanyName,
+            "symbol": company.StockSymbol,
         }
         for company in followed_companies
     ]
     return jsonify(followed_companies_list)
+
+
+@app.route("/api/get_recommended_articles", methods=["GET"])
+@login_required
+def get_recommended_articles() -> Response:
+    """Returns the user's recommended articles."""
+    return jsonify({"error": "Not implemented yet."})
+
+
+@app.route("/api/get_recommended_companies", methods=["GET"])
+@login_required
+def get_recommended_companies() -> Response:
+    """Returns the user's recommended companies."""
+    return jsonify({"error": "Not implemented yet."})
+
+
+@app.route("/api/get_newsfeed", methods=["GET"])
+@login_required
+def get_newsfeed() -> Response:
+    """Returns the 3 most recent articles from the followed companies."""
+    # Get the 3 most recent articles from the followed companies
+    newsfeed = (
+        db.session.execute(
+            db.select(Article)
+            .join(Follow, Article.CompanyID == Follow.CompanyID)
+            .filter(Follow.UserID == current_user.id)
+            .order_by(desc(Article.PublicationDate))
+            .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    newsfeed_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in newsfeed
+    ]
+    return jsonify(newsfeed_list)
 
 
 # ----------------- Stocks routes -----------------
@@ -454,7 +500,7 @@ def get_article_comments(article_id: str) -> Response:
     return jsonify(comments_list)
 
 
-@app.route("/api/add_article_comment/<string:article_id>", methods=["POST"])
+@app.route("/api/add_article_comment/<string:article_id>", methods=["GET", "POST"])
 @login_required
 def add_article_comment(article_id: str) -> Response:
     """Adds a comment to the article."""
@@ -478,7 +524,7 @@ def add_article_comment(article_id: str) -> Response:
 
 @app.route(
     "/api/add_article_reply/<string:article_id>/<string:comment_id>",
-    methods=["POST"],
+    methods=["GET", "POST"],
 )
 @login_required
 def add_article_reply(article_id: str, comment_id: str) -> Response:
@@ -523,7 +569,7 @@ def get_article_bookmark_status(article_id: str) -> Response:
     return jsonify({"bookmark_status": bool(bookmark_status)})
 
 
-@app.route("/api/like_article/<string:article_id>", methods=["POST"])
+@app.route("/api/like_article/<string:article_id>", methods=["GET", "POST"])
 @login_required
 def like_article(article_id: str) -> Response:
     """Likes the article."""
@@ -537,7 +583,7 @@ def like_article(article_id: str) -> Response:
     return jsonify({"success": "Successfully liked article."})
 
 
-@app.route("/api/unlike_article/<string:article_id>", methods=["DELETE"])
+@app.route("/api/unlike_article/<string:article_id>", methods=["GET"])
 @login_required
 def unlike_article(article_id: str) -> Response:
     """Unlikes the article."""
@@ -555,7 +601,7 @@ def unlike_article(article_id: str) -> Response:
     return jsonify({"success": "Successfully unliked article."})
 
 
-@app.route("/api/bookmark_article/<string:article_id>", methods=["POST"])
+@app.route("/api/bookmark_article/<string:article_id>", methods=["GET", "POST"])
 @login_required
 def bookmark_article(article_id: str) -> Response:
     """Bookmarks the article."""
@@ -569,7 +615,7 @@ def bookmark_article(article_id: str) -> Response:
     return jsonify({"success": "Successfully bookmarked article."})
 
 
-@app.route("/api/unbookmark_article/<string:article_id>", methods=["DELETE"])
+@app.route("/api/unbookmark_article/<string:article_id>", methods=["GET"])
 @login_required
 def unbookmark_article(article_id: str) -> Response:
     """Unbookmarks the article."""
@@ -591,30 +637,9 @@ def unbookmark_article(article_id: str) -> Response:
 
 
 @app.route("/api/get_companies", methods=["GET"])
-def get_companies() -> Response:
-    """Returns the companies."""
-    # Select all companies
-    companies = db.session.execute(db.select(Company)).scalars().all()
-    companies_list = [
-        {
-            "id": company.CompanyID,
-            "name": company.CompanyName,
-            "stock_price": company.StockPrice,
-            "symbol": company.StockSymbol,
-            "industry": company.Industry,
-            "description": company.CompanyDescription,
-            "predicted_stock_price": company.PredictedStockPrice,
-            "stock_variance": company.StockVariance,
-        }
-        for company in companies
-    ]
-    return jsonify(companies_list)
-
-
-@app.route("/api/companies", methods=["GET"])
 def load_companies() -> Response:
     """Load all companies for display. Will replace main function with this soon."""
-    companies = Company.query.all()
+    companies = db.session.execute(db.select(Company)).scalars().all()
     return jsonify([company.to_dict() for company in companies])
 
 
@@ -628,20 +653,22 @@ def get_company(company_id: str) -> Response:
         .first()
     )
     if company is not None:
-        company_json = {
-            "company_name": company.CompanyName,
-            "stock_symbol": company.StockSymbol,
-            "stock_price": company.StockPrice,
-            "industry": company.Industry,
-            "description": company.CompanyDescription,
-            "predicted_stock_price": company.PredictedStockPrice,
-            "stock_variance": company.StockVariance,
-        }
-        return jsonify(company_json)
+        return jsonify(company.to_dict())
     return jsonify({"error": "Company not found."})
 
 
-@app.route("/api/follow_company/<string:company_id>", methods=["POST"])
+@app.route("/api/get_company_follow_status/<string:company_id>", methods=["GET"])
+@login_required
+def get_company_follow_status(company_id: str) -> Response:
+    """Returns the user's follow status for the company."""
+    # Get the user's follow status for the company with the given ID
+    follow_status = db.session.execute(
+        db.select(Follow).filter_by(UserID=current_user.id, CompanyID=company_id),
+    ).scalar()
+    return jsonify({"follow_status": bool(follow_status)})
+
+
+@app.route("/api/follow_company/<string:company_id>", methods=["GET", "POST"])
 @login_required
 def follow_company(company_id: str) -> Response:
     """Follows the company."""
@@ -653,6 +680,24 @@ def follow_company(company_id: str) -> Response:
     except IntegrityError:
         return jsonify({"error": "Could not follow company."})
     return jsonify({"success": "Successfully followed company."})
+
+
+@app.route("/api/unfollow_company/<string:company_id>", methods=["GET"])
+@login_required
+def unfollow_company(company_id: str) -> Response:
+    """Unfollows the company."""
+    try:
+        # Unfollow the company with the given ID
+        db.session.execute(
+            db.delete(Follow).filter(
+                Follow.UserID == current_user.id,
+                Follow.CompanyID == company_id,
+            ),
+        )
+        db.session.commit()
+    except IntegrityError:
+        return jsonify({"error": "Could not unfollow company."})
+    return jsonify({"success": "Successfully unfollowed company."})
 
 
 # ----------------- FAQ routes -----------------
@@ -671,6 +716,25 @@ def get_questions() -> Response:
         for question in questions
     ]
     return jsonify(questions_list)
+
+
+@app.route("/api/submit_question", methods=["GET", "POST"])
+@login_required
+def submit_question() -> Response:
+    """Submits a support question."""
+    if request.json is None:
+        return jsonify({"error": "Invalid request."})
+    question = request.json["question"]
+    try:
+        # Add a question to the support page
+        new_question = UserQuestion(current_user.id, question)
+        db.session.add(new_question)
+        db.session.commit()
+    except IntegrityError:
+        return jsonify({"error": "Could not submit question."})
+    return jsonify(
+        {"success": "Question submitted. We will respond as soon as possible."},
+    )
 
 
 # ----------------- Notification routes -----------------
@@ -764,16 +828,26 @@ def get_bookmarks() -> Response:
     )
     bookmarks_list = [
         {
-            "id": bookmark.ArticleID,
-            "title": bookmark.Title,
-            "summary": bookmark.Summary,
+            "id": bookmark.BookmarkID,
+            "article_id": bookmark.ArticleID,
+            "title": db.session.execute(
+                db.select(Article.Title).filter_by(
+                    ArticleID=bookmark.ArticleID,
+                ),
+            ).scalar(),
+            "date": bookmark.BookmarkDate,
+            "summary": db.session.execute(
+                db.select(Article.Summary).filter_by(
+                    ArticleID=bookmark.ArticleID,
+                ),
+            ).scalar(),
         }
         for bookmark in bookmarks
     ]
     return jsonify(bookmarks_list)
 
 
-@app.route("/api/add_bookmark/<string:article_id>", methods=["POST"])
+@app.route("/api/add_bookmark/<string:article_id>", methods=["GET", "POST"])
 @login_required
 def add_bookmark(article_id: str) -> Response:
     """Adds a bookmark for the user."""
@@ -787,7 +861,7 @@ def add_bookmark(article_id: str) -> Response:
     return jsonify({"success": "Successfully added bookmark."})
 
 
-@app.route("/api/delete_bookmark/<string:article_id>", methods=["DELETE"])
+@app.route("/api/delete_bookmark/<string:article_id>", methods=["GET"])
 @login_required
 def delete_bookmark(article_id: str) -> Response:
     """Deletes the user's bookmark."""
@@ -852,8 +926,9 @@ def delete_user() -> Response:
 
 
 def daily_company_update() -> bool:
-    """ Calling this function once a day (?) to update price_related fields """
+    """Calls once a day (?) to update price_related fields."""
     return update_all_companies_daily()
+
 
 if __name__ == "__main__":
     app.run(debug=os.environ["ENV"] == "dev", port=8080)
