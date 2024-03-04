@@ -3,6 +3,8 @@ import Comments from './comments';
 import { redirect } from 'next/navigation';
 import Like from './like';
 import Bookmark from './bookmark';
+import Link from 'next/link';
+import ScrollUp from '@/app/ui/scroll-up';
 
 async function getArticle(id: string) {
   const response = await fetch(`http://localhost:8080/api/get_article/${id}`);
@@ -52,39 +54,54 @@ export default async function ArticlePage({
   if (isLoggedIn) {
     try {
       const likeStatus = await getLikeStatus(id);
-      isLiked = likeStatus.is_liked;
+      isLiked = likeStatus.like_status;
       const bookmarkStatus = await getBookmarkStatus(id);
-      isBookmarked = bookmarkStatus.is_bookmarked;
+      isBookmarked = bookmarkStatus.bookmark_status;
     } catch (error) {
       console.error('Error fetching like status:', error);
     }
   }
 
   return (
-    <div className='m-8 rounded-lg bg-slate-200 p-8'>
-      <div className='flex flex-row justify-between'>
-        <div>
-          <div className='text-2xl'>{articleData.title}</div>
-          <div className='text-sm text-slate-500'>
-            {formatDate(articleData.publication_date)}
+    <>
+      <ScrollUp />
+      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+        <div className='flex flex-row justify-between'>
+          <div>
+            <div className='text-2xl'>{articleData.title}</div>
+            <div className='text-sm text-slate-500'>
+              {formatDate(articleData.publication_date)}
+            </div>
           </div>
+          {isLoggedIn && (
+            <div className='flex flex-row'>
+              <Like isLiked={isLiked} articleId={id} isLoggedIn={isLoggedIn} />
+              <Bookmark
+                isBookmarked={isBookmarked}
+                isLoggedIn={isLoggedIn}
+                id={id}
+              />
+            </div>
+          )}
         </div>
-        {isLoggedIn && (
-          <div className='flex flex-row'>
-            <Like isLiked={isLiked} />
-            <Bookmark isBookmarked={isBookmarked} />
-          </div>
-        )}
-      </div>
 
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='text-lg'>Company: {articleData.company_name}</div>
-      <div className='text-lg'>Summary: {articleData.summary}</div>
-      <hr className='border-1 my-2 rounded-lg border-slate-400' />
-      <div className='text-lg'>{articleData.content}</div>
-      <hr className='border-1 my-2 rounded-lg border-slate-400' />
-      <Comments articleId={id} isLoggedIn={isLoggedIn} />
-    </div>
+        <hr className='my-2 rounded-lg border-2 border-slate-400' />
+        <div className='text-lg'>
+          Company:&nbsp;
+          <Link
+            className='underline hover:drop-shadow-lg'
+            href={`/company/${articleData.company_id}`}
+          >
+            {articleData.company_name}
+          </Link>
+        </div>
+        <div className='text-lg'>Summary: {articleData.summary}</div>
+        <hr className='border-1 my-2 rounded-lg border-slate-400' />
+        <div className='text-lg'>{articleData.content}</div>
+        <hr className='border-1 my-2 rounded-lg border-slate-400' />
+        <Comments articleId={id} isLoggedIn={isLoggedIn} />
+      </div>
+    </>
   );
 }
 
