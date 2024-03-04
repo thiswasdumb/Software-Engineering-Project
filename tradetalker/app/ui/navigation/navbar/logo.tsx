@@ -11,15 +11,15 @@ export default function Logo(props: { isOpen: boolean; toggle: () => void }) {
         href='/'
         onClick={props.isOpen ? props.toggle : undefined}
       >
-        <div className='logo-container'>
+        <button type='button' className='logo-container'>
           <Image
             src={logo}
-            alt='TradeTalker Logo'
-            width={210}
+            alt='TradeTalk Logo'
+            width={100}
             className='relative'
             priority={true}
           />
-        </div>
+        </button>
       </Link>
     </>
   );
