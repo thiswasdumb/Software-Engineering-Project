@@ -66,7 +66,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
           </div>
         )}
         {searchParams.get('query') !== null && (
-          <div className='flex flex-col md:flex-row'>
+          <div className='flex flex-col md:flex-row md:items-start'>
             <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
               <div className='text-2xl'>Articles</div>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
@@ -80,11 +80,16 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                     className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
                     href={`/article/${article.id}`}
                   >
-                    <div>
-                      {getHighlightedText(
-                        article.title,
-                        searchParams.get('query')
-                      )}
+                    <div className='flex flex-row flex-wrap justify-between'>
+                      <div>
+                        {getHighlightedText(
+                          article.title,
+                          searchParams.get('query')
+                        )}
+                      </div>
+                      <div className='text-sm text-gray-600'>
+                        {article.date}
+                      </div>
                     </div>
                     <div>{article.summary}</div>
                   </Link>
@@ -109,11 +114,15 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                     >
                       <div>
                         {getHighlightedText(
+                          company.symbol,
+                          searchParams.get('query')
+                        )}
+                        &nbsp;|&nbsp;
+                        {getHighlightedText(
                           company.name,
                           searchParams.get('query')
                         )}
                       </div>
-                      <div>{company.stock_symbol}</div>
                       <div className='text-base'>{company.stock_price}</div>
                       <div className='text-sm'>{company.industry}</div>
                     </Link>
