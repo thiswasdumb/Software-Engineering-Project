@@ -71,6 +71,7 @@ export default function NotifClientComponent({
                   <div className='text-lg'>{notif.content}</div>
                 </Link>
                 <button
+                  type='button'
                   className='float-right m-2 rounded-lg bg-red-500 p-2 text-sm text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
                   onClick={() => deleteNotification(notif.id)}
                 >

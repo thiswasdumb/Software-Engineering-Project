@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { CommentForm, ReplyForm } from './comment-form';
+import { CommentForm } from './comment-form';
 
 export default function Comments({
   articleId,
@@ -34,18 +34,7 @@ export default function Comments({
             </div>
             <div className='flex flex-row items-center'>
               <div>{comment.content}</div>
-              <div>
-                <button
-                  className='ml-4 rounded-lg bg-blue-500 p-2 text-sm text-white transition hover:bg-blue-600 hover:drop-shadow-lg'
-                  onClick={() => {}}
-                >
-                  Reply
-                </button>
-              </div>
             </div>
-            {isLoggedIn && (
-              <ReplyForm articleId={articleId} commentId={comment.id} />
-            )}
           </div>
         ))}
       </div>

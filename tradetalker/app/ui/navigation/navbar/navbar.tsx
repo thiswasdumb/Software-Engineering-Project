@@ -7,6 +7,7 @@ import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from '../mobile-navbar';
 import SearchButton from './search-button';
 import NotifButton from './notif-button';
+import BookmarkButton from './bookmark-button';
 import { toast } from 'react-hot-toast';
 
 export default function Navbar(props: { isLoggedIn: boolean }) {
@@ -16,6 +17,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
 
   useEffect(() => {
     if (props.isLoggedIn) {
+      localStorage.clear();
       fetch('/api/get_notification_count', { credentials: 'include' })
         .then((response) => response.json())
         .then((data) => {
@@ -63,6 +65,9 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
             <div className='inline-flex items-center gap-4 text-white md:hidden'>
               <SearchButton isOpen={menuToggled} toggle={toggleMenu} />
               {props.isLoggedIn && <NotifButton notifCount={notifs} />}
+              {props.isLoggedIn && (
+                <BookmarkButton isOpen={menuToggled} toggle={toggleMenu} />
+              )}
               <button type='button' onClick={toggleMenu}>
                 <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
               </button>

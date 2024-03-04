@@ -4,7 +4,15 @@ import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as SolidBookmarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
 
-export default function Bookmark({ isBookmarked }: { isBookmarked: boolean }) {
+export default function Bookmark({
+  isBookmarked,
+  isLoggedIn,
+  id,
+}: {
+  isBookmarked: boolean;
+  isLoggedIn: boolean;
+  id: string;
+}) {
   const [bookmarked, setBookmarked] = useState(false);
 
   useEffect(() => {
@@ -12,8 +20,37 @@ export default function Bookmark({ isBookmarked }: { isBookmarked: boolean }) {
     setBookmarked(isBookmarked);
   }, [setBookmarked, isBookmarked]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setBookmarked(!bookmarked);
+    if (isLoggedIn) {
+      if (!bookmarked) {
+        try {
+          const response = await fetch(`/api/add_bookmark/${id}`, {
+            credentials: 'include',
+          });
+          const data: Record<string, any> = response.json();
+          if (data.success) {
+            setBookmarked(true);
+          }
+        } catch (error) {
+          console.error('Error adding bookmark:', error);
+        }
+      } else {
+        try {
+          const response = await fetch(`/api/remove_bookmark/${id}`, {
+            credentials: 'include',
+          });
+          const data: Record<string, any> = response.json();
+          if (data.success) {
+            setBookmarked(false);
+          }
+        } catch (error) {
+          console.error('Error removing bookmark:', error);
+        }
+      }
+    } else {
+      toast.error('You must be logged in.');
+    }
     toast.success(
       bookmarked ? 'Removed from bookmarks.' : 'Added to bookmarks.'
     );
