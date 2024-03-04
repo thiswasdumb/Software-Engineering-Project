@@ -8,6 +8,7 @@ from sklearn.metrics import mean_absolute_error
 import matplotlib.pyplot as plt
 import requests
 from datetime import datetime, timedelta
+import yfinance as yf
 
 # from database_connection import DataBaseConnection
 # db = DataBaseConnection (
@@ -20,10 +21,12 @@ from datetime import datetime, timedelta
 # Our MarketStack API
 API_KEY = 'f22b6caa5edecd4bdcbc0b962fb54a71'
 
+# Calculate the dates of the last 7 days 
+end_date = datetime.today().strftime("%Y-%m-%d")
+start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+
 # Function to fetch market data from API
 def get_data(url):
-    end_date = datetime.today().strftime("%Y-%m-%d")
-    start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
 
     # Parameters for the request (optional)
     params = {
@@ -59,12 +62,24 @@ def get_data(url):
 
 # Example usage
 company_symbol = 'AAPL'  # Example: Apple Inc.
+
+# Define the ticker symbol for the FTSE 100 index
+ticker_symbol = "^FTSE"
+
+# Fetch historical data
+ftse_data = yf.download(ticker_symbol, start=start_date, end=end_date)
+x = pd.DataFrame(ftse_data)
+
+# calculate percentage change
+percentage_change = (x['Open']/x['Close']-1).to_numpy()
+
 company_data = get_data(f'http://api.marketstack.com/v1/tickers/{company_symbol}/eod')
 print(company_data)
+print(percentage_change)
 
 # Work out CAPM equation
 # Defining market_data and stock_data arrays using numpy arrays
-market_data = np.array([-0.685,-0.438,-0.302,0.015,-0.623])
+market_data = percentage_change
 stock_data = company_data
 
 # Defining bond_yield, inflation, and calculating riskfree rate
