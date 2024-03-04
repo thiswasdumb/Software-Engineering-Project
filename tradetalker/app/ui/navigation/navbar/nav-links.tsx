@@ -27,7 +27,9 @@ export default function NavLinks(props: { session: boolean }) {
               }
             )}
           >
-            <p className='hidden md:block'>{link.name}</p>
+            <button type='button'>
+              <p className='hidden md:block'>{link.name}</p>
+            </button>
           </Link>
         );
       })}

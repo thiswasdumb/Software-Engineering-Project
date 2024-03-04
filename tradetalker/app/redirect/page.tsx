@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 export default function RedirectPage() {
   const router = useRouter();
   useEffect(() => {
-    // Redirect to another page
+    // Redirect to homepage
     router.push('/api/redirect');
   }, [router]);
 
