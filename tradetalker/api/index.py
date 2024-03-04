@@ -60,7 +60,7 @@ def load_user(user_id: int) -> User | None:
     return db.session.get(User, user_id)
 
 
-reset = True
+reset = True  # Set to False to keep the database data on restart
 if reset:
     with app.app_context():
         db.drop_all()
@@ -74,6 +74,8 @@ MIN_USERNAME_LENGTH = 3
 MAX_USERNAME_LENGTH = 50
 MIN_PASSWORD_LENGTH = 8
 MAX_PASSWORD_LENGTH = 200
+MIN_COMMENT_LENGTH = 1
+MAX_COMMENT_LENGTH = 10000
 
 
 @app.errorhandler(404)
@@ -120,7 +122,7 @@ def home() -> Response:
 # Redirecting to another route
 @app.route("/api/redirect", methods=["GET"])
 def red() -> Response:
-    """Redirects to the TradeTalker frontend."""
+    """Redirects to the TradeTalk frontend."""
     return redirect(url_for("home"), code=302)
 
 
@@ -270,7 +272,10 @@ def search(query: str | None) -> Response:
     companies = (
         db.session.execute(
             db.select(Company)
-            .filter(Company.CompanyName.like(f"%{query}%"))
+            .filter(
+                Company.CompanyName.like(f"%{query}%")
+                | Company.StockSymbol.like(f"%{query}%"),
+            )
             .order_by(Company.StockPrice.desc()),
         )
         .scalars()
@@ -280,6 +285,7 @@ def search(query: str | None) -> Response:
         {
             "id": article.ArticleID,
             "title": article.Title,
+            "date": article.PublicationDate,
             "summary": article.Summary,
         }
         for article in articles
@@ -316,7 +322,7 @@ def dashboard() -> Response:
 def get_dashboard_data() -> Response:
     """Returns the user's dashboard data."""
     if current_user.is_authenticated:  # Currently buggy with @login_required
-        return jsonify({"username": current_user.Username})
+        return jsonify({"username": "Welcome, " + current_user.Username})
     return jsonify({"error": "You are not logged in."})
 
 
@@ -328,7 +334,8 @@ def get_followed_companies() -> Response:
         db.session.execute(
             db.select(Company)
             .join(Follow, Company.CompanyID == Follow.CompanyID)
-            .filter(Follow.UserID == current_user.id),
+            .filter(Follow.UserID == current_user.id)
+            .order_by(desc(Follow.FollowDate)),
         )
         .scalars()
         .all()
@@ -355,7 +362,34 @@ def get_recommended_articles() -> Response:
 @login_required
 def get_recommended_companies() -> Response:
     """Returns the user's recommended companies."""
-    return jsonify({"error": "Not implemented yet."})
+    # Right now this only selects 3 random companies that the user is not following
+    followed_companies = (
+        db.session.execute(
+            db.select(Follow.CompanyID).filter(Follow.UserID == current_user.id),
+        )
+        .scalars()
+        .all()
+    )
+    followed_company_ids = list(followed_companies)
+    recommended_companies = (
+        db.session.execute(
+            db.select(Company)
+            .filter(~Company.CompanyID.in_(followed_company_ids))
+            .order_by(db.func.rand())
+            .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    recommended_companies_list = [
+        {
+            "id": company.CompanyID,
+            "name": company.CompanyName,
+            "symbol": company.StockSymbol,
+        }
+        for company in recommended_companies
+    ]
+    return jsonify(recommended_companies_list)
 
 
 @app.route("/api/get_newsfeed", methods=["GET"])
@@ -395,7 +429,9 @@ def get_stock_trends() -> Response:
     """Returns the stock trends."""
     # Get the stock trends
     stock_trends = (
-        db.session.execute(db.select(Company).order_by(Company.StockVariance.desc()))
+        db.session.execute(
+            db.select(Company).order_by(Company.PredictedStockPrice.desc()).limit(25),
+        )
         .scalars()
         .all()
     )
@@ -445,15 +481,15 @@ def get_article(article_id: str) -> Response:
         .scalars()
         .first()
     )
-    # Get the company name of the article using the company ID
-    company_name = (
-        db.session.execute(
-            db.select(Company.CompanyName).filter_by(CompanyID=article.CompanyID),
-        )
-        .scalars()
-        .first()
-    )
     if article is not None:
+        # Get the company name of the article using the company ID
+        company_name = (
+            db.session.execute(
+                db.select(Company.CompanyName).filter_by(CompanyID=article.CompanyID),
+            )
+            .scalars()
+            .first()
+        )
         article_json = {
             "company_name": company_name,
             "company_id": article.CompanyID,
@@ -501,13 +537,22 @@ def get_article_comments(article_id: str) -> Response:
     return jsonify(comments_list)
 
 
+@app.route("/api/check_verified", methods=["GET"])
+@login_required
+def check_verified() -> Response:
+    """Returns whether the user is verified."""
+    return jsonify({"verified": current_user.IsVerified})
+
+
 @app.route("/api/add_article_comment/<string:article_id>", methods=["GET", "POST"])
 @login_required
 def add_article_comment(article_id: str) -> Response:
     """Adds a comment to the article."""
     if request.json is None:
         return jsonify({"error": "Invalid request."})
-    comment = request.json["content"]
+    comment = request.json["comment"]
+    if len(comment) < MIN_COMMENT_LENGTH or len(comment) > MAX_COMMENT_LENGTH:
+        return jsonify({"error": "Comment must be between 1 and 10000 characters."})
     try:
         # Add a comment to the article with the given ID
         new_comment = ArticleComment(
@@ -523,6 +568,24 @@ def add_article_comment(article_id: str) -> Response:
     return jsonify({"success": "Successfully added comment."})
 
 
+@app.route("/api/delete_article_comment/<string:comment_id>", methods=["GET"])
+@login_required
+def delete_article_comment(comment_id: str) -> Response:
+    """Deletes the article comment."""
+    try:
+        # Delete the article comment with the given ID
+        db.session.execute(
+            db.delete(ArticleComment).filter(
+                ArticleComment.CommentID == comment_id,
+                ArticleComment.UserID == current_user.id,
+            ),
+        )
+        db.session.commit()
+    except IntegrityError:
+        return jsonify({"error": "Could not delete comment."})
+    return jsonify({"success": "Successfully deleted comment."})
+
+
 @app.route(
     "/api/add_article_reply/<string:article_id>/<string:comment_id>",
     methods=["GET", "POST"],
@@ -532,7 +595,7 @@ def add_article_reply(article_id: str, comment_id: str) -> Response:
     """Adds a reply to the article comment."""
     if request.json is None:
         return jsonify({"error": "Invalid request."})
-    reply = request.json["content"]
+    reply = request.json["reply"]
     try:
         # Add a reply to the comment with the given ID
         new_reply = ArticleComment(
@@ -553,10 +616,15 @@ def add_article_reply(article_id: str, comment_id: str) -> Response:
 def get_article_like_status(article_id: str) -> Response:
     """Returns the user's like status for the article."""
     # Get the user's like status for the article with the given ID
-    like_status = db.session.execute(
-        db.select(LikeTable).filter_by(UserID=current_user.id, ArticleID=article_id),
-    ).scalar()
-    return jsonify({"like_status": bool(like_status)})
+    like_status = bool(
+        db.session.execute(
+            db.select(LikeTable).filter_by(
+                UserID=current_user.id,
+                ArticleID=article_id,
+            ),
+        ).scalar(),
+    )
+    return jsonify({"like_status": like_status})
 
 
 @app.route("/api/get_article_bookmark_status/<string:article_id>", methods=["GET"])
@@ -726,6 +794,8 @@ def submit_question() -> Response:
     if request.json is None:
         return jsonify({"error": "Invalid request."})
     question = request.json["question"]
+    if len(question) < MIN_COMMENT_LENGTH or len(question) > MAX_COMMENT_LENGTH:
+        return jsonify({"error": "Question must be between 1 and 10000 characters."})
     try:
         # Add a question to the support page
         new_question = UserQuestion(current_user.id, question)
@@ -822,7 +892,8 @@ def get_bookmarks() -> Response:
         db.session.execute(
             db.select(Bookmark)
             .join(Article, Bookmark.ArticleID == Article.ArticleID)
-            .filter(Bookmark.UserID == current_user.id),
+            .filter(Bookmark.UserID == current_user.id)
+            .order_by(desc(Bookmark.BookmarkDate)),
         )
         .scalars()
         .all()
@@ -912,18 +983,18 @@ def logout() -> Response:
 
 
 @app.route("/api/delete_user", methods=["GET"])
+@login_required
 def delete_user() -> Response:
     """Deletes the user."""
-    if current_user.is_authenticated:
-        session.clear()  # Remove the sessions
-        logout_user()
-        db.session.delete(current_user)
-        db.session.commit()
-        return redirect(
-            url_for("home", success="Successfully deleted account!"),
-            code=301,
-        )
-    return redirect(url_for("login", error="You are not logged in."))
+    user = db.session.execute(db.select(User).filter_by(id=current_user.id)).scalar()
+    session.clear()
+    logout_user()
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(
+        url_for("home", success="Successfully deleted account!"),
+        code=301,
+    )
 
 
 def daily_company_update() -> bool:
