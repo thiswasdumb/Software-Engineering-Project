@@ -11,11 +11,11 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | TradeTalker',
-    default: 'TradeTalker',
+    template: '%s | TradeTalk',
+    default: 'TradeTalk',
   },
   description:
-    'The TradeTalker website for sentiment-based financial news reports.',
+    'The TradeTalk website for sentiment-based financial news reports.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

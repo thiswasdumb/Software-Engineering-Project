@@ -7,8 +7,8 @@ export default function Logout(isLoggedIn: boolean) {
       fetch('/api/logout', { credentials: 'include' })
         .then((response) => response.json())
         .then(() => {
+          localStorage.clear();
           window.location.href = '/home';
-          toast.success('Logged out successfully.');
         })
         .catch(() => {
           toast.error('Error logging out.');

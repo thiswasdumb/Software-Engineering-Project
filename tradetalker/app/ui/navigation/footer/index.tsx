@@ -6,15 +6,15 @@ export default function Footer() {
   return (
     <>
       <footer>
-        <div className='min-h-100 flex h-40 w-full flex-grow bg-blue-600'>
+        <div className='min-h-100 relative flex h-40 w-full flex-grow bg-blue-600'>
           <div className='m-auto flex h-full flex-col justify-center px-4'>
             <div className='flex items-center justify-between'>
               <div className='flex h-full items-center justify-between gap-x-8'>
                 <Link href='/'>
                   <Image
                     src={logo}
-                    alt='TradeTalker Logo'
-                    width={50}
+                    alt='TradeTalk Logo'
+                    width={100}
                     className='relative hover:opacity-90'
                     priority={true}
                   />
@@ -50,7 +50,7 @@ export default function Footer() {
               </div>
             </div>
             <div className='text-center text-sm text-white'>
-              &copy; 2024 TradeTalker Inc.
+              &copy; 2024 TradeTalk Inc.
             </div>
           </div>
         </div>

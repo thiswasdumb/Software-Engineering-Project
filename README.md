@@ -12,7 +12,7 @@
 - Xun Khang Tan
 
 <br>
-<img src="/tradetalker/public/images/logo.png" alt="TradeTalker" width="150"/>
+<img src="/tradetalker/public/images/logo.png" alt="TradeTalk" width="150"/>
 
 ## Requirements
 - [Python 3.11 or higher](https://www.python.org/downloads/)

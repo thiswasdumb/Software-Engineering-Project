@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const HomeComponent = lazy(() => import('app/ui/homepage')); // Lazy load the component
+  const HomeComponent = lazy(() => import('@/app/ui/home/homepage')); // Lazy load the component
   return (
     <Suspense fallback={<Loading message={'Loading home...'} />}>
       <HomeComponent />

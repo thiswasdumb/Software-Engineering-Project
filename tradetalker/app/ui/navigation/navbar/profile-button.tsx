@@ -12,7 +12,9 @@ export default function ProfileButton() {
           'flex items-center justify-center p-2 hover:opacity-50'
         )}
       >
-        <UserIcon className='h-6 w-6' />
+        <button type='button'>
+          <UserIcon className='h-6 w-6' />
+        </button>
       </Link>
     </>
   );

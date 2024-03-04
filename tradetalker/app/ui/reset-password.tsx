@@ -128,7 +128,7 @@ export default function ResetPasswordForm() {
 function ChangePasswordButton() {
   const { pending } = useFormStatus();
   return (
-    <Button className='mt-5 w-full' aria-disabled={pending}>
+    <Button type='button' className='mt-5 w-full' aria-disabled={pending}>
       <div className='text-base'>Change password</div>
       <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
     </Button>

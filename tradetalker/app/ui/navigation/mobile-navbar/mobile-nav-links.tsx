@@ -24,6 +24,7 @@ export default function MobileNavLinks(props: {
             href: '/notifications',
             onClick: props.toggle,
           },
+          { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
           { name: 'Profile', href: '/profile', onClick: props.toggle },
           { name: 'Log out', href: '', onClick: () => Logout(props.session) },
         ]
