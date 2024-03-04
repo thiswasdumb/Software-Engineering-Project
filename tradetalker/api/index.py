@@ -67,7 +67,7 @@ if reset:
         db.create_all()
         add_base_company_data()
         add_data()
-        add_base_company_data()
+
 
 
 MAX_EMAIL_LENGTH = 100
