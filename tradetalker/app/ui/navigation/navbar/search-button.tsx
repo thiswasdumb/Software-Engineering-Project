@@ -14,7 +14,9 @@ export default function SearchButton(props: {
         onClick={props.isOpen ? props.toggle : undefined}
         title='Search'
       >
-        <MagnifyingGlassIcon className='h-8 w-8 md:h-6 md:w-6' />
+        <button type='button'>
+          <MagnifyingGlassIcon className='h-8 w-8 md:h-6 md:w-6' />
+        </button>
       </Link>
     </>
   );
