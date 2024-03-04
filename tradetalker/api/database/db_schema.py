@@ -42,8 +42,8 @@ class Company(db.Model):  # type: ignore [name-defined]
         Text(collation="utf8mb4_general_ci"),
         nullable=False,
     )
-    PredictedStockPrice = mapped_column(Float, nullable=False)
-    StockVariance = mapped_column(Float, nullable=False)
+    PredictedStockPrice = mapped_column(Float, nullable=True)
+    StockVariance = mapped_column(Float, nullable=True)
     StockPrice_D_1 = mapped_column(Float, nullable=True)
     StockPrice_D_2 = mapped_column(Float, nullable=True)
     StockPrice_D_3 = mapped_column(Float, nullable=True)
@@ -227,6 +227,8 @@ class Article(db.Model):  # type: ignore [name-defined]
     Source = mapped_column(String(100, "utf8mb4_general_ci"), nullable=False)
     Summary = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=False)
     PredictionScore = mapped_column(Float, nullable=False)
+    KeyWords = mapped_column(String(100, "utf8mb4_general_ci"), nullable=True)
+    ProcessedArticle = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=True)
 
     company: Mapped["Company"] = relationship("Company", back_populates="article")
     articlecomment: Mapped[list["ArticleComment"]] = relationship(
