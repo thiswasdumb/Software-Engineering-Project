@@ -80,7 +80,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
             >
               <div className='flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8'>
                 <h1 className='mb-3 text-2xl'>
-                  Sign up to begin your TradeTalker journey.
+                  Sign up to begin your TradeTalk journey.
                 </h1>
                 <div className='w-full'>
                   <div>
@@ -175,7 +175,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
 function SignupButton() {
   const { pending } = useFormStatus();
   return (
-    <Button className='mt-5 w-full' aria-disabled={pending}>
+    <Button type='submit' className='mt-5 w-full' aria-disabled={pending}>
       <div className='text-base'>Sign up</div>{' '}
       <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
     </Button>

@@ -28,6 +28,8 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          SameSite: 'None',
+          Secure: 'true',
         },
         body: JSON.stringify(data),
       });
@@ -75,7 +77,7 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
             >
               <div className='flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8'>
                 <h1 className='mb-3 text-2xl'>
-                  Log in to continue your TradeTalker journey.
+                  Log in to continue your TradeTalk journey.
                 </h1>
                 <div className='w-full'>
                   <div>
@@ -151,6 +153,7 @@ function LoginButton() {
   const { pending } = useFormStatus();
   return (
     <Button
+      type='submit'
       className='mt-5 w-full transition hover:drop-shadow-lg'
       aria-disabled={pending}
     >
@@ -162,7 +165,10 @@ function LoginButton() {
 
 function ForgotPassword() {
   return (
-    <Button className='mt-3 bg-slate-500 hover:bg-slate-400 active:bg-slate-500'>
+    <Button
+      type='button'
+      className='mt-3 bg-slate-500 hover:bg-slate-400 active:bg-slate-500'
+    >
       <a href='/forgot-password'>Forgot password?</a>
     </Button>
   );
