@@ -127,7 +127,7 @@ class Linear_Regression:
 
         # Access database and api to retrieve Sentiment Score
         # Sentiment_Score = db. 
-
+        print('CAPM: ', CAPM)
         Sentiment_Score = np.array([0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898])
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
         stock_price = stock_data[-1] * CAPM  * ((Sentiment_Score * 0.1) + 1)
