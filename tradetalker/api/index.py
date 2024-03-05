@@ -1,5 +1,5 @@
 """Contains the Flask application to send data to the TradeTalker frontend."""
-
+import datetime
 import os
 import re
 from typing import Literal
@@ -34,6 +34,11 @@ from database.db_schema import (
     add_data,
     db,
     update_all_companies_daily,
+    get_company_article_sentiment_scores,
+    get_all_company_names,
+    get_articles_by_company_name,
+    get_article_from_news_script,
+    get_company_data_for_linear_regression,
 )
 
 app = Flask(__name__)
@@ -67,6 +72,24 @@ if reset:
         db.create_all()
         add_base_company_data()
         add_data()
+        get_company_article_sentiment_scores(1)
+        get_all_company_names()
+        get_article_from_news_script({
+            'Company': "3i",
+            'Title': "Test article for 3i",
+            'Content': "Blah blah blah 3i so good",
+            'URL': "idk.whocares",
+            'Summary': "3i nice!",
+            'PublicationDate': datetime.datetime.now(),
+            'ProcessedArticle': "Article processed!",
+            "PredictionScore": 1
+        })
+        print(get_articles_by_company_name("3i"))
+        company_name="3i"
+        comp = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
+                                     ).scalars().first()
+        print(comp)
+        print(get_company_data_for_linear_regression(comp))
 
 
 
@@ -498,7 +521,7 @@ def get_article(article_id: str) -> Response:
             "content": article.Content,
             "publication_date": article.PublicationDate,
             "url": article.URL,
-            "source": article.Source,
+            "source": "src",
             "summary": article.Summary,
             "prediction_score": article.PredictionScore,
         }
@@ -1001,6 +1024,15 @@ def delete_user() -> Response:
 def daily_company_update() -> bool:
     """Calls once a day (?) to update price_related fields."""
     return update_all_companies_daily()
+
+def predict_stock_price() -> None:
+    companies = db.session.execute(db.select(Company)).scalars().all()
+    for company in companies:
+        # get the sentiment scores of the articles in the last 7 days
+        article_sentiment_scores = []
+        company_articles = db.session.execute(
+            db.session(Article).filter_by(CompanyID=company.CompanyID)
+        )
 
 
 if __name__ == "__main__":
