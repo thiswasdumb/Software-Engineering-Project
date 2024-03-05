@@ -10,8 +10,6 @@ from text_summariser import TextSummariser
 import datetime
 import sys 
 
-sys.path.insert(0,'/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/python_component')
-
 
 app = Flask(__name__)
 
