@@ -124,7 +124,7 @@ class Linear_Regression:
         # CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
         # Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
         # stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
-        Sentiment_Score = np.array([0.1, 0.0087, 0.0123, -0.01, 0.001, -0.1222])
+        Sentiment_Score = np.array([0.1, 0.0087, 0.0123, 0.9897, 0.7896, 0.898])
         stock_price = stock_data[-1] * CAPM * (Sentiment_Score + 1)
 
         # Access database and api to retrieve CAPM and Sentiment Score
