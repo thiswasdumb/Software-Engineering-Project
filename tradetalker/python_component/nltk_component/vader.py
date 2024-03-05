@@ -25,6 +25,5 @@ class SentimentAnalyser:
         output['neu'] = sentiment['neu'] * 100 
         output['overall'] = sentiment['compound'] 
 
-        # print("This text has an overall compound score of " + str(output['overall']) + "\nThe probability that the text is positive is " + str(output['pos']) + "%\nThe probability that the text is negative is " + str(output['neg']) + "%\nThe probability that the text is neutral is " + str(output['neu']) + "%")
         return output
 

@@ -8,7 +8,7 @@ from python_component.nltk_component.search_component import ArticleSearch
 from python_component.nltk_component import tf_idf 
 from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
 from vader import SentimentAnalyser
-from testing_articles import articles, articles_header, articles_list  # Testing dictionary key=article, value= positive/neutral/negative (human classified)
+from testing_articles import articles # Testing data,  article objects 
     
 
 
@@ -16,7 +16,7 @@ class TestSearchComponent(unittest.TestCase):
 
     def setUp(self):
         self.sample_tests = articles  # list of 10 articles 
-        self.search_component = ArticleSearch(articles_list, articles_header) 
+        self.search_component = ArticleSearch(articles) 
         get_pos_class = GetPOSClass() 
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()
@@ -40,8 +40,12 @@ class TestSearchComponent(unittest.TestCase):
                 for word in top_20_search_terms:
                     compound_score += self.s.get_article_sentiment(word)['overall']
                 test_result = self.activation_function(compound_score)
+                print("Article_name:", article, "Test Result:",test_result, "Expected:", expected_sentiment)
                 self.assertEqual(test_result, expected_sentiment, msg=f"failed for article {article} where compound score was {compound_score}")
             article_index += 1 
+
+    def test_query(self):
+        user_query = ""
 
 if __name__ == '__main__':
     unittest.main()
