@@ -12,18 +12,8 @@ import sys
 
 sys.path.insert(0,'/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/python_component')
 
-# from Database.database_connection import DataBaseConnection
 
 app = Flask(__name__)
-
-
-
-# db = DataBaseConnection(
-#     host="localhost",
-#     user="root",
-#     passwd="",
-#     database="tradetalkerdb"
-# )
 
 class GetNewsClass:
     article_id = 0 
@@ -49,7 +39,7 @@ class GetNewsClass:
                 from_param='2024-02-05',
                 language='en',
                 sort_by='relevancy',
-                page=3)
+                page=1)
 
 
 
@@ -166,6 +156,6 @@ test = GetNewsClass(['coca-cola'])
 results = test.fetch_all_articles()
 
 results = [obj['Summary'] for obj in results]
-print("TEST RESULT:", results)
+# print("TEST RESULT:", results)
 
 

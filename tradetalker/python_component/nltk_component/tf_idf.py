@@ -66,11 +66,8 @@ class TF_IDF():
 
 
 
-# get_pos_class = GetPOSClass() 
-# preprocess_text = PreprocessText(get_pos_class)
-# # preprocessed articles, this will be the input for this module 
-# processed_articles = [preprocess_text.preprocess_text(a) for a in articles.keys()]
-
+#Example use case 
+    
 # tf_idf_object = TF_IDF(processed_articles)
 # tf_idf_object.get_top_n_terms(10)
 
