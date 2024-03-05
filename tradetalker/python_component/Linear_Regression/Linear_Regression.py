@@ -10,26 +10,34 @@ import requests
 from datetime import datetime, timedelta
 import yfinance as yf
 
-# from database_connection import DataBaseConnection
-# db = DataBaseConnection (
-#         host="localhost",
-#         user="root",
-#         passwd="",
-#         database="tradetalkerdb"
-#     )
-
 class Linear_Regression:
-     # Calculate the dates of the last 7 days 
+    # Commenting the initialization of global variables
+    # end_date is set to today's date in the format YYYY-MM-DD
     global end_date 
     end_date = datetime.today().strftime("%Y-%m-%d")
+    # start_date is set to 7 days before today's date
     global start_date 
     start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+    # Initialize company_symbol as an empty string
     global company_symbol
     company_symbol = ""
+    # Initialize Sentiment_Score as an empty list
+    global Sentiment_Score
+    Sentiemnt_Score = []
+    # Initialize company_data as an empty list
+    global company_data
+    company_data = []
 
-    def __init__(self, company_symbol):
+    def __init__(self, company_symbol, Sentiment_Score, company_data):
+        # Constructor Method
+        # Initialize the model as a Linear Regression model
         self.model = LinearRegression()
+        # Assign the provided company_symbol to the instance variable
         self.company_symbol = company_symbol
+        # Assign the provided Sentiment_Score to the instance variable
+        self.Sentiemnt_Score = Sentiment_Score
+        # Assign the provided company_data to the instance variable
+        self.company_data = company_data
 
     # Function to fetch market data from API
     def get_data(self, url):
@@ -79,12 +87,10 @@ class Linear_Regression:
         # calculate percentage change
         percentage_change = (x['Open']/x['Close']-1).to_numpy()
 
-        company_data = self.get_data(f'http://api.marketstack.com/v1/tickers/{company_symbol}/eod')
-
         # Work out CAPM equation
         # Defining market_data and stock_data arrays using numpy arrays
         market_data = percentage_change
-        stock_data = company_data
+        stock_data = np.array(company_data)
 
         if (market_data.size > stock_data.size):
             market_data = np.delete(market_data, 0)
@@ -117,25 +123,16 @@ class Linear_Regression:
         return capm, stock_data
     
     def create_dataframe(self, CAPM, stock_data):
-        # Sample data for testing
-        # Generate random data with a weak trend
-        # np.random.seed(0)
-        # num_samples = 1200
-        # CAPM = np.linspace(-5, 5, num_samples) + np.random.normal(0, 0.5, num_samples)
-        # Sentiment_Score = np.linspace(-0.8, 0.8, num_samples) + np.random.normal(0, 0.1, num_samples)
-        # stock_price = 100 + 10 * CAPM + 50 * Sentiment_Score + np.random.normal(0, 20, num_samples)
-
-        # Access database and api to retrieve Sentiment Score
-        # Sentiment_Score = db. 
+        # Access database and api to retrieve Sentiment Score and CAPM
         print('CAPM: ', CAPM)
-        Sentiment_Score = np.array([0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898])
+        sentiment = np.array(Sentiment_Score)
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
-        stock_price = stock_data[-1] * CAPM  * ((Sentiment_Score * 0.1) + 1)
+        stock_price = stock_data[-1] * CAPM  * ((sentiment * 0.1) + 1)
 
         # Create the dataset
         data = {
             'CAPM': CAPM,
-            'Sentiment_Score': Sentiment_Score.tolist(),
+            'Sentiment_Score': sentiment.tolist(),
             'stock_price': stock_price.tolist()
         }
 
@@ -177,12 +174,9 @@ class Linear_Regression:
 
         # Making predictions on the testing data
         predictions = model.predict(X_test)
-        print(predictions)
 
         # predicted_stock_price = np.median(predictions)
         predicted_stock_price = predictions.mean()
-        print('Predicted Stock Price: ', predicted_stock_price)
-        # Store in database 
 
         # Calls Mean Absolute Evaluation method
         mae = self.MAE_evaluation(y_test, predictions)
@@ -199,15 +193,6 @@ class Linear_Regression:
         a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
         model_equation = a*sorted_sentiment_score + b
 
-        # Plot the line of best fit
-        plt.plot(sorted_sentiment_score, model_equation, color = 'blue', linewidth=3, label="Predicted")
-        plt.title('Linear Regression Model for Stock Price Prediction based on Sentiment Score')
-        plt.xlabel('Sentiment Score and CAPM model')
-        plt.ylabel('Stock Price')
-        plt.legend()
-        plt.tight_layout()
-        plt.show()
-
         return predicted_stock_price
 
     def MAE_evaluation(self, y_test, predictions):
@@ -216,13 +201,23 @@ class Linear_Regression:
         print(f'Mean Absolute Error: {mae}')
         return mae
     
+    # Define a method to calculate the stock price
     def calculate_stock_price(self):
+        # Calculate CAPM and get historical stock data
         capm, stock_data = self.calculate_CAPM()
+        # Create a dataframe using CAPM and stock data
         X, y = self.create_dataframe(capm, stock_data)
+        # Split the dataset into training and testing data
         X_train, X_test, y_train, y_test = self.create_test_data(X, y)
+        # Create a linear regression model and predict the stock price
         predicted_stock_price = self.create_linear_model(X_train, X_test, y_train, y_test)
-        # print(predicted_stock_price)
+        # Print the predicted stock price
+        print('Predicted Stock Price: ', predicted_stock_price)
+        return predicted_stock_price
 
 if __name__ == "__main__":
-    company_symbol = 'AAPL'
-    Linear_Regression(company_symbol).calculate_stock_price()  
+    company_symbol = 'UU.L'
+    Sentiment_Score = [0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898]
+    company_data = [175.55, 176.887, 174.987, 179.555, 180.454]
+    # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
+    predicted_stock_price = Linear_Regression(company_symbol, Sentiment_Score, company_data).calculate_stock_price()  
