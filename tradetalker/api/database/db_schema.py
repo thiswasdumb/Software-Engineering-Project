@@ -886,7 +886,7 @@ def get_company_data_for_linear_regression(company:Company) -> dict:
     """
     company_data = {'StockSymbol': company.StockSymbol}
     price_historic = [company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4,
-                      company.StockPrice_D_5, company.StockPrice_D_6, company.StockPrice_D_7]
+                      company.StockPrice_D_5]
     company_data['PriceHistoric'] = price_historic
     company_data['SentimentScores'] = get_company_article_sentiment_scores(company.CompanyID)
     return company_data
