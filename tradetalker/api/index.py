@@ -41,6 +41,8 @@ from database.db_schema import (
     get_company_data_for_linear_regression,
 )
 
+from linear_regression import Linear_Regression
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqldb:///tradetalkerdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -89,7 +91,13 @@ if reset:
         comp = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
                                      ).scalars().first()
         print(comp)
-        print(get_company_data_for_linear_regression(comp))
+        comp_data = get_company_data_for_linear_regression(comp)
+        print(comp_data)
+        predicted_price = Linear_Regression.Linear_Regression(
+            comp_data['StockSymbol'], comp_data['SentimentScores'], comp_data['PriceHistoric']
+        ).calculate_stock_price()
+        print(predicted_price)
+
 
 
 
