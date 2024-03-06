@@ -135,8 +135,8 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                 >
                   {errorMessage && (
                     <>
-                      <ExclamationCircleIcon className='h-5 w-5 text-red-500' />
-                      <p className='text-sm text-red-500'>{errorMessage}</p>
+                      <ExclamationCircleIcon className='transiton h-5 w-5 text-red-500 transition-opacity ease-out' />
+                      <p className='transiton text-sm text-red-500 transition-opacity ease-out'>{errorMessage}</p>
                     </>
                   )}
                 </div>
