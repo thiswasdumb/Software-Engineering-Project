@@ -71,7 +71,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
     <>
       {!isLoggedIn && (
         <div className='mt-10 flex items-center justify-center'>
-          <div className='mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4'>
+          <div className='mx-auto flex w-[400px] flex-col space-y-2.5 p-4 md:w-[600px]'>
             <form
               onSubmit={handleSubmit}
               method='post'
@@ -82,6 +82,11 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <h1 className='mb-3 text-2xl'>
                   Sign up to begin your TradeTalk journey.
                 </h1>
+                <p>
+                  Please choose a suitable username between 3 and 50 characters.
+                  Passwords must be between 8 and 200 characters and have at
+                  least 1 capital letter and 1 special character.
+                </p>
                 <div className='w-full'>
                   <div>
                     <label
@@ -149,6 +154,23 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                       <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
                     </div>
                   </div>
+                  <p className='mt-4 text-sm'>
+                    By creating an account, you agree to the{' '}
+                    <a
+                      href='/terms'
+                      className='text-blue-600 underline hover:text-blue-500'
+                    >
+                      Terms
+                    </a>{' '}
+                    and{' '}
+                    <a
+                      href='/privacy'
+                      className='text-blue-600 underline hover:text-blue-500'
+                    >
+                      Privacy Policy
+                    </a>
+                    .
+                  </p>
                 </div>
                 <SignupButton />
                 <div
