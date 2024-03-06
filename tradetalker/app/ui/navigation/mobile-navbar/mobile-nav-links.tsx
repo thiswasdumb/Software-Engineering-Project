@@ -26,7 +26,6 @@ export default function MobileNavLinks(props: {
           },
           { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
           { name: 'Profile', href: '/profile', onClick: props.toggle },
-          { name: 'Log out', href: '', onClick: () => Logout(props.session) },
         ]
       : [
           { name: 'Login', href: '/login', onClick: props.toggle },
@@ -50,10 +49,22 @@ export default function MobileNavLinks(props: {
               }
             )}
           >
-            <p className='text-xl'>{link.name}</p>
+            <button type='button'>
+              <p className='text-xl'>{link.name}</p>
+            </button>
           </Link>
         );
       })}
+      {props.session && (
+        <div
+          onClick={() => Logout(props.session)}
+          className='sticky flex justify-center border-b-2 bg-white p-4 font-medium outline-gray-100 transition hover:bg-sky-100 hover:text-blue-600'
+        >
+          <button type='button'>
+            <p className='text-xl'>Log out</p>
+          </button>
+        </div>
+      )}
     </>
   );
 }

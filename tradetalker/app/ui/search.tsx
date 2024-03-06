@@ -5,6 +5,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const [articles, setArticles] = useState<any[]>([]);
@@ -88,7 +89,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                         )}
                       </div>
                       <div className='text-sm text-gray-600'>
-                        {article.date}
+                        {dayjs(article.date).format('D MMM YYYY')}
                       </div>
                     </div>
                     <div>{article.summary}</div>

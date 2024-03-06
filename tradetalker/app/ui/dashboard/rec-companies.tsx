@@ -24,7 +24,7 @@ export default function RecommendedCompanies({
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <div className='text-xl'>Companies we think you&apos;ll like</div>
+      <h2 className='text-xl'>Companies we think you&apos;ll like</h2>
       <div className='mt-2 flex flex-col gap-2 md:justify-between lg:flex-row'>
         {companies.length === 0 && <p>No recommended companies.</p>}
         {companies.map((company, index) => (
@@ -37,8 +37,8 @@ export default function RecommendedCompanies({
                 type='button'
                 className='flex flex-col items-start hover:drop-shadow-lg'
               >
-                <div className='text-start'>{company.name}</div>
-                <div>{company.symbol}</div>
+                <p className='text-start'>{company.name}</p>
+                <p>{company.symbol}</p>
               </button>
             </Link>
             <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />

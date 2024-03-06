@@ -7,3 +7,7 @@ nltk.download('vader_lexicon')
 nltk.download('punkt')
 nltk.download('wordnet')
 
+#To install sumy 
+#pip install sumy
+#python -m nltk.downloader punkt
+

@@ -1,10 +1,11 @@
 """Contains the Flask application to send data to the TradeTalker frontend."""
-
+import datetime
 import os
 import re
+from pathlib import Path
 from typing import Literal
 
-from flask import Flask, jsonify, redirect, request, session, url_for
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_cors import CORS
 from flask_login import (
     LoginManager,
@@ -13,6 +14,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_mail import Mail, Message
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 from werkzeug import security
@@ -34,14 +36,33 @@ from database.db_schema import (
     add_data,
     db,
     update_all_companies_daily,
+    get_company_article_sentiment_scores,
+    get_all_company_names,
+    get_articles_by_company_name,
+    get_article_from_news_script,
+    get_company_data_for_linear_regression,
 )
 
+from linear_regression import Linear_Regression
+
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+
+IMAGE_FOLDER = "../public/"
+app.config["MAIL_SERVER"] = "127.0.0.1"
+app.config["MAIL_PORT"] = 25
+app.config["MAIL_USERNAME"] = None
+app.config["MAIL_PASSWORD"] = None
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqldb:///tradetalkerdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "secret"
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["MAIL_SUPPRESS_SEND"] = False
+
+mail = Mail(app)
 db.init_app(app)  # Initializes the database connection
+
 CORS(
     app,
     origins="http://localhost:3000",
@@ -60,13 +81,37 @@ def load_user(user_id: int) -> User | None:
     return db.session.get(User, user_id)
 
 
-reset = True  # Set to False to keep the database data on restart
+reset = False  # Set to False to keep the database data on restart
 if reset:
     with app.app_context():
         db.drop_all()
         db.create_all()
         add_base_company_data()
         add_data()
+        get_company_article_sentiment_scores(1)
+        get_all_company_names()
+        get_article_from_news_script({
+            'Company': "3i",
+            'Title': "Test article for 3i",
+            'Content': "Blah blah blah 3i so good",
+            'URL': "idk.whocares",
+            'Summary': "3i nice!",
+            'PublicationDate': datetime.datetime.now(),
+            'ProcessedArticle': "Article processed!",
+            "PredictionScore": 1
+        })
+        print(get_articles_by_company_name("3i"))
+        company_name="3i"
+        comp = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
+                                     ).scalars().first()
+        print(comp)
+        comp_data = get_company_data_for_linear_regression(comp)
+        print(comp_data)
+        predicted_price = Linear_Regression.Linear_Regression(
+            comp_data['StockSymbol'], comp_data['SentimentScores'], comp_data['PriceHistoric']
+        ).calculate_stock_price()
+        print(predicted_price)
+
 
 
 
@@ -149,66 +194,107 @@ def registration() -> Response:
         error = "You are already logged in."
         return redirect(url_for("dashboard", error=error), code=301)
 
-    if request.method == "POST":
-        if request.json is None:
-            error = "Invalid request."
-            return redirect(url_for("registration", error=error), code=301)
-        email = request.json["email"]
-        username = request.json["username"]
-        password = request.json["password"]
+    if request.json is None:
+        error = "Invalid request."
+        return redirect(url_for("registration", error=error), code=301)
+    email = request.json["email"]
+    username = request.json["username"]
+    password = request.json["password"]
 
-        # Server-side validation of credentials
-        if (
-            not re.match(r"[^@]+@[^@]+\.[^@]+", email)
-            or len(email) > MAX_EMAIL_LENGTH
-            or not (MIN_USERNAME_LENGTH <= len(username) <= MAX_USERNAME_LENGTH)
-            or not (MIN_PASSWORD_LENGTH <= len(password) <= MAX_PASSWORD_LENGTH)
-            or not re.match(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", password)
+    # Server-side validation of credentials
+    if (
+        not re.match(r"[^@]+@[^@]+\.[^@]+", email)
+        or len(email) > MAX_EMAIL_LENGTH
+        or not (MIN_USERNAME_LENGTH <= len(username) <= MAX_USERNAME_LENGTH)
+        or not (MIN_PASSWORD_LENGTH <= len(password) <= MAX_PASSWORD_LENGTH)
+        or not re.match(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", password)
+    ):
+        error = "Invalid credentials!"
+        return redirect(url_for("registration", error=error))
+
+    # Hash password for security
+    password_hash = security.generate_password_hash(password)
+    # Direct user to login page if they already have an account
+    user = db.session.query(User).filter_by(Email=email).first()
+    if user is not None:
+        if user.Username == username and security.check_password_hash(
+            user.Password,
+            password,
         ):
-            error = "Invalid credentials!"
-            return redirect(url_for("registration", error=error))
-
-        # Hash password for security
-        password_hash = security.generate_password_hash(password)
-        # Direct user to login page if they already have an account
-        user = db.session.query(User).filter_by(Email=email).first()
-        if user is not None:
-            if user.Username == username and security.check_password_hash(
-                user.Password,
-                password,
-            ):
-                error = ""  # Error message will be handled in the frontend
-                url = "login"
-            else:
-                error = "Email has already been taken."
-                url = "signup"
-            return jsonify({"url": url, "error": error})
-
-        try:
-            # Create a user with their credentials
-            new_user = User(
-                username,
-                password_hash,
-                email,
-            )
-            db.session.add(new_user)
-            db.session.commit()  # Commit the transaction
-        except IntegrityError:  # If user failed to add, rollback the transaction
-            db.session.rollback()
-            error = "Could not sign up."
+            error = ""  # Error message will be handled in the frontend
+            url = "login"
+        else:
+            error = "Email has already been taken."
             url = "signup"
-            return jsonify({"url": url, "error": error})
+        return jsonify({"url": url, "error": error})
 
-        login_user(new_user)
-        session["username"] = current_user.Username
-        # (Call the verify email function here)
-        url = "dashboard"
-        return jsonify({"url": url})
+    try:
+        # Create a user with their credentials
+        new_user = User(
+            username,
+            password_hash,
+            email,
+        )
+        db.session.add(new_user)
+        db.session.commit()  # Commit the transaction
+    except IntegrityError:  # If user failed to add, rollback the transaction
+        db.session.rollback()
+        return jsonify({"url": "signup", "error": "Could not sign up."})
 
-    error = "Invalid request."
-    url = "signup"
+    login_user(new_user)
+    session["username"] = current_user.Username
+    # (Call the verify email function here)
+    return jsonify({"url": "dashboard"})
 
-    return jsonify({"url": url, "error": error})
+
+# Sends verification email to a User during signup
+def send_verify_email(user: User) -> Response:
+    """Sends a verification email to the user."""
+    if current_user.IsVerified:
+        return redirect(url_for("dashboard", error="You are already verified."))
+
+    try:
+        token = User.get_reset_token(user)
+        db.session.commit()
+        msg = Message(
+            subject="Verify your TradeTalk account",
+            sender=("TradeTalk", "tradetalk-admin@example.com"),
+            recipients=[current_user.Email],
+        )
+        msg.html = render_template("verify_message.html", token=token)
+        # Attach an image to the header
+        with Path(IMAGE_FOLDER + "images/logo.png").open("rb") as file:
+            msg.attach(
+                "logo.png",
+                "image/png",
+                file.read(),
+                "inline",
+                headers=[["Content-ID", "<MyImage>"]],
+            )
+        msg.sender = "TradeTalk <tradetalk-admin@example.com>"
+        mail.send(msg)
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Could not send verification email."})
+
+    return redirect(url_for("dashboard"), code=301)
+
+
+@app.route("/api/verify/<string:token>", methods=["GET", "POST"])
+@login_required
+def verify(token: str) -> Response:
+    """Verifies the user's email."""
+    if current_user.IsVerified:
+        return redirect(url_for("dashboard", error="You are already verified."))
+    if current_user.id == User.verify_reset_token(token):
+        try:
+            current_user.IsVerified = True  # User is now confirmed
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return redirect(url_for("home", error="Could not verify email."), code=301)
+        return redirect(url_for("dashboard"), code=301)
+    return redirect(url_for("home", error="Invalid token."), code=301)
 
 
 @app.route("/api/login", methods=["GET"])
@@ -463,6 +549,7 @@ def get_leaderboard() -> Response:
         {
             "company_id": company.CompanyID,
             "company_name": company.CompanyName,
+            "company_symbol": company.StockSymbol,
             "stock_price": company.StockPrice,
         }
         for company in leaderboard
@@ -498,7 +585,7 @@ def get_article(article_id: str) -> Response:
             "content": article.Content,
             "publication_date": article.PublicationDate,
             "url": article.URL,
-            "source": article.Source,
+            "source": "src",
             "summary": article.Summary,
             "prediction_score": article.PredictionScore,
         }
@@ -617,13 +704,14 @@ def add_article_reply(article_id: str, comment_id: str) -> Response:
 def get_article_like_status(article_id: str) -> Response:
     """Returns the user's like status for the article."""
     # Get the user's like status for the article with the given ID
-    like_status = bool(
+    like_status = (
         db.session.execute(
             db.select(LikeTable).filter_by(
                 UserID=current_user.id,
                 ArticleID=article_id,
             ),
-        ).scalar(),
+        ).scalar()
+        is not None
     )
     return jsonify({"like_status": like_status})
 
@@ -633,10 +721,16 @@ def get_article_like_status(article_id: str) -> Response:
 def get_article_bookmark_status(article_id: str) -> Response:
     """Returns the user's bookmark status for the article."""
     # Get the user's bookmark status for the article with the given ID
-    bookmark_status = db.session.execute(
-        db.select(Bookmark).filter_by(UserID=current_user.id, ArticleID=article_id),
-    ).scalar()
-    return jsonify({"bookmark_status": bool(bookmark_status)})
+    bookmark_status = (
+        db.session.execute(
+            db.select(Bookmark).filter_by(
+                UserID=current_user.id,
+                ArticleID=article_id,
+            ),
+        ).scalar()
+        is not None
+    )
+    return jsonify({"bookmark_status": bookmark_status})
 
 
 @app.route("/api/like_article/<string:article_id>", methods=["GET", "POST"])
@@ -669,38 +763,6 @@ def unlike_article(article_id: str) -> Response:
     except IntegrityError:
         return jsonify({"error": "Could not unlike article."})
     return jsonify({"success": "Successfully unliked article."})
-
-
-@app.route("/api/bookmark_article/<string:article_id>", methods=["GET", "POST"])
-@login_required
-def bookmark_article(article_id: str) -> Response:
-    """Bookmarks the article."""
-    try:
-        # Bookmark the article with the given ID
-        new_bookmark = Bookmark(current_user.id, article_id)
-        db.session.add(new_bookmark)
-        db.session.commit()
-    except IntegrityError:
-        return jsonify({"error": "Could not bookmark article."})
-    return jsonify({"success": "Successfully bookmarked article."})
-
-
-@app.route("/api/unbookmark_article/<string:article_id>", methods=["GET"])
-@login_required
-def unbookmark_article(article_id: str) -> Response:
-    """Unbookmarks the article."""
-    try:
-        # Unbookmark the article with the given ID
-        db.session.execute(
-            db.delete(Bookmark).filter(
-                Bookmark.UserID == current_user.id,
-                Bookmark.ArticleID == article_id,
-            ),
-        )
-        db.session.commit()
-    except IntegrityError:
-        return jsonify({"error": "Could not unbookmark article."})
-    return jsonify({"success": "Successfully unbookmarked article."})
 
 
 # ----------------- Company routes -----------------
@@ -941,7 +1003,7 @@ def delete_bookmark(article_id: str) -> Response:
     try:
         # Delete the user's bookmark with the given article ID
         db.session.execute(
-            db.delete(Bookmark).where(
+            db.delete(Bookmark).filter(
                 Bookmark.ArticleID == article_id,
                 Bookmark.UserID == current_user.id,
             ),
@@ -992,15 +1054,21 @@ def delete_user() -> Response:
     logout_user()
     db.session.delete(user)
     db.session.commit()
-    return redirect(
-        url_for("home", success="Successfully deleted account!"),
-        code=301,
-    )
+    return jsonify({"success": "Successfully deleted user."})
 
 
 def daily_company_update() -> bool:
     """Calls once a day (?) to update price_related fields."""
     return update_all_companies_daily()
+
+def predict_stock_price() -> None:
+    companies = db.session.execute(db.select(Company)).scalars().all()
+    for company in companies:
+        # get the sentiment scores of the articles in the last 7 days
+        article_sentiment_scores = []
+        company_articles = db.session.execute(
+            db.session(Article).filter_by(CompanyID=company.CompanyID)
+        )
 
 
 if __name__ == "__main__":

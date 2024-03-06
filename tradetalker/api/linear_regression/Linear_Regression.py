@@ -18,6 +18,15 @@ class Linear_Regression:
     # start_date is set to 7 days before today's date
     global start_date 
     start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+    # Initialize company_symbol as an empty string
+    global company_symbol
+    company_symbol = ""
+    # Initialize Sentiment_Score as an empty list
+    global Sentiment_Score
+    Sentiemnt_Score = []
+    # Initialize company_data as an empty list
+    global company_data
+    company_data = []
 
     def __init__(self, company_symbol, Sentiment_Score, company_data):
         # Constructor Method
@@ -26,7 +35,7 @@ class Linear_Regression:
         # Assign the provided company_symbol to the instance variable
         self.company_symbol = company_symbol
         # Assign the provided Sentiment_Score to the instance variable
-        self.Sentiment_Score = Sentiment_Score
+        self.Sentiemnt_Score = Sentiment_Score
         # Assign the provided company_data to the instance variable
         self.company_data = company_data
 
@@ -81,7 +90,7 @@ class Linear_Regression:
         # Work out CAPM equation
         # Defining market_data and stock_data arrays using numpy arrays
         market_data = percentage_change
-        stock_data = np.array(self.company_data)
+        stock_data = np.array(company_data)
 
         if (market_data.size > stock_data.size):
             market_data = np.delete(market_data, 0)
@@ -110,17 +119,15 @@ class Linear_Regression:
         # Capital Asset Pricing Model (CAPM) calculation
         capm = riskfree + b * (mr - riskfree)
 
-        # Percantage increase
-        capm = capm / 100
-
+        # Printing the calculated CAPM value
         return capm, stock_data
     
     def create_dataframe(self, CAPM, stock_data):
         # Access database and api to retrieve Sentiment Score and CAPM
         print('CAPM: ', CAPM)
-        sentiment = np.array(self.Sentiment_Score)
+        sentiment = np.array(Sentiment_Score)
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
-        stock_price = stock_data[-1] * (1 + CAPM)  * ((sentiment * 0.1) + 1)
+        stock_price = stock_data[-1] * CAPM  * ((sentiment * 0.1) + 1)
 
         # Create the dataset
         data = {
@@ -182,6 +189,10 @@ class Linear_Regression:
         sorted_sentiment_score = X_test['Sentiment_Score'].iloc[sorted_indices]
         sorted_predictions = predictions[sorted_indices]
 
+        # find line of best fit
+        a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
+        model_equation = a*sorted_sentiment_score + b
+
         return predicted_stock_price
 
     def MAE_evaluation(self, y_test, predictions):
@@ -206,7 +217,7 @@ class Linear_Regression:
 
 if __name__ == "__main__":
     company_symbol = 'UU.L'
-    Sentiment_Score = [0, 0, 0]
-    company_data = [1859.5, 1859.5, 1859.5, 1859.5, 1859.5]
+    Sentiment_Score = [0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898]
+    company_data = [175.55, 176.887, 174.987, 179.555, 180.454]
     # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
     predicted_stock_price = Linear_Regression(company_symbol, Sentiment_Score, company_data).calculate_stock_price()  

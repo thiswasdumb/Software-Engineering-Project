@@ -13,21 +13,18 @@ export default function NotifClientComponent({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(isLoggedIn);
     if (isLoggedIn) {
       const fetchNotifications = async () => {
         try {
-          const response = await fetch(
-            'http://localhost:8080/api/get_notifications',
-            { credentials: 'include' }
-          );
+          const response = await fetch('/api/get_notifications', {
+            credentials: 'include',
+          });
           const data = await response.json();
           setNotifs(data);
         } catch (error) {
           toast.error('Error fetching notifications.');
         }
       };
-
       fetchNotifications();
     } else {
       router.push('/login');
