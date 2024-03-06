@@ -13,7 +13,6 @@ export default function BookmarkComponent({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(isLoggedIn);
     if (isLoggedIn) {
       const fetchBookmarks = async () => {
         try {
