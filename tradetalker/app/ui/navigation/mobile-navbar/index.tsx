@@ -8,6 +8,7 @@ export default function MobileNavbar(props: {
   session: boolean;
   notifCount: number;
 }) {
+  const isLoggedIn = props.session;
   return (
     <>
       <div
@@ -18,7 +19,7 @@ export default function MobileNavbar(props: {
       >
         <MobileNavLinks
           toggle={props.toggle}
-          session={props.session}
+          session={isLoggedIn}
           notifCount={props.notifCount}
         />
       </div>
