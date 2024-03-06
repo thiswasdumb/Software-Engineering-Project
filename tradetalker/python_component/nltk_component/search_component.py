@@ -13,10 +13,20 @@ from mock_article_objects import article_object_lists
 get_pos_class = GetPOSClass() 
 preprocess_text = PreprocessText(get_pos_class)
 
+test_article_objects_list = []
+
+
 
 class ArticleSearch:
     def __init__(self, article_objects_list):
-        self.tf_idf_object = TF_IDF([a.processed_content for a in article_objects_list])
+        converted = []
+        for a in article_object_lists:
+            new_dict = {}
+            new_dict['ProcessedArticle'] = a.ProcessedArticle
+            new_dict['ArticleID'] = a.ArticleID
+            converted.append(new_dict)
+        
+        self.tf_idf_object = TF_IDF(converted)
 
         self.articles = article_objects_list 
 

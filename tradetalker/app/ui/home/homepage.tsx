@@ -5,6 +5,8 @@ import {
   ArrowDownCircleIcon,
   MinusCircleIcon,
 } from '@heroicons/react/20/solid';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 async function fetchArticles() {
   const response = await fetch('http://localhost:8080/api/home_articles', {
@@ -18,6 +20,7 @@ async function fetchArticles() {
 
 export default async function HomeComponent() {
   const articles: any[] = await fetchArticles(); // Wait for the promise to resolve
+  dayjs.extend(relativeTime);
 
   return (
     <>
@@ -33,11 +36,16 @@ export default async function HomeComponent() {
           <div className='text-xl'>Recent articles</div>
           {articles.map((article, index) => (
             <div
-              className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'
+              className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
               key={index}
             >
               <Link href={`/article/${article.id}`}>
-                <div>{article.title}</div>
+                <div className='flex flex-row flex-wrap items-center justify-between'>
+                  <div>{article.title}</div>
+                  <div className='text-sm text-gray-600'>
+                    {dayjs(article.date).fromNow()}
+                  </div>
+                </div>
                 <hr className='border-1 my-2 rounded-lg border-slate-300' />
                 <div>{article.summary}</div>
                 <div>

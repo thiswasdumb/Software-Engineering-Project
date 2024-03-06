@@ -1,6 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { Chart, Title } from 'chart.js/auto';
+import dayjs from 'dayjs';
 
 function LineChart(stockLastDays) {
   Chart.register(Title);
@@ -12,13 +13,13 @@ function LineChart(stockLastDays) {
       type: 'line',
       data: {
         labels: [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
+          dayjs().subtract(7, 'day').format('DD/MM'),
+          dayjs().subtract(6, 'day').format('DD/MM'),
+          dayjs().subtract(5, 'day').format('DD/MM'),
+          dayjs().subtract(4, 'day').format('DD/MM'),
+          dayjs().subtract(3, 'day').format('DD/MM'),
+          dayjs().subtract(2, 'day').format('DD/MM'),
+          dayjs().subtract(1, 'day').format('DD/MM'),
           'Today',
         ],
         datasets: [

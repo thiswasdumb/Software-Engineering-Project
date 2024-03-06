@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import LineChart from '@/app/ui/company/linechart';
 import FollowButton from '@/app/ui/company/follow-button';
 import ScrollUp from '../scroll-up';
+import Description from './description';
 
 async function getCompanyData(id: string) {
   const response = await fetch(`http:/localhost:8080/api/get_company/${id}`);
@@ -43,7 +44,7 @@ export default async function CompanyPage({
           <div className='text-2xl'>{companyData.symbol}</div>
         </div>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
-        <div className='flex flex-col lg:flex-row lg:justify-between'>
+        <div className='flex flex-col items-start lg:flex-row lg:justify-between'>
           <div className='w-full lg:w-[58%]'>
             <div className='flex w-full flex-row items-start justify-between'>
               <div>
@@ -70,10 +71,10 @@ export default async function CompanyPage({
             </div>
             <LineChart stockLastDays={stockLastDays} />
           </div>
-          <div className='mt-2 lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-2'>
+          <div className='mt-2 flex flex-col lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
             <div className='text-xl'>Description</div>
             <hr className='border-1 my-2 rounded-lg border-slate-400' />
-            <div className='grow-0 text-lg'>{companyData.description}</div>
+            <Description description={companyData.description} />
           </div>
         </div>
       </div>

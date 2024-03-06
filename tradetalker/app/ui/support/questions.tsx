@@ -45,8 +45,8 @@ export default async function Questions({
             className='text-blue-600 underline hover:text-blue-700 active:text-orange-400'
           >
             login
-          </a>{' '}
-          before you can submit a question.
+          </a>
+          &nbsp;before you can submit a question.
         </p>
       )}
     </div>

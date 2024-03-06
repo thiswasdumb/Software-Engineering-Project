@@ -41,20 +41,26 @@ class TF_IDF():
 
 
     def get_top_n_terms_for_all_articles(self, top_n_words:int):
+        print('NUM_ARTICLES', self.article_objects)
         for i in range(self.num_articles):
             article_obj = self.article_objects[i]
             matrix_id = self.matrix_id[article_obj['ArticleID']]
-            top_n_words = self.get_top_n_terms(top_n_words, matrix_id)
-            article_obj['KeyWords'] = top_n_words
+            try: 
+                top_n_words = self.get_top_n_terms(top_n_words, matrix_id)
+                article_obj['KeyWords'] = top_n_words
+            except Exception as e:
+                continue 
         return self.article_objects
             
 
     def get_top_n_terms(self, n:int, matrix_id: int):
         #sorting the columns (each article) by their values (tf-idf score) for each term/word/feature
+
         top_terms = self.df_tf_idf[[f'Article {matrix_id}']].nlargest(n, columns=[f'Article {matrix_id}'])            
         #retrieving only the feature names (words)
         top_words = top_terms[[f'Article {matrix_id}']].index
         top_words_str = ",".join([w for w in top_words])
+
         return top_words_str
     
 
@@ -66,11 +72,8 @@ class TF_IDF():
 
 
 
-# get_pos_class = GetPOSClass() 
-# preprocess_text = PreprocessText(get_pos_class)
-# # preprocessed articles, this will be the input for this module 
-# processed_articles = [preprocess_text.preprocess_text(a) for a in articles.keys()]
-
+#Example use case 
+    
 # tf_idf_object = TF_IDF(processed_articles)
 # tf_idf_object.get_top_n_terms(10)
 
