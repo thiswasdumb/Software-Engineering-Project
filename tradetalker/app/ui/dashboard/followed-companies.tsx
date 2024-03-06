@@ -25,7 +25,7 @@ export default function FollowedCompanies({
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <div className='text-xl'>Followed companies</div>
+      <div className='text-xl'>Followed companies ({companies.length})</div>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
       <div className='flex flex-col'>
         {companies.length === 0 && <p>No followed companies.</p>}
