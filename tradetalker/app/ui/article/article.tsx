@@ -5,33 +5,14 @@ import Like from './like';
 import Bookmark from './bookmark';
 import Link from 'next/link';
 import ScrollUp from '@/app/ui/scroll-up';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { ClockIcon } from '@heroicons/react/24/outline';
 
 async function getArticle(id: string) {
   const response = await fetch(`http://localhost:8080/api/get_article/${id}`);
   if (!response.ok) {
     throw new Error('Error fetching article');
-  }
-  return response.json();
-}
-
-async function getLikeStatus(id: string) {
-  const response = await fetch(
-    `http://localhost:8080/api/get_article_like_status/${id}`,
-    { credentials: 'include' }
-  );
-  if (!response.ok) {
-    throw new Error('Error fetching like status');
-  }
-  return response.json();
-}
-
-async function getBookmarkStatus(id: string) {
-  const response = await fetch(
-    `http://localhost:8080/api/get_article_bookmark_status/${id}`,
-    { credentials: 'include' }
-  );
-  if (!response.ok) {
-    throw new Error('Error fetching bookmark status');
   }
   return response.json();
 }
@@ -47,20 +28,7 @@ export default async function ArticlePage({
   if (articleData.error) {
     redirect('/not-found');
   }
-
-  let isLiked = false;
-  let isBookmarked = false;
-  // Get like status
-  if (isLoggedIn) {
-    try {
-      const likeStatus = await getLikeStatus(id);
-      isLiked = likeStatus.like_status;
-      const bookmarkStatus = await getBookmarkStatus(id);
-      isBookmarked = bookmarkStatus.bookmark_status;
-    } catch (error) {
-      console.error('Error fetching like status:', error);
-    }
-  }
+  dayjs.extend(relativeTime);
 
   return (
     <>
@@ -69,18 +37,16 @@ export default async function ArticlePage({
         <div className='flex flex-row justify-between'>
           <div>
             <div className='text-2xl'>{articleData.title}</div>
-            <div className='text-sm text-slate-500'>
-              {formatDate(articleData.publication_date)}
-            </div>
+            <span className='flex flex-row items-center text-sm text-slate-500'>
+              {dayjs(articleData.publication_date).format('D MMMM YYYY')}
+              <ClockIcon className='mx-1 inline-block h-4 w-4' />
+              {dayjs(articleData.publication_date).fromNow()}
+            </span>
           </div>
           {isLoggedIn && (
             <div className='flex flex-row'>
-              <Like isLiked={isLiked} articleId={id} isLoggedIn={isLoggedIn} />
-              <Bookmark
-                isBookmarked={isBookmarked}
-                isLoggedIn={isLoggedIn}
-                id={id}
-              />
+              <Like articleId={id} isLoggedIn={isLoggedIn} />
+              <Bookmark articleId={id} isLoggedIn={isLoggedIn} />
             </div>
           )}
         </div>
@@ -95,6 +61,13 @@ export default async function ArticlePage({
             {articleData.company_name}
           </Link>
         </div>
+        <a
+          href={articleData.url}
+          target='_blank'
+          className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
+        >
+          {articleData.url}
+        </a>
         <div className='text-lg'>Summary: {articleData.summary}</div>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <div className='text-lg'>{articleData.content}</div>

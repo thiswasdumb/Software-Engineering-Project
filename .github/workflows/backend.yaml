@@ -25,6 +25,11 @@ jobs:
           pip install --user pipenv
           pipenv install --dev --deploy
 
+      - name: Run MySQL
+        run: |
+          sudo service mysql start
+          mysql -u root -e "CREATE DATABASE tradetalkerdb;"
+
   check:
     name: Check code quality
     runs-on: ubuntu-latest

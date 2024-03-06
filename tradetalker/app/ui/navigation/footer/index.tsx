@@ -35,6 +35,9 @@ export default function Footer() {
                 </Link>
               </div>
               <div className='flex flex-col'>
+                <Link href='/support' className='text-white hover:opacity-90'>
+                  Support
+                </Link>
                 <Link href='/search' className='text-white hover:opacity-90'>
                   Search
                 </Link>
@@ -43,9 +46,6 @@ export default function Footer() {
                 </Link>
                 <Link href='/companies' className='text-white hover:opacity-90'>
                   Companies
-                </Link>
-                <Link href='/support' className='text-white hover:opacity-90'>
-                  Support
                 </Link>
               </div>
             </div>
