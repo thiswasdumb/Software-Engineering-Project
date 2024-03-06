@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker')
 
 from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
-from testing_articles import articles, articles_header  # Testing dictionary key=article, value= positive/neutral/negative (human classified)
+from testing_articles import articles  # Testing dictionary key=article, value= positive/neutral/negative (human classified)
 from vader import SentimentAnalyser
 
 
@@ -25,17 +25,17 @@ class TestSentimentAnalyser(unittest.TestCase):
             return "neutral"
 
     def test_each_article_sentiment(self):
-        for article, expected_sentiment in self.sample_tests.items():
+        for article in self.sample_tests:
             # Mocking the external dependency for SentimentIntensityAnalyzer.polarity_scores
             with self.subTest():
-                processed_news_article = self.preprocess_text.preprocess_text(article)
-                test_compound_result = self.s.get_article_sentiment(processed_news_article)
+                test_compound_result = self.s.get_article_sentiment(article.processed_content)
                 test_sentiment = self.activation_function(test_compound_result)
                 
                 # Assertions with a more informative message
-                msg = f"For article: {articles_header[article]}. Expected: {expected_sentiment}, Got: {test_sentiment, test_compound_result}"
+                self.assertEqual(test_sentiment, article.sentiment)
+
+                msg = f"For article: {article.header}. Expected: {article.sentiment}, Got: {test_sentiment} with sentiment score of {test_compound_result}"
                 print(msg)
-                self.assertEqual(test_sentiment, expected_sentiment)
 
 
 

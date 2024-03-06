@@ -12,7 +12,7 @@ class Article:
         self.ArticleID = ArticleID 
         self.header = header 
         self.content = content 
-        self.processed_content = p.preprocess_text(content)
+        self.ProcessedArticle = p.preprocess_text(content)
         self.sentiment = labelled_sentiment
 
 
