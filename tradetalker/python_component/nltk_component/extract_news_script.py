@@ -24,7 +24,9 @@ class GetNewsClass:
         Returns: 
         - None 
         """
-        self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
+        # self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
+        self.news_api = NewsApiClient(api_key='fb9cdea752a44045b9235bc4c5d69e12')
+        
         get_pos_class = GetPOSClass() 
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()
@@ -34,7 +36,7 @@ class GetNewsClass:
         for company in list_of_companies:
             self.all_articles[company] = self.news_api.get_everything(
                 q=company,
-                from_param='2024-02-05',
+                from_param='2024-02-08',
                 language='en',
                 sort_by='relevancy',
                 page=1)
@@ -60,7 +62,7 @@ class GetNewsClass:
 
         for company_name in self.all_articles.keys():    #self.all_articles keys are the company names 
             article_dictionaries_for_one_company = self.get_articles(company_name) #without keywords inserted 
-
+            
             list_of_article_dictionaries.extend(article_dictionaries_for_one_company)
 
         article_dictionaries_with_keywords = self.insert_tf_idf_scores(list_of_article_dictionaries)
@@ -119,8 +121,8 @@ class GetNewsClass:
             if not article_object['PublicationDate']:  # in some cases we got NULL date which would then prevent the insertion
                 article_object['PublicationDate'] = datetime.datetime.now()
 
-            print(article_object['Summary'], article_object['PredictionScore'])
-
+            # print(article_object['Summary'], article_object['PredictionScore'])
+            
             #Will be calculated later after the company article corpus is fully fetched 
             article_object['KeyWords'] = None 
 
@@ -150,10 +152,9 @@ class GetNewsClass:
 
 
 # Example usage
-test = GetNewsClass(['coca-cola'])
+test = GetNewsClass(['Airtel Africa'])
 results = test.fetch_all_articles()
 
-results = [obj['Summary'] for obj in results]
 # print("TEST RESULT:", results)
 
 
