@@ -26,6 +26,10 @@ module = 'flask_login'
 ignore_missing_imports = true # No typing support for flask_login
 
 [[tool.mypy.overrides]]
+module = 'flask_mail'
+ignore_missing_imports = true # No typing support for flask_mail
+
+[[tool.mypy.overrides]]
 module = 'yfinance'
 ignore_missing_imports = true # No typing support for yfinance
 
