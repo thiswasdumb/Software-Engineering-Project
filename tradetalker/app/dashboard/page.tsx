@@ -12,7 +12,7 @@ export default function Dashboard() {
   const DashboardComponent = lazy(() => import('app/ui/dashboard/dashboard'));
   return (
     <Suspense fallback={<Loading message={'Loading dashboard...'} />}>
-      <DashboardComponent isLoggedIn={session} />;
+      <DashboardComponent isLoggedIn={session} />
     </Suspense>
   );
 }

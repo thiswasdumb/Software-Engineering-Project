@@ -13,20 +13,11 @@ import yfinance as yf
 class Linear_Regression:
     # Commenting the initialization of global variables
     # end_date is set to today's date in the format YYYY-MM-DD
-    global end_date
+    global end_date 
     end_date = datetime.today().strftime("%Y-%m-%d")
     # start_date is set to 7 days before today's date
-    global start_date
+    global start_date 
     start_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
-    # Initialize company_symbol as an empty string
-    #global company_symbol
-    #company_symbol = ""
-    # Initialize Sentiment_Score as an empty list
-    #global Sentiment_Score
-    #Sentiemnt_Score = []
-    # Initialize company_data as an empty list
-    #global company_data
-    #company_data = []
 
     def __init__(self, company_symbol, Sentiment_Score, company_data):
         # Constructor Method
@@ -119,6 +110,9 @@ class Linear_Regression:
         # Capital Asset Pricing Model (CAPM) calculation
         capm = riskfree + b * (mr - riskfree)
 
+        # Percentage Change
+        capm = capm / 100
+
         # Printing the calculated CAPM value
         return capm, stock_data
     
@@ -127,7 +121,7 @@ class Linear_Regression:
         print('CAPM: ', CAPM)
         sentiment = np.array(self.Sentiment_Score)
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
-        stock_price = stock_data[-1] * CAPM  * ((sentiment * 0.1) + 1)
+        stock_price = stock_data[-1] * (CAPM + 1)  * ((sentiment * 0.1) + 1)
 
         # Create the dataset
         data = {

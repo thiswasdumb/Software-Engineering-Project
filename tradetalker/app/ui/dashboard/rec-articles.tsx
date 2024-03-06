@@ -6,9 +6,12 @@ import {
   MinusCircleIcon,
 } from '@heroicons/react/20/solid';
 import Link from 'next/link';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 export default function RecommendedArticles() {
   const [articles, setArticles] = useState<any[]>([]);
+  dayjs.extend(relativeTime);
 
   useEffect(() => {
     fetch('/api/home_articles') // Replace with actual route
@@ -23,32 +26,37 @@ export default function RecommendedArticles() {
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <div className='text-xl'>Your suggested articles</div>
+      <h2 className='text-xl'>Your suggested articles</h2>
       {articles.length === 0 && <p>No suggested articles.</p>}
       {articles.map((article, index) => (
         <div
-          className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'
+          className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
           key={index}
         >
           <Link href={`/article/${article.id}`}>
-            <div>{article.title}</div>
+            <div className='flex flex-row flex-wrap items-center justify-between'>
+              <p>{article.title}</p>
+              <div className='text-sm text-gray-600'>
+                {dayjs(article.date).fromNow()}
+              </div>
+            </div>
             <hr className='border-1 my-2 rounded-lg border-slate-300' />
-            <div>{article.summary}</div>
+            <p>{article.summary}</p>
             <div>
               {article.score > 0.5 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowUpCircleIcon className='h-12 w-12 text-green-500' />
-                  <div className='pl-2'>Positive</div>
+                  <p className='pl-2'>Positive</p>
                 </div>
               ) : article.score < 0.5 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
-                  <div className='pl-2'>Negative</div>
+                  <p className='pl-2'>Negative</p>
                 </div>
               ) : (
                 <div className='flex flex-row items-center'>
                   <MinusCircleIcon className='h-12 w-12 text-slate-400' />
-                  <div className='pl-2'>Neutral</div>
+                  <p className='pl-2'>Neutral</p>
                 </div>
               )}
             </div>

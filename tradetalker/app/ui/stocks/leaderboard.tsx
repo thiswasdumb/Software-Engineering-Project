@@ -18,10 +18,11 @@ export default async function StockTrends() {
       <div className='mt-2 rounded-lg bg-slate-300 p-4'>
         {leaderboard.map((company, index) => (
           <Link key={index} href={`/company/${company.company_id}`}>
-            <div className='my-2 flex flex-row rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'>
+            <div className='my-2 flex flex-row rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'>
               <div className='text-lg font-bold'>{index + 1}</div>
-              <div className='ml-2 flex flex-col items-start'>
-                <div>{company.company_name}</div>
+              <div className='ml-2 flex flex-col'>
+                <div className='font-bold'>{company.company_symbol}</div>
+                <div className='text-sm'>{company.company_name}</div>
                 <div>{company.stock_price}</div>
               </div>
             </div>
