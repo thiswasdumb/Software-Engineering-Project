@@ -5,44 +5,57 @@ import { BookmarkIcon as SolidBookmarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
 
 export default function Bookmark({
-  isBookmarked,
+  articleId,
   isLoggedIn,
-  id,
 }: {
-  isBookmarked: boolean;
+  articleId: string;
   isLoggedIn: boolean;
-  id: string;
 }) {
   const [bookmarked, setBookmarked] = useState(false);
 
   useEffect(() => {
     // Set the bookmarked state accordingly
-    setBookmarked(isBookmarked);
-  }, [setBookmarked, isBookmarked]);
+    if (isLoggedIn) {
+      const fetchBookmarkStatus = async () => {
+        try {
+          const response = await fetch(
+            `/api/get_article_bookmark_status/${articleId}`
+          );
+          const data = await response.json();
+          setBookmarked(data.bookmark_status);
+        } catch (error) {
+          console.error('Error fetching bookmark status:', error);
+        }
+      };
+      fetchBookmarkStatus();
+    }
+  }, [isLoggedIn, articleId]);
 
   const handleClick = async () => {
     setBookmarked(!bookmarked);
     if (isLoggedIn) {
       if (!bookmarked) {
         try {
-          const response = await fetch(`/api/add_bookmark/${id}`, {
+          const response = await fetch(`/api/add_bookmark/${articleId}`, {
             credentials: 'include',
           });
-          const data: Record<string, any> = response.json();
+          const data = await response.json();
           if (data.success) {
-            setBookmarked(true);
+            setBookmarked(!bookmarked);
+            toast.success('Added bookmark.');
           }
         } catch (error) {
           console.error('Error adding bookmark:', error);
         }
       } else {
         try {
-          const response = await fetch(`/api/remove_bookmark/${id}`, {
+          const response = await fetch(`/api/delete_bookmark/${articleId}`, {
             credentials: 'include',
           });
-          const data: Record<string, any> = response.json();
+          const data = await response.json();
           if (data.success) {
-            setBookmarked(false);
+            setBookmarked(!bookmarked);
+            toast.success('Removed bookmark.');
           }
         } catch (error) {
           console.error('Error removing bookmark:', error);
@@ -51,24 +64,31 @@ export default function Bookmark({
     } else {
       toast.error('You must be logged in.');
     }
-    toast.success(
-      bookmarked ? 'Removed from bookmarks.' : 'Added to bookmarks.'
-    );
   };
 
-  return !bookmarked ? (
-    <BookmarkIcon
-      type='button'
-      cursor='pointer'
-      className='h-10 w-10 text-gray-400 transition hover:text-blue-500'
-      onClick={handleClick}
-    />
-  ) : (
-    <SolidBookmarkIcon
-      type='button'
-      cursor='pointer'
-      className='h-10 w-10 text-blue-500 transition hover:drop-shadow-lg'
-      onClick={handleClick}
-    />
+  <BookmarkIcon
+    type='button'
+    cursor='pointer'
+    className='h-10 w-10 text-gray-400 transition hover:text-blue-500'
+    onClick={handleClick}
+  />;
+
+  return (
+    isLoggedIn &&
+    (bookmarked ? (
+      <SolidBookmarkIcon
+        type='button'
+        cursor='pointer'
+        className='h-10 w-10 text-blue-500 transition hover:drop-shadow-lg'
+        onClick={handleClick}
+      />
+    ) : (
+      <BookmarkIcon
+        type='button'
+        cursor='pointer'
+        className='h-10 w-10 text-gray-400 transition hover:text-blue-500'
+        onClick={handleClick}
+      />
+    ))
   );
 }
