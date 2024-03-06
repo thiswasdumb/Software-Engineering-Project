@@ -57,7 +57,7 @@ class ArticleSearch:
 
 # Example usage
 search_component = ArticleSearch(article_object_lists)
-search_results = search_component.search("AI")
+search_results = search_component.search("HSBC bank")
 print(search_results)
 # for article, score in search_results:
 #     print(f"Article ID: {article.ArticleID}, Header: {article.header}, Similarity Score: {score}")

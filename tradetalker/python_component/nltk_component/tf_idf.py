@@ -21,6 +21,7 @@ class TF_IDF():
             #key:  ArticleID      value:  i (from 0 to self.num_articles) 
             self.matrix_id[self.article_objects[i]['ArticleID']] = i 
 
+        
         # initialize and fit TfidfVectorizer
         self.vectorizer = TfidfVectorizer(norm=None)
         self.tfidf_scores = self.vectorizer.fit_transform(article_list)
@@ -41,7 +42,6 @@ class TF_IDF():
 
 
     def get_top_n_terms_for_all_articles(self, top_n_words:int):
-        print('NUM_ARTICLES', self.article_objects)
         for i in range(self.num_articles):
             article_obj = self.article_objects[i]
             matrix_id = self.matrix_id[article_obj['ArticleID']]
