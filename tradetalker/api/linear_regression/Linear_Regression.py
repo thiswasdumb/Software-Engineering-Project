@@ -120,6 +120,9 @@ class Linear_Regression:
         # Access database and api to retrieve Sentiment Score and CAPM
         print('CAPM: ', CAPM)
         sentiment = np.array(self.Sentiment_Score)
+        if len(self.Sentiment_Score) == 0 or len(self.Sentiment_Score) == 1:
+            sentiment = np.append(sentiment, [0, 0])
+
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
         stock_price = stock_data[-1] * (CAPM + 1)  * ((sentiment * 0.1) + 1)
 
@@ -178,15 +181,6 @@ class Linear_Regression:
         # Visualizing the actual vs predicted values using a scatter plot
         plt.scatter(X_test['Sentiment_Score'], y_test, color='black', label='Actual')
 
-        # Sort X_test['Sentiment_Score'] and predictions to ensure the line of best fit is continuous
-        sorted_indices = np.argsort(X_test['Sentiment_Score'])
-        sorted_sentiment_score = X_test['Sentiment_Score'].iloc[sorted_indices]
-        sorted_predictions = predictions[sorted_indices]
-
-        # find line of best fit
-        a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
-        model_equation = a*sorted_sentiment_score + b
-
         return predicted_stock_price
 
     def MAE_evaluation(self, y_test, predictions):
@@ -211,7 +205,7 @@ class Linear_Regression:
 
 if __name__ == "__main__":
     company_symbol = 'UU.L'
-    Sentiment_Score = [0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898]
+    Sentiment_Score = []
     company_data = [175.55, 176.887, 174.987, 179.555, 180.454]
     # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
     predicted_stock_price = Linear_Regression(company_symbol, Sentiment_Score, company_data).calculate_stock_price()  
