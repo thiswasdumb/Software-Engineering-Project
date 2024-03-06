@@ -27,6 +27,8 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 )
 from werkzeug.security import generate_password_hash
 
+from linear_regression import Linear_Regression
+
 db = SQLAlchemy()
 
 
@@ -890,6 +892,31 @@ def get_company_data_for_linear_regression(company:Company) -> dict:
     company_data['PriceHistoric'] = price_historic
     company_data['SentimentScores'] = get_company_article_sentiment_scores(company.CompanyID)
     return company_data
+
+def set_all_companies_predicted_price() -> None:
+    """
+    Sets the predicted_stock_price of all companies by running their data through the linear regression model
+    to be called after the articles have been fetched
+    """
+    try:
+        companies = db.session.execute(db.select(Company)).scalars().all()
+        for idx, company in enumerate(companies):
+            try:
+                predicted_stock_price = Linear_Regression.Linear_Regression(
+                    company.StockSymbol, get_company_article_sentiment_scores(company.CompanyID), [
+                        company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4, company.StockPrice_D_5
+                    ])
+                db.session.execute(
+                    update(Company).where(Company.CompanyID == company.CompanyID)
+                    .values(PredictedStockPrice=predicted_stock_price)
+                )
+                db.session.commit()
+            except Exception as e:
+                # Handle exceptions appropriately
+                print(f"An error occurred in processing company with ID {company.CompanyID}: {e}")
+    except Exception as ex:
+        # Handle exceptions appropriately
+        print(f"An error occurred while retrieving companies: {ex}")
 
 def update_all_companies_daily() -> bool:
     """Updates daily stock prices for all companies."""
