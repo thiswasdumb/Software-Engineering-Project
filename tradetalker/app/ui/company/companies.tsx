@@ -26,12 +26,13 @@ export default async function CompaniesComponent() {
               key={index}
               className='max-w-4 opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg md:m-2 md:w-[30%]'
             >
-              <div>
-                {company.symbol}&nbsp;|&nbsp;
+              <p>
+                {company.symbol}
+                &nbsp;|&nbsp;
                 {company.name}
-              </div>
+              </p>
               {company.stock_price}
-              <div className='text-sm'>{company.industry}</div>
+              <p className='text-sm'>{company.industry}</p>
             </Link>
           ))}
         </div>

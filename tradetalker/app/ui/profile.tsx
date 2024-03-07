@@ -67,13 +67,13 @@ export default function ProfileComponent({
   return (
     isLoggedIn && (
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Profile</div>
+        <h1 className='text-2xl'>Profile</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-col items-start rounded-lg bg-slate-200'>
           <div>
-            <div className='text-xl'>Username: {data.username}</div>
+            <p className='text-xl'>Username: {data.username}</p>
             <div className='flex flex-row items-center'>
-              <div className='text-xl'>Email: {data.email}</div>
+              <p className='text-xl'>Email: {data.email}</p>
               <div className='ml-4'>
                 {verified ? (
                   <div className='rounded-lg bg-green-500 p-2 text-white'>

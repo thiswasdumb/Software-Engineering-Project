@@ -49,7 +49,7 @@ export default function Comments({
         {comments.map((comment, index) => (
           <div key={index} className='my-4'>
             <div className='flex flex-row items-end'>
-              <p>{comment.username}</p>
+              <div>{comment.username}</div>
               <div className='ml-2 text-sm text-slate-500'>{comment.time}</div>
             </div>
             <div className='flex flex-row items-center'>

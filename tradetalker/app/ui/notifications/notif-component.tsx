@@ -54,7 +54,7 @@ export default function NotifClientComponent({
   return (
     isLoggedIn && (
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Notifications</div>
+        <h1 className='text-2xl'>Notifications</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {notifs.length === 0 && <p>No notifications.</p>}
         {notifs.length > 0 && (

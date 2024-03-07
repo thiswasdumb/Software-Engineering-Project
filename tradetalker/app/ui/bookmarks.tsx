@@ -57,7 +57,7 @@ export default function BookmarkComponent({
   return (
     isLoggedIn && (
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Bookmarks</div>
+        <h1 className='text-2xl'>Bookmarks</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {bookmarks.length === 0 && <p>No bookmarks.</p>}
         {bookmarks.length > 0 &&
@@ -68,11 +68,11 @@ export default function BookmarkComponent({
                   href={`/article/${bookmark.article_id}`}
                   className='grow transition hover:drop-shadow-lg'
                 >
-                  <div className='text-sm'>
+                  <p className='text-sm'>
                     {dayjs(bookmark.date).format('D MMM YYYY LT')}
-                  </div>
-                  <div className='text-lg'>{bookmark.title}</div>
-                  <div className='truncate text-sm'>{bookmark.summary}</div>
+                  </p>
+                  <p className='text-lg'>{bookmark.title}</p>
+                  <p className='truncate text-sm'>{bookmark.summary}</p>
                 </Link>
                 <button
                   type='button'
