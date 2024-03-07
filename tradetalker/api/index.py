@@ -2,7 +2,7 @@
 
 import os
 import re
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
@@ -43,6 +43,7 @@ from database.db_schema import (
     get_company_data_for_linear_regression,
     update_all_companies_daily,
 )
+from database.search_component import ArticleSearch
 from linear_regression.linear_regression import TTLinearRegression
 
 app = Flask(__name__)
@@ -436,6 +437,18 @@ def search(query: str | None) -> Response:
         .scalars()
         .all()
     )
+
+    all_articles = db.session.execute(db.select(Article)).scalars().all()
+
+    key_article_ids = ArticleSearch(all_articles).search(query)
+    key_articles = (
+        db.session.execute(
+            db.select(Article).filter(Article.ArticleID.in_(key_article_ids[0])),
+        )
+        .scalars()
+        .all()
+    )
+
     companies = (
         db.session.execute(
             db.select(Company)
@@ -458,6 +471,16 @@ def search(query: str | None) -> Response:
         for article in articles
     ]
 
+    article_keywords_list = [
+        {
+            "id": key_article.ArticleID,
+            "title": key_article.Title,
+            "date": key_article.PublicationDate,
+            "summary": key_article.Summary,
+        }
+        for key_article in key_articles
+    ]
+
     companies_list = [
         {
             "id": company.CompanyID,
@@ -468,7 +491,13 @@ def search(query: str | None) -> Response:
         }
         for company in companies
     ]
-    return jsonify({"articles": articles_list, "companies": companies_list})
+    return jsonify(
+        {
+            "article_titles": articles_list,
+            "article_keywords": article_keywords_list,
+            "companies": companies_list,
+        },
+    )
 
 
 # ----------------- Dashboard routes -----------------
@@ -581,6 +610,65 @@ def get_newsfeed() -> Response:
             .filter(Follow.UserID == current_user.id)
             .order_by(desc(Article.PublicationDate))
             .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    newsfeed_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in newsfeed
+    ]
+    return jsonify(newsfeed_list)
+
+
+@app.route("/api/get_week_newsfeed", methods=["GET"])
+@login_required
+def get_week_newsfeed() -> Response:
+    """Returns the 3 most recent articles from the followed companies in the last week."""
+    # Get the 3 most recent articles from the followed companies in the last week
+    newsfeed = (
+        db.session.execute(
+            db.select(Article)
+            .filter(
+                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+            )
+            .order_by(desc(Article.PublicationDate))
+            .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    newsfeed_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in newsfeed
+    ]
+    return jsonify(newsfeed_list)
+
+
+@app.route("/api/get_week_newsfeed_full", methods=["GET"])
+@login_required
+def get_week_newsfeed_full() -> Response:
+    """Returns the full list of articles from the followed companies in the last week."""
+    # Get the full list of articles from the followed companies in the last week
+    newsfeed = (
+        db.session.execute(
+            db.select(Article)
+            .filter(
+                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+            )
+            .order_by(desc(Article.PublicationDate)),
         )
         .scalars()
         .all()
