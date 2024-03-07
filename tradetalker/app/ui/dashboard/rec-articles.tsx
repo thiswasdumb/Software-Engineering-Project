@@ -8,6 +8,7 @@ import {
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import CommentsButton from '@/app/ui/comments-button';
 
 export default function RecommendedArticles() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -35,30 +36,32 @@ export default function RecommendedArticles() {
         >
           <Link href={`/article/${article.id}`}>
             <div className='flex flex-row flex-wrap items-center justify-between'>
-              <p>{article.title}</p>
-              <div className='text-sm text-gray-600'>
+              <p className='text-lg'>{article.title}</p>
+              <p className='text-sm text-gray-600'>
                 {dayjs(article.date).fromNow()}
-              </div>
+              </p>
             </div>
             <hr className='border-1 my-2 rounded-lg border-slate-300' />
             <p>{article.summary}</p>
-            <div>
+            <hr className='border-1 my-2 rounded-lg border-slate-300' />
+            <div className='flex flex-row items-center justify-between'>
               {article.score > 0.5 ? (
                 <div className='flex flex-row items-center'>
-                  <ArrowUpCircleIcon className='h-12 w-12 text-green-500' />
-                  <p className='pl-2'>Positive</p>
+                  <ArrowUpCircleIcon className='h-10 w-10 text-green-600' />
+                  <p className='pl-2 text-green-600'>Positive</p>
                 </div>
               ) : article.score < 0.5 ? (
                 <div className='flex flex-row items-center'>
-                  <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
-                  <p className='pl-2'>Negative</p>
+                  <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
+                  <p className='pl-2 text-red-600'>Negative</p>
                 </div>
               ) : (
                 <div className='flex flex-row items-center'>
-                  <MinusCircleIcon className='h-12 w-12 text-slate-400' />
-                  <p className='pl-2'>Neutral</p>
+                  <MinusCircleIcon className='h-10 w-10 text-slate-400' />
+                  <p className='pl-2 text-slate-500'>Neutral</p>
                 </div>
               )}
+              <CommentsButton id={article.id} comments={article.comments} />
             </div>
           </Link>
         </div>
