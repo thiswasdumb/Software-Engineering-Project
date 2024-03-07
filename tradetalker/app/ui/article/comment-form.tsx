@@ -5,9 +5,11 @@ import toast from 'react-hot-toast';
 export function CommentForm({
   articleId,
   isLoggedIn,
+  isVerified,
 }: {
   articleId: string;
   isLoggedIn: boolean;
+  isVerified: boolean;
 }) {
   const [commentData, setCommentData] = useState<any[]>([]);
   const [comment, setComment] = useState('');
@@ -38,7 +40,7 @@ export function CommentForm({
       .catch((error) => console.error(error));
   };
 
-  if (isLoggedIn) {
+  if (isLoggedIn && isVerified) {
     return (
       <div className='flex w-full flex-row md:max-w-[80%]'>
         <form
@@ -70,20 +72,28 @@ export function CommentForm({
       </div>
     );
   } else {
-    return (
-      <div>
-        <p>
-          You must{' '}
-          <a
-            href='/login'
-            className='text-blue-600 underline hover:text-blue-700 active:text-orange-400'
-          >
-            login
-          </a>{' '}
-          and be verified before you can comment.
-        </p>
-      </div>
-    );
+    if (isLoggedIn && !isVerified) {
+      return (
+        <div>
+          <p>You must be verified before you can comment.</p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p>
+            You must&nbsp;
+            <a
+              href='/login'
+              className='text-blue-600 underline hover:text-blue-700 active:text-orange-400'
+            >
+              login
+            </a>
+            &nbsp;and be verified before you can comment.
+          </p>
+        </div>
+      );
+    }
   }
 }
 

@@ -32,13 +32,16 @@ export default function RecommendedCompanies({
             className='flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2'
             key={index}
           >
-            <Link href={`/company/${company.id}`}>
+            <Link
+              href={`/company/${company.id}`}
+              className='flex grow hover:drop-shadow-lg'
+            >
               <button
                 type='button'
-                className='flex flex-col items-start hover:drop-shadow-lg'
+                className='flex flex-col items-start text-start'
               >
-                <p className='text-start'>{company.name}</p>
-                <p>{company.symbol}</p>
+                <p className='font-bold'>{company.symbol}</p>
+                <p className='text-sm'>{company.name}</p>
               </button>
             </Link>
             <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />

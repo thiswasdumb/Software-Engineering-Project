@@ -62,17 +62,17 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
           </div>
         </div>
         {searchParams.get('query') == null && (
-          <div className='flex justify-center pt-20 text-center text-xl text-black '>
+          <p className='flex justify-center pt-20 text-center text-xl text-black'>
             Start typing to search for news articles or companies.
-          </div>
+          </p>
         )}
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row md:items-start'>
             <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Articles</div>
+              <h1 className='text-2xl'>Articles</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {articles.length === 0 && (
-                <div className='text-gray-600'>No matching articles found.</div>
+                <span className='text-gray-600'>No matching articles found.</span>
               )}
               <div className='flex flex-col justify-between'>
                 {articles.map((article, index) => (
@@ -88,9 +88,9 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                           searchParams.get('query')
                         )}
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <span className='text-sm text-gray-600'>
                         {dayjs(article.date).format('D MMM YYYY')}
-                      </div>
+                      </span>
                     </div>
                     <div>{article.summary}</div>
                   </Link>
@@ -98,13 +98,13 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
               </div>
             </div>
             <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Companies</div>
+              <h1 className='text-2xl'>Companies</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               <div className='md:max-[80%]'>
                 {companies.length === 0 && (
-                  <div className='text-gray-600'>
+                  <span className='text-gray-600'>
                     No matching companies found.
-                  </div>
+                  </span>
                 )}
                 <div className='flex flex-col justify-between'>
                   {companies.map((company, index) => (
@@ -124,8 +124,8 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                           searchParams.get('query')
                         )}
                       </div>
-                      <div className='text-base'>{company.stock_price}</div>
-                      <div className='text-sm'>{company.industry}</div>
+                      <p className='text-base'>{company.stock_price}</p>
+                      <p className='text-sm'>{company.industry}</p>
                     </Link>
                   ))}
                 </div>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { KeyIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
@@ -7,7 +7,7 @@ import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
-export default function ResetPasswordForm() {
+export default function ResetPasswordForm({ token }: { token: string }) {
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
   const [data, setData] = useState({});
@@ -15,26 +15,39 @@ export default function ResetPasswordForm() {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    if (!token) {
+      router.push('/not-found');
+    }
+    fetch(`/api/reset_password/${token}`, {
+      method: 'GET',
+    }).then((response) => {
+      if (response.status === 404) {
+        router.push('/not-found');
+      }
+    });
+  }, [token, router]);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent the default form submission
     try {
-      const response = await fetch('api/reset_password', {
+      const response = await fetch(`/api/submit_reset_password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-      const error = await response.json(); // Parse the JSON response
-      if (error.error) {
-        setErrorMessage(error.error);
+      const message = await response.json(); // Parse the JSON response
+      if (message.error) {
+        setErrorMessage(message.error);
         setTimeout(() => {
           setErrorMessage('');
         }, 6000);
       }
-      if (error.success) {
+      if (message.success) {
         router.push('/dashboard');
-        toast.success(error.success);
+        toast.success(message.success);
         router.refresh();
       }
     } catch (error) {
@@ -54,6 +67,10 @@ export default function ResetPasswordForm() {
           >
             <div className='flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8'>
               <h1 className='mb-3 text-2xl'>Enter your new password.</h1>
+              <p>
+                Your password must be between 8 and 200 characters and have at
+                least 1 uppercase, 1 lowercase and 1 special character.
+              </p>
               <div className='w-full'>
                 <div className='mt-4'>
                   <label
@@ -73,7 +90,7 @@ export default function ResetPasswordForm() {
                       required
                       minLength={8}
                       maxLength={200}
-                      pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
+                      pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
                     />
                     <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
                   </div>
@@ -90,15 +107,15 @@ export default function ResetPasswordForm() {
                   <div className='relative'>
                     <input
                       className='relative block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
-                      id='password'
+                      id='password_repeat'
                       type='password'
-                      name='password'
+                      name='password_repeat'
                       placeholder='Enter password'
                       onChange={handleChange}
                       required
                       minLength={8}
                       maxLength={200}
-                      pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
+                      pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
                     />
                     <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
                   </div>
@@ -106,7 +123,7 @@ export default function ResetPasswordForm() {
               </div>
               <ChangePasswordButton />
               <div
-                className='flex h-8 items-end space-x-1 overflow-hidden'
+                className='flex h-16 items-center space-x-1 overflow-hidden'
                 aria-live='polite'
                 aria-atomic='true'
               >
@@ -128,7 +145,7 @@ export default function ResetPasswordForm() {
 function ChangePasswordButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type='button' className='mt-5 w-full' aria-disabled={pending}>
+    <Button type='submit' className='mt-5 w-full' aria-disabled={pending}>
       <div className='text-base'>Change password</div>
       <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
     </Button>

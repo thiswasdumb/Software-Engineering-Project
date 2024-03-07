@@ -19,7 +19,7 @@ export default function ForgotPasswordComponent() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('api/forgot_password', {
+      const response = await fetch('/api/forgot_password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +33,10 @@ export default function ForgotPasswordComponent() {
           setErrorMessage('');
         }, 6000);
       }
-      if (response.ok) {
-        toast.success('Success! A password reset link is sent to your email.');
+      if (error.success) {
+        toast.success(
+          'Success! A password reset link will be sent to your email.'
+        );
       }
     } catch (error) {
       toast.error('An error occurred. Please try again later.');
@@ -96,7 +98,7 @@ export default function ForgotPasswordComponent() {
 function LoginButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type='button' className='mt-5 w-full' aria-disabled={pending}>
+    <Button type='submit' className='mt-5 w-full' aria-disabled={pending}>
       <div className='text-base'>Submit</div>
       <ArrowRightIcon className='ml-auto h-5 w-5 text-gray-50' />
     </Button>

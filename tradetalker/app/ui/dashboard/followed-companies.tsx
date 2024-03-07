@@ -32,15 +32,18 @@ export default function FollowedCompanies({
         {companies.map((company, index) => (
           <div
             key={index}
-            className='my-2 flex w-full flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
+            className='my-2 flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
           >
-            <Link href={`/company/${company.id}`}>
+            <Link
+              href={`/company/${company.id}`}
+              className='grow hover:drop-shadow-lg'
+            >
               <button
                 type='button'
-                className='flex flex-col items-start hover:drop-shadow-lg'
+                className='flex flex-col items-start text-start'
               >
-                <div className='text-start'>{company.name}</div>
-                <div>{company.symbol}</div>
+                <p className='font-bold'>{company.symbol}</p>
+                <p className='text-sm'>{company.name}</p>
               </button>
             </Link>
             <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />

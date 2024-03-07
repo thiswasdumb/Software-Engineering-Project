@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import dayjs from 'dayjs';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 export default function BookmarkComponent({
   isLoggedIn,
@@ -11,6 +13,7 @@ export default function BookmarkComponent({
 }) {
   const [bookmarks, setBookmarks] = useState<any[]>([]);
   const router = useRouter();
+  dayjs.extend(LocalizedFormat);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -54,22 +57,22 @@ export default function BookmarkComponent({
   return (
     isLoggedIn && (
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Bookmarks</div>
+        <h1 className='text-2xl'>Bookmarks</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {bookmarks.length === 0 && <p>No bookmarks.</p>}
         {bookmarks.length > 0 &&
           bookmarks.map((bookmark, index) => (
             <div key={index} className='my-2 rounded-lg bg-slate-300 p-2'>
-              <div className='flex flex-row items-start justify-between'>
+              <div className='flex flex-row items-center justify-between'>
                 <Link
                   href={`/article/${bookmark.article_id}`}
                   className='grow transition hover:drop-shadow-lg'
                 >
-                  <div className='text-sm'>
-                    {formatBookmarkTime(bookmark.date)}
-                  </div>
-                  <div className='text-lg'>{bookmark.title}</div>
-                  <div className='truncate text-sm'>{bookmark.summary}</div>
+                  <p className='text-sm'>
+                    {dayjs(bookmark.date).format('D MMM YYYY LT')}
+                  </p>
+                  <p className='text-lg'>{bookmark.title}</p>
+                  <p className='truncate text-sm'>{bookmark.summary}</p>
                 </Link>
                 <button
                   type='button'
@@ -84,9 +87,4 @@ export default function BookmarkComponent({
       </div>
     )
   );
-}
-
-function formatBookmarkTime(time: string) {
-  const date = new Date(time);
-  return date.toLocaleString();
 }

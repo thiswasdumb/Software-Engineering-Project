@@ -31,7 +31,7 @@ export default function NewsFeed() {
           <Link
             href={`/article/${article.id}`}
             key={index}
-            className='opacity:30 my-2 w-full rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg'
+            className='opacity:30 my-2 w-full rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
           >
             <div className='flex flex-row flex-wrap items-center justify-between'>
               <p>{article.title}</p>

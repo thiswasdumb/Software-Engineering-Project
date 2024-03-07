@@ -4,7 +4,7 @@
         <div style="background-color: white">
             <h1>Welcome to TradeTalk!</h1>
             <img src="logo.png" alt="TradeTalk logo" width="200px">
-            <h3>Please verify your email by clicking <a href="{{ url_for('verify', token=token, _external=True) }}">here.</a></h3>
+            <h3>Please verify your email by clicking <a href="{{ 'http://localhost:3000/api/verify/' + token }}">here.</a></h3>
             <p>Your password has been securely stored in our database and cannot be retrieved. In the event that it is forgotten, you will be able to reset it using the email address associated with your account.</p>
             <br>
             <p>Thank you for registering.</p>

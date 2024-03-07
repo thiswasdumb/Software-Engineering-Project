@@ -8,6 +8,27 @@ export default function ContactPage() {
         high-quality analysis of the latest financial news. Let&apos;s talk
         trade.
       </p>
+      <p className='mt-4'>TradeTalk was created by:</p>
+      <ul className='list-inside list-disc'>
+        <li>Serene Alrawi</li>
+        <li>Shayan Borhani Yazdi</li>
+        <li>Louis Hudson</li>
+        <li>Gabriel Hughes</li>
+        <li>Xun Khang Tan</li>
+        <li>Hao-Yen Tang</li>
+        <li>Alara Tindall</li>
+      </ul>
+      <p className='mt-4'>
+        Visit the{' '}
+        <a
+          href='https://github.com/thiswasdumb/SoftEngProject'
+          target='_blank'
+          className='mt-4 text-blue-500 hover:text-blue-600 active:text-orange-500'
+        >
+          GitHub repository
+        </a>{' '}
+        to find the website&apos;s code.
+      </p>
     </div>
   );
 }

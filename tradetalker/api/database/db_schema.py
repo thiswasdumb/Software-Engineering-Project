@@ -256,7 +256,10 @@ class Article(db.Model):  # type: ignore [name-defined]
     Summary = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=False)
     PredictionScore = mapped_column(Float, nullable=False)
     KeyWords = mapped_column(String(100, "utf8mb4_general_ci"), nullable=True)
-    ProcessedArticle = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=True)
+    ProcessedArticle = mapped_column(
+        Text(collation="utf8mb4_general_ci"),
+        nullable=True,
+    )
 
     company: Mapped["Company"] = relationship("Company", back_populates="article")
     articlecomment: Mapped[list["ArticleComment"]] = relationship(
@@ -289,7 +292,7 @@ class Article(db.Model):  # type: ignore [name-defined]
         url: str,
         summary: str,
         prediction_score: float,
-        processed_article: str=None,
+        processed_article: str | None,
     ) -> None:
         """Initializes the article object."""
         self.CompanyID = company_id
@@ -580,6 +583,7 @@ def add_data() -> None:
             "URL1",
             "A short summary of the article.",
             0.5,
+            None,
         ),
         Article(
             2,
@@ -589,16 +593,17 @@ def add_data() -> None:
             "URL2",
             "Summary2",
             0.6,
+            None,
         ),
     ]
     faq_list = [
         Faq(
-            "Question1",
-            "Answer1",
+            "What is TradeTalk?",
+            "TradeTalk is a platform that provides users with the latest news and information about the stock market and companies. It also allows users to follow companies and receive notifications about them.",
         ),
         Faq(
-            "Question2",
-            "Answer2",
+            "How do I follow a company?",
+            "To follow a company, simply search for the company using the search bar and click on the 'Follow' button on the company's page. You will then receive notifications about the company's news and updates.",
         ),
     ]
     notification_list = [
@@ -768,18 +773,18 @@ def add_base_company_data() -> None:
             Company(
                 company.info.get("longName", "N/A"),  # CompanyName
                 symbol,  # StockSymbol
-                past_8_days_price[0],  # StockPrice
+                past_8_days_price[7],  # StockPrice
                 company.info.get("industry", "N/A"),  # Industry
                 company.info.get("longBusinessSummary", "N/A"),  # CompanyDescription
                 None,  # PredictedStockPrice
                 None,  # StockVariance
-                past_8_days_price[1],  # StockPrice_D_1
-                past_8_days_price[2],  # StockPrice_D_2
-                past_8_days_price[3],  # StockPrice_D_3
-                past_8_days_price[4],  # StockPrice_D_4
-                past_8_days_price[5],  # StockPrice_D_5
-                past_8_days_price[6],  # StockPrice_D_6
-                past_8_days_price[7],  # StockPrice_D_7
+                past_8_days_price[6],  # StockPrice_D_1
+                past_8_days_price[5],  # StockPrice_D_2
+                past_8_days_price[4],  # StockPrice_D_3
+                past_8_days_price[3],  # StockPrice_D_4
+                past_8_days_price[2],  # StockPrice_D_5
+                past_8_days_price[1],  # StockPrice_D_6
+                past_8_days_price[0],  # StockPrice_D_7
             ),
         )
 
@@ -798,14 +803,14 @@ def company_daily_update(company: Company) -> None:
             return
 
         # Update stock price history
-        #company.StockPrice_D_7 = company.StockPrice_D_6
-        #company.StockPrice_D_6 = company.StockPrice_D_5
-        #company.StockPrice_D_5 = company.StockPrice_D_4
-        #company.StockPrice_D_4 = company.StockPrice_D_3
-        #company.StockPrice_D_3 = company.StockPrice_D_2
-        #company.StockPrice_D_2 = company.StockPrice_D_1
-        #company.StockPrice_D_1 = company.StockPrice
-        #company.StockPrice = history["Close"][-1]
+        # company.StockPrice_D_7 = company.StockPrice_D_6
+        # company.StockPrice_D_6 = company.StockPrice_D_5
+        # company.StockPrice_D_5 = company.StockPrice_D_4
+        # company.StockPrice_D_4 = company.StockPrice_D_3
+        # company.StockPrice_D_3 = company.StockPrice_D_2
+        # company.StockPrice_D_2 = company.StockPrice_D_1
+        # company.StockPrice_D_1 = company.StockPrice
+        # company.StockPrice = history["Close"][-1]
 
         # ----- This is the part where we apply the prediction formula and calculate stock_variance and predicted_price
         # sentiment scores of the related articles for each company on the day
@@ -835,11 +840,14 @@ def company_daily_update(company: Company) -> None:
         )
         db.session.rollback()  # Rollback changes in case of an error
 
-def get_company_article_sentiment_scores(company_id) -> list:
-    """
-    Returns all the sentiment scores of the articles related to a company within the last n days
-    """
-    articles = db.session.execute(db.select(Article).filter_by(CompanyID=company_id)).scalars().all()
+
+def get_company_article_sentiment_scores(company_id: int) -> list:
+    """Returns all the sentiment scores of the articles related to a company within the last n days."""
+    articles = (
+        db.session.execute(db.select(Article).filter_by(CompanyID=company_id))
+        .scalars()
+        .all()
+    )
     print("#####")
     sentiment_scores = []
     for article in articles:
@@ -849,49 +857,70 @@ def get_company_article_sentiment_scores(company_id) -> list:
     print("sentiment scores: ", sentiment_scores)
     return sentiment_scores
 
-def get_articles_by_company_name(company_name) -> list:
-    """
-    Returns all articles related to a company, for key word analysis
-    """
-    company = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
-                                 ).scalars().first()
+
+def get_articles_by_company_name(company_name: str) -> list:
+    """Returns all articles related to a company, for keyword analysis."""
+    company = (
+        db.session.execute(
+            db.select(Company).filter(Company.CompanyName.like(f"%{company_name}%")),
+        )
+        .scalars()
+        .first()
+    )
     if not company:
         print("No result found for company named: ", company_name)
         return []
 
-    articles = db.session.execute(db.select(Article).filter_by(CompanyID=company.CompanyID)).scalars().all()
+    articles = (
+        db.session.execute(db.select(Article).filter_by(CompanyID=company.CompanyID))
+        .scalars()
+        .all()
+    )
     if not articles:
         print("No articles found for the company ", company_name)
     return articles
 
+
 def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
-    """
-    Updates the keywords of articles in the database based on the provided pairs of article IDs and corresponding keywords.
+    """Updates the keywords of articles in the database based on the provided pairs of article IDs and corresponding keywords.
+
     Args:
-    - article_keywords_pairs (list[dict]): List of dictionaries containing article ID as the key and keywords as the value.
+    ----
+        article_keywords_pairs (list[dict]): List of dictionaries containing article ID as the key and keywords as the value.
+
     Raises:
-    - Any errors encountered during the execution will be propagated.
+    ------
+        Any errors encountered during the execution will be propagated.
+
     """
     for article_keywords_pair in article_keywords_pairs:
         try:
             # Fixing the syntax errors
             db.session.execute(
-                update(Article).where(Article.ArticleID == article_keywords_pair.keys())
-                .values(KeyWords=article_keywords_pair.values())
+                update(Article)
+                .where(Article.ArticleID == article_keywords_pair.keys())
+                .values(KeyWords=article_keywords_pair.values()),
             )
             db.session.commit()
-        except Exception as e:
+        except IntegrityError as e:
             # Handle exceptions appropriately
-            print(f"An error occurred in the member at article id {article_keywords_pair.keys()}: {e}")
+            print(
+                f"An error occurred in the member at article id {article_keywords_pair.keys()}: {e}",
+            )
+
 
 def get_article_from_news_script(article: dict) -> None:
-    """
-    Inserts the article recieved from the news script into the database
-    """
+    """Inserts the article recieved from the news script into the database."""
     # need the company_id first
-    company = db.session.execute(db.select(Company).
-                                 filter(Company.CompanyName.like(f'%{article["Company"]}%'))
-                                 ).scalars().first()
+    company = (
+        db.session.execute(
+            db.select(Company).filter(
+                Company.CompanyName.like(f'%{article["Company"]}%'),
+            ),
+        )
+        .scalars()
+        .first()
+    )
     if not company:
         print("Couldn't find the company name in the table for ", article["Company"])
         return
@@ -899,43 +928,47 @@ def get_article_from_news_script(article: dict) -> None:
 
     new_article = Article(
         company_id=company.CompanyID,
-        title=article['Title'],
-        publication_date=article['PublicationDate'],
-        url=article['URL'],
-        summary=article['Summary'],
-        prediction_score=article['PredictionScore'],
-        content=article['Content'],
-        processed_article=article['ProcessedArticle']
+        title=article["Title"],
+        publication_date=article["PublicationDate"],
+        url=article["URL"],
+        summary=article["Summary"],
+        prediction_score=article["PredictionScore"],
+        content=article["Content"],
+        processed_article=article["ProcessedArticle"],
     )
     db.session.add(new_article)
     db.session.commit()
 
+
 def get_all_company_names() -> list:
-    """
-    Returns the name of all articles
-    """
+    """Returns the name of all articles."""
     companies = db.session.execute(db.select(Company)).scalars().all()
-    company_names = []
-    for company in companies:
-        company_names.append(company.CompanyName)
+    company_names = [company.CompanyName for company in companies]
     print(company_names)
     return company_names
 
-def get_company_data_for_linear_regression(company:Company) -> dict:
-    """
-    Returns the data needed for our linear regression model in the form of a dict
-    """
-    company_data = {'StockSymbol': company.StockSymbol}
-    price_historic = [company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4,
-                      company.StockPrice_D_5]
-    company_data['PriceHistoric'] = price_historic
-    company_data['SentimentScores'] = get_company_article_sentiment_scores(company.CompanyID)
+
+def get_company_data_for_linear_regression(company: Company) -> dict:
+    """Returns the data needed for our linear regression model in the form of a dict."""
+    company_data = {"StockSymbol": company.StockSymbol}
+    price_historic = [
+        company.StockPrice_D_1,
+        company.StockPrice_D_2,
+        company.StockPrice_D_3,
+        company.StockPrice_D_4,
+        company.StockPrice_D_5,
+    ]
+    company_data["PriceHistoric"] = price_historic
+    company_data["SentimentScores"] = get_company_article_sentiment_scores(
+        company.CompanyID,
+    )
     return company_data
+
 
 def set_all_companies_predicted_price() -> None:
     """
     Sets the predicted_stock_price of all companies by running their data through the linear regression model
-    to be called after the articles have been fetched
+    to be called after the articles have been fetched.
     """
     try:
         companies = db.session.execute(db.select(Company)).scalars().all()
@@ -956,6 +989,7 @@ def set_all_companies_predicted_price() -> None:
     except Exception as ex:
         # Handle exceptions appropriately
         print(f"An error occurred while retrieving companies: {ex}")
+
 
 def update_all_companies_daily() -> bool:
     """Updates daily stock prices for all companies."""
