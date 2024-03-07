@@ -28,7 +28,7 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 )
 from werkzeug.security import generate_password_hash
 
-from linear_regression import Linear_Regression
+from linear_regression.linear_regression import TTLinearRegression
 
 db = SQLAlchemy()
 
@@ -974,7 +974,7 @@ def set_all_companies_predicted_price() -> None:
         companies = db.session.execute(db.select(Company)).scalars().all()
         for idx, company in enumerate(companies):
             try:
-                predicted_stock_price = Linear_Regression.Linear_Regression(
+                predicted_stock_price = TTLinearRegression(
                     company.StockSymbol, get_company_article_sentiment_scores(company.CompanyID), [
                         company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4, company.StockPrice_D_5
                     ])

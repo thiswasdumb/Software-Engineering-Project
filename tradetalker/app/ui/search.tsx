@@ -72,7 +72,9 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
               <h1 className='text-2xl'>Articles</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {articles.length === 0 && (
-                <span className='text-gray-600'>No matching articles found.</span>
+                <span className='text-gray-600'>
+                  No matching articles found.
+                </span>
               )}
               <div className='flex flex-col justify-between'>
                 {articles.map((article, index) => (
