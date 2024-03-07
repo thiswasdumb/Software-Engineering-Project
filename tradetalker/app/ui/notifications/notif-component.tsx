@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import dayjs from 'dayjs';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 export default function NotifClientComponent({
   isLoggedIn,
@@ -11,6 +13,7 @@ export default function NotifClientComponent({
 }) {
   const [notifs, setNotifs] = useState<any[]>([]);
   const router = useRouter();
+  dayjs.extend(LocalizedFormat);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -62,10 +65,10 @@ export default function NotifClientComponent({
                   href={`/article/${notif.article_id}`}
                   className='grow transition hover:drop-shadow-lg'
                 >
-                  <div className='text-sm'>
-                    {formatNotificationTime(notif.time)}
-                  </div>
-                  <div className='text-lg'>{notif.content}</div>
+                  <p className='text-sm'>
+                    {dayjs(notif.time).format('D MMM YYYY LT')}
+                  </p>
+                  <p className='text-lg'>{notif.content}</p>
                 </Link>
                 <button
                   type='button'
@@ -81,9 +84,4 @@ export default function NotifClientComponent({
       </div>
     )
   );
-}
-
-function formatNotificationTime(time: string) {
-  const date = new Date(time);
-  return date.toLocaleString();
 }
