@@ -128,6 +128,7 @@ class TTLinearRegression:
         """Creates a dataframe using CAPM and stock data."""
         # Access database and api to retrieve sentiment score and CAPM
         print("CAPM: ", capm)
+        sentiment = np.array(self.sentiment_score)
         if len(self.sentiment_score) == 0 or len(self.sentiment_score) == 1:
             sentiment = np.append(sentiment, [0, 0])
 
