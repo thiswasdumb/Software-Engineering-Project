@@ -120,7 +120,7 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                         required
                         minLength={8}
                         maxLength={200}
-                        pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
+                        pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
                       />
                       <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
                     </div>
