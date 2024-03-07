@@ -39,7 +39,7 @@ class TTLinearRegression:
         # Assign the provided company_data to the instance variable
         self.company_data = company_data
 
-    # Function to fetch market data from API
+
     def get_data(self, url: str) -> np.ndarray:
         """Fetches stock market data from the MarketStack API."""
         # Our MarketStack API
@@ -71,6 +71,7 @@ class TTLinearRegression:
         except RequestException as e:
             print("Error fetching data:", e)
             return None
+
 
     def calculate_capm(self) -> tuple[float, np.ndarray]:
         """Calculates the Capital Asset Pricing Model (CAPM) using historical data."""
@@ -122,11 +123,14 @@ class TTLinearRegression:
         # Printing the calculated CAPM value
         return capm, stock_data
 
+
     def create_dataframe(self, capm: float, stock_data: np.ndarray) -> tuple:
         """Creates a dataframe using CAPM and stock data."""
         # Access database and api to retrieve sentiment score and CAPM
         print("CAPM: ", capm)
-        sentiment = np.array(self.sentiment_score)
+        if len(self.sentiment_score) == 0 or len(self.sentiment_score) == 1:
+            sentiment = np.append(sentiment, [0, 0])
+
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase
         stock_price = stock_data[-1] * (capm + 1) * ((sentiment * 0.1) + 1)
 
@@ -145,6 +149,7 @@ class TTLinearRegression:
         y = stocks_df["stock_price"]
 
         return x, y
+
 
     def create_test_data(self, x: tuple, y: tuple) -> tuple[list, list, list, list]:
         """Creates training and testing data for the model."""
@@ -172,6 +177,7 @@ class TTLinearRegression:
 
         return X_train, X_test, y_train, y_test
 
+
     def create_linear_model(
         self,
         X_train: list,
@@ -198,22 +204,15 @@ class TTLinearRegression:
         # Visualizing the actual vs predicted values using a scatter plot
         # plt.scatter(X_test["sentiment_score"], y_test, color="black", label="Actual")
 
-        # Sort X_test['sentiment_score'] and predictions to ensure the line of best fit is continuous
-        sorted_indices = np.argsort(X_test["sentiment_score"])
-        sorted_sentiment_score = X_test["sentiment_score"].iloc[sorted_indices]
-        sorted_predictions = predictions[sorted_indices]
-
-        # find line of best fit
-        a, b = np.polyfit(sorted_sentiment_score, sorted_predictions, 1)
-        model_equation = a * sorted_sentiment_score + b
-
         return predicted_stock_price
+
 
     def mae_evaluation(self, y_test: list, predictions: np.ndarray) -> float:
         """Calculates Mean Absolute Error (MAE) to evaluate model performance."""
         mae = mean_absolute_error(y_test, predictions)
         print(f"Mean Absolute Error: {mae}")
         return mae
+
 
     def calculate_stock_price(self) -> float:
         """Calculates the stock price using Linear Regression."""
@@ -236,13 +235,8 @@ class TTLinearRegression:
 
 
 if __name__ == "__main__":
-    comp_symbol = "UU.L"
-    sent_score = [0.843284923, 0.743582, 0.97854, 0.9897, 0.7896, 0.898]
+    comp_symbol = 'UU.L'
+    sent_score = []
     comp_data = [175.55, 176.887, 174.987, 179.555, 180.454]
-    # Create an instance of the TTLinearRegression class with provided parameters and
-    # calculate the stock price
-    predicted_sp = TTLinearRegression(
-        comp_symbol,
-        sent_score,
-        comp_data,
-    ).calculate_stock_price()
+    # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
+    predicted_stock_price = Linear_Regression(comp_symbol, sent_score, comp_data).calculate_stock_price()  

@@ -25,8 +25,10 @@ class GetNewsClass:
         - None 
         """
         # self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
-        self.news_api = NewsApiClient(api_key='fb9cdea752a44045b9235bc4c5d69e12')
-        
+        # self.news_api = NewsApiClient(api_key='fb9cdea752a44045b9235bc4c5d69e12')
+        self.news_api = NewsApiClient(api_key='ee57dcf14e0a4903905440d1cdbed356')
+
+    
         get_pos_class = GetPOSClass() 
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()
@@ -62,7 +64,7 @@ class GetNewsClass:
 
         for company_name in self.all_articles.keys():    #self.all_articles keys are the company names 
             article_dictionaries_for_one_company = self.get_articles(company_name) #without keywords inserted 
-            
+
             list_of_article_dictionaries.extend(article_dictionaries_for_one_company)
 
         article_dictionaries_with_keywords = self.insert_tf_idf_scores(list_of_article_dictionaries)
@@ -93,7 +95,7 @@ class GetNewsClass:
 
         for article in articles:
             article_title = article['title']
-            if company_name.lower().title() not in article_title:
+            if company_name.lower() not in article_title.lower():
                 continue
             # Get the URL of the article
             article_url = article['url']
@@ -121,7 +123,7 @@ class GetNewsClass:
             if not article_object['PublicationDate']:  # in some cases we got NULL date which would then prevent the insertion
                 article_object['PublicationDate'] = datetime.datetime.now()
 
-            # print(article_object['Summary'], article_object['PredictionScore'])
+            print(article_object['Title'], article_object['URL'], article_object['PredictionScore'])
             
             #Will be calculated later after the company article corpus is fully fetched 
             article_object['KeyWords'] = None 
@@ -134,6 +136,9 @@ class GetNewsClass:
 
 
     def insert_tf_idf_scores(self,processed_articles: dict):
+        if len(processed_articles) <= 0:
+            print('No Articles')
+            return processed_articles
         #get the top 20 words 
         tf_idf = TF_IDF(processed_articles)
         return tf_idf.get_top_n_terms_for_all_articles(top_n_words=20)
@@ -152,7 +157,7 @@ class GetNewsClass:
 
 
 # Example usage
-test = GetNewsClass(['Airtel Africa'])
+test = GetNewsClass(['WPP'])
 results = test.fetch_all_articles()
 
 # print("TEST RESULT:", results)
