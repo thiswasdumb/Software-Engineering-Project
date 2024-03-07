@@ -84,8 +84,8 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                 </h1>
                 <p>
                   Please choose a suitable username between 3 and 50 characters.
-                  Passwords must be between 8 and 200 characters and have at
-                  least 1 capital letter and 1 special character.
+                  Your password must be between 8 and 200 characters and have at
+                  least 1 uppercase, 1 lowercase and 1 special character.
                 </p>
                 <div className='w-full'>
                   <div>
@@ -149,7 +149,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                         required
                         minLength={8}
                         maxLength={200}
-                        pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
+                        pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
                       />
                       <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
                     </div>
