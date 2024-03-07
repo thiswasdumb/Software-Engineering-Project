@@ -2,7 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 
 async function getLeaderboard() {
-  const response = await fetch('http://localhost:8080/api/get_leaderboard');
+  const response = await fetch('http://localhost:8080/api/get_leaderboard', {
+    cache: 'no-store',
+  });
   if (!response.ok) {
     throw new Error('Error fetching leaderboard');
   }
@@ -23,7 +25,7 @@ export default async function StockTrends() {
               <div className='ml-2 flex flex-col'>
                 <div className='font-bold'>{company.company_symbol}</div>
                 <div className='text-sm'>{company.company_name}</div>
-                <div>{company.stock_price}</div>
+                <p>{company.stock_price}</p>
               </div>
             </div>
           </Link>

@@ -2,7 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 
 async function getStockTrends() {
-  const response = await fetch('http://localhost:8080/api/get_stock_trends');
+  const response = await fetch('http://localhost:8080/api/get_stock_trends', {
+    cache: 'no-store',
+  });
   if (!response.ok) {
     throw new Error('Error fetching stock trends');
   }

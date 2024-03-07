@@ -2,7 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 
 async function getCompanies() {
-  const response = await fetch('http://localhost:8080/api/get_companies');
+  const response = await fetch('http://localhost:8080/api/get_companies', {
+    cache: 'no-store',
+  });
   if (!response.ok) {
     throw new Error('Error fetching companies');
   }
