@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: 'Reset Password',
 };
 
-export default function ResetPassword() {
-  return <ResetPasswordForm />;
+export default function ResetPassword({
+  params,
+}: {
+  params: { token: string };
+}) {
+  return <ResetPasswordForm token={params.token} />;
 }
