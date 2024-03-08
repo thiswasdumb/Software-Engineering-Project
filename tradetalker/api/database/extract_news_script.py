@@ -2,10 +2,10 @@ import datetime
 from flask import Flask
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
-from preprocessing import GetPOSClass, PreprocessText
-from text_summariser import TextSummariser
-from tf_idf import TF_IDF
-from vader import SentimentAnalyser
+from .preprocessing import GetPOSClass, PreprocessText
+from .text_summariser import TextSummariser
+from .tf_idf import TF_IDF
+from .vader import SentimentAnalyser
 
 app = Flask(__name__)
 
@@ -165,5 +165,5 @@ class GetNewsClass:
 
 
 # Example usage
-test = GetNewsClass(["Ashtead"])
-results = test.fetch_all_articles()
+#test = GetNewsClass(["Ashtead"])
+#results = test.fetch_all_articles()
