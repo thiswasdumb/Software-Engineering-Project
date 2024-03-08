@@ -1,10 +1,10 @@
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
-from preprocessing import PreprocessText, GetPOSClass
-from vader import SentimentAnalyser
+from .preprocessing import PreprocessText, GetPOSClass
+from .vader import SentimentAnalyser
 from flask import Flask
-from tf_idf import TF_IDF
-from text_summariser import TextSummariser
+from .tf_idf import TF_IDF
+from .text_summariser import TextSummariser
 
 
 import datetime
@@ -24,9 +24,9 @@ class GetNewsClass:
         Returns: 
         - None 
         """
-        # self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
+        self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
         # self.news_api = NewsApiClient(api_key='fb9cdea752a44045b9235bc4c5d69e12')
-        self.news_api = NewsApiClient(api_key='ee57dcf14e0a4903905440d1cdbed356')
+        # self.news_api = NewsApiClient(api_key='ee57dcf14e0a4903905440d1cdbed356')
 
     
         get_pos_class = GetPOSClass() 
@@ -38,7 +38,7 @@ class GetNewsClass:
         for company in list_of_companies:
             self.all_articles[company] = self.news_api.get_everything(
                 q=company,
-                from_param='2024-02-08',
+                from_param='2024-03-06',
                 language='en',
                 sort_by='relevancy',
                 page=1)
@@ -123,7 +123,7 @@ class GetNewsClass:
             if not article_object['PublicationDate']:  # in some cases we got NULL date which would then prevent the insertion
                 article_object['PublicationDate'] = datetime.datetime.now()
 
-            print(article_object['Title'], article_object['URL'], article_object['PredictionScore'])
+            #print(article_object['Title'], article_object['URL'], article_object['PredictionScore'])
             
             #Will be calculated later after the company article corpus is fully fetched 
             article_object['KeyWords'] = None 
@@ -157,8 +157,8 @@ class GetNewsClass:
 
 
 # Example usage
-test = GetNewsClass(['WPP'])
-results = test.fetch_all_articles()
+#test = GetNewsClass(['coca-cola', 'hsbc', 'ocado'])
+#results = test.fetch_all_articles()
 
 # print("TEST RESULT:", results)
 

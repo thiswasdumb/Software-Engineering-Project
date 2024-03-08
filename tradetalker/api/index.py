@@ -1,7 +1,8 @@
 """Contains the Flask application to send data to the TradeTalker frontend."""
-import datetime
+
 import os
 import re
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
@@ -35,25 +36,29 @@ from database.db_schema import (
     add_base_company_data,
     add_data,
     db,
-    update_all_companies_daily,
-    get_company_article_sentiment_scores,
     get_all_company_names,
-    get_articles_by_company_name,
     get_article_from_news_script,
+    get_articles_by_company_name,
+    get_company_article_sentiment_scores,
     get_company_data_for_linear_regression,
+    get_articles_from_news_api,
+    get_following_status,
+    set_all_companies_predicted_price,
 )
-
-from linear_regression import Linear_Regression
+from database.search_component import ArticleSearch
+from linear_regression.linear_regression import TTLinearRegression
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 
 IMAGE_FOLDER = "../public/"
-app.config["MAIL_SERVER"] = "127.0.0.1"
-app.config["MAIL_PORT"] = 25
-app.config["MAIL_USERNAME"] = None
-app.config["MAIL_PASSWORD"] = None
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = "tradetalks202@gmail.com"
+app.config["MAIL_PASSWORD"] = "pgun undn yvpf doyd"
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqldb:///tradetalkerdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "secret"
@@ -81,7 +86,7 @@ def load_user(user_id: int) -> User | None:
     return db.session.get(User, user_id)
 
 
-reset = False  # Set to False to keep the database data on restart
+reset = True  # Set to False to keep the database data on restart
 if reset:
     with app.app_context():
         db.drop_all()
@@ -90,28 +95,41 @@ if reset:
         add_data()
         get_company_article_sentiment_scores(1)
         get_all_company_names()
-        get_article_from_news_script({
-            'Company': "3i",
-            'Title': "Test article for 3i",
-            'Content': "Blah blah blah 3i so good",
-            'URL': "idk.whocares",
-            'Summary': "3i nice!",
-            'PublicationDate': datetime.datetime.now(),
-            'ProcessedArticle': "Article processed!",
-            "PredictionScore": 1
-        })
+        get_article_from_news_script(
+            {
+                "Company": "3i",
+                "Title": "Test article for 3i",
+                "Content": "Blah blah blah 3i so good",
+                "URL": "idk.whocares",
+                "Summary": "3i nice!",
+                "PublicationDate": datetime.now(UTC),
+                "ProcessedArticle": "Article processed!",
+                "PredictionScore": 1,
+            },
+        )
         print(get_articles_by_company_name("3i"))
-        company_name="3i"
-        comp = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
-                                     ).scalars().first()
+        comp_name = "3i"
+        comp = (
+            db.session.execute(
+                db.select(Company).filter(
+                    Company.CompanyName.like(f"%{comp_name}%"),
+                ),
+            )
+            .scalars()
+            .first()
+        )
         print(comp)
         comp_data = get_company_data_for_linear_regression(comp)
         print(comp_data)
-        predicted_price = Linear_Regression.Linear_Regression(
-            comp_data['StockSymbol'], comp_data['SentimentScores'], comp_data['PriceHistoric']
+        predicted_price = TTLinearRegression(
+            comp_data["StockSymbol"],
+            comp_data["SentimentScores"],
+            comp_data["PriceHistoric"],
         ).calculate_stock_price()
         print(predicted_price)
-
+        set_all_companies_predicted_price()
+        #get_articles_from_news_api()
+        #print(get_following_status(1))
 
 
 
@@ -149,6 +167,11 @@ def example() -> Response:
             "date": article.PublicationDate,
             "summary": article.Summary,
             "score": article.PredictionScore,
+            "comments": db.session.execute(
+                db.select(db.func.count())
+                .select_from(ArticleComment)
+                .filter(ArticleComment.ArticleID == article.ArticleID),
+            ).scalar(),
         }
         for article in articles
     ]
@@ -207,7 +230,10 @@ def registration() -> Response:
         or len(email) > MAX_EMAIL_LENGTH
         or not (MIN_USERNAME_LENGTH <= len(username) <= MAX_USERNAME_LENGTH)
         or not (MIN_PASSWORD_LENGTH <= len(password) <= MAX_PASSWORD_LENGTH)
-        or not re.match(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", password)
+        or not re.match(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            password,
+        )
     ):
         error = "Invalid credentials!"
         return redirect(url_for("registration", error=error))
@@ -244,40 +270,34 @@ def registration() -> Response:
     login_user(new_user)
     session["username"] = current_user.Username
     # (Call the verify email function here)
-    return jsonify({"url": "dashboard"})
+    return send_verify_email(new_user)
 
 
 # Sends verification email to a User during signup
 def send_verify_email(user: User) -> Response:
     """Sends a verification email to the user."""
     if current_user.IsVerified:
-        return redirect(url_for("dashboard", error="You are already verified."))
+        return jsonify({"url": "dashboard", "error": "You are already verified."})
 
-    try:
-        token = User.get_reset_token(user)
-        db.session.commit()
-        msg = Message(
-            subject="Verify your TradeTalk account",
-            sender=("TradeTalk", "tradetalk-admin@example.com"),
-            recipients=[current_user.Email],
+    token = User.get_reset_token(user)
+    msg = Message(
+        subject="Verify your TradeTalk account",
+        sender=("TradeTalk", "tradetalk-admin@example.com"),
+        recipients=[current_user.Email],
+    )
+    msg.html = render_template("verify_message.html", token=token)
+    # Attach an image to the header
+    with Path(IMAGE_FOLDER + "images/logo.png").open("rb") as file:
+        msg.attach(
+            "logo.png",
+            "image/png",
+            file.read(),
+            "inline",
+            headers=[["Content-ID", "<MyImage>"]],
         )
-        msg.html = render_template("verify_message.html", token=token)
-        # Attach an image to the header
-        with Path(IMAGE_FOLDER + "images/logo.png").open("rb") as file:
-            msg.attach(
-                "logo.png",
-                "image/png",
-                file.read(),
-                "inline",
-                headers=[["Content-ID", "<MyImage>"]],
-            )
-        msg.sender = "TradeTalk <tradetalk-admin@example.com>"
-        mail.send(msg)
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({"error": "Could not send verification email."})
-
-    return redirect(url_for("dashboard"), code=301)
+    msg.sender = "TradeTalk <tradetalk-admin@example.com>"
+    mail.send(msg)
+    return jsonify({"url": "dashboard", "success": "Verification email sent."})
 
 
 @app.route("/api/verify/<string:token>", methods=["GET", "POST"])
@@ -285,23 +305,28 @@ def send_verify_email(user: User) -> Response:
 def verify(token: str) -> Response:
     """Verifies the user's email."""
     if current_user.IsVerified:
+        print("You are already verified.", flush=True)
         return redirect(url_for("dashboard", error="You are already verified."))
+    print("You are not verified.", flush=True)
     if current_user.id == User.verify_reset_token(token):
         try:
-            current_user.IsVerified = True  # User is now confirmed
+            current_user.IsVerified = 1  # User is now confirmed
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            return redirect(url_for("home", error="Could not verify email."), code=301)
-        return redirect(url_for("dashboard"), code=301)
-    return redirect(url_for("home", error="Invalid token."), code=301)
+            return redirect(url_for("home", error="Could not verify email."))
+        return redirect(url_for("dashboard", success="Email verified!"))
+    return redirect(url_for("home", error="Invalid or expired token."))
 
 
 @app.route("/api/login", methods=["GET"])
 def login() -> Response:
     """Returns the login page."""
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard"), code=301)
+        return redirect(
+            url_for("dashboard", error="You are already logged in."),
+            code=301,
+        )
     error = request.args.get("error")
     success = request.args.get("success")
     string = ""
@@ -338,10 +363,72 @@ def login_form() -> Response:
     return jsonify({"error": "Invalid request."})
 
 
-@app.route("/api/forgot_password", methods=["GET"])
+@app.route("/api/forgot_password", methods=["GET", "POST"])
 def forgot_password() -> Response:
-    """Returns the forgot password page."""
-    return redirect("http://localhost:3000/forgot_password", code=301)
+    """Sends a password reset email to the user."""
+    if request.json is None:
+        error = "Invalid request."
+        return redirect(url_for("registration", error=error), code=301)
+    email = request.json["email"]
+    user = db.session.execute(db.select(User).filter_by(Email=email)).scalar()
+    if user is None:
+        return jsonify({"error": "Email does not exist. Please sign up."})
+    token = User.get_reset_token(user)
+    msg = Message(
+        subject="Reset your TradeTalk account password",
+        sender=("TradeTalk", "tradetalk-admin@example.com"),
+        recipients=[user.Email],
+    )
+    msg.html = render_template("reset_password.html", token=token)
+    # Attach an image to the header
+    with Path(IMAGE_FOLDER + "images/logo.png").open("rb") as file:
+        msg.attach(
+            "logo.png",
+            "image/png",
+            file.read(),
+            "inline",
+            headers=[["Content-ID", "<MyImage>"]],
+        )
+    msg.sender = "TradeTalk <tradetalk-admin@example.com>"
+    mail.send(msg)
+    return jsonify({"success": "Password reset email sent."})
+
+
+@app.route("/api/reset_password/<string:token>", methods=["GET", "POST"])
+def reset_password_page(token: str) -> Response:
+    """Returns the reset password page."""
+    return redirect(f"http://localhost:3000/reset-password/{token}", code=301)
+
+
+@app.route("/api/submit_reset_password/<string:token>", methods=["GET", "POST"])
+def reset_password(token: str) -> Response:
+    """Resets the user's password."""
+    if request.json is None:
+        return jsonify({"error": "Invalid request."})
+    password = request.json["password"]
+    password_repeat = request.json["password_repeat"]
+    user_id = User.verify_reset_token(token)
+    user = db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
+    if user is None:
+        return jsonify({"error": "Invalid or expired token."})
+    if not (
+        MIN_PASSWORD_LENGTH <= len(password) <= MAX_PASSWORD_LENGTH
+    ) or not re.match(
+        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        password,
+    ):
+        return jsonify({"error": "Invalid password."})
+    if password != password_repeat:
+        return jsonify({"error": "Passwords do not match."})
+    if security.check_password_hash(user.Password, password):
+        return jsonify(
+            {"error": "New password cannot be the same as the old password."},
+        )
+    user.Password = security.generate_password_hash(password)
+    db.session.commit()
+    if not current_user.is_authenticated:
+        login_user(user)
+    return jsonify({"success": "Password reset successfully!"})
 
 
 # ----------------- Search routes -----------------
@@ -356,6 +443,18 @@ def search(query: str | None) -> Response:
         .scalars()
         .all()
     )
+
+    all_articles = db.session.execute(db.select(Article)).scalars().all()
+
+    key_article_ids = ArticleSearch(all_articles).search(query)
+    key_articles = (
+        db.session.execute(
+            db.select(Article).filter(Article.ArticleID.in_(key_article_ids[0])),
+        )
+        .scalars()
+        .all()
+    )
+
     companies = (
         db.session.execute(
             db.select(Company)
@@ -378,6 +477,16 @@ def search(query: str | None) -> Response:
         for article in articles
     ]
 
+    article_keywords_list = [
+        {
+            "id": key_article.ArticleID,
+            "title": key_article.Title,
+            "date": key_article.PublicationDate,
+            "summary": key_article.Summary,
+        }
+        for key_article in key_articles
+    ]
+
     companies_list = [
         {
             "id": company.CompanyID,
@@ -388,10 +497,23 @@ def search(query: str | None) -> Response:
         }
         for company in companies
     ]
-    return jsonify({"articles": articles_list, "companies": companies_list})
+    return jsonify(
+        {
+            "article_titles": articles_list,
+            "article_keywords": article_keywords_list,
+            "companies": companies_list,
+        },
+    )
 
 
 # ----------------- Dashboard routes -----------------
+
+
+@app.route("/api/check_verified", methods=["GET"])
+@login_required
+def check_verified() -> Response:
+    """Returns whether the user is verified."""
+    return jsonify({"verified": current_user.IsVerified})
 
 
 @app.route("/api/dashboard", methods=["GET", "POST"])
@@ -399,9 +521,12 @@ def search(query: str | None) -> Response:
 def dashboard() -> Response:
     """Returns the dashboard."""
     success = request.args.get("success")
+    error = request.args.get("error")
     string = ""
     if success:
         string = f"?success={success}"
+    if error:
+        string = f"?error={error}"
     return redirect(f"http://localhost:3000/dashboard{string}", code=301)
 
 
@@ -491,6 +616,65 @@ def get_newsfeed() -> Response:
             .filter(Follow.UserID == current_user.id)
             .order_by(desc(Article.PublicationDate))
             .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    newsfeed_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in newsfeed
+    ]
+    return jsonify(newsfeed_list)
+
+
+@app.route("/api/get_week_newsfeed", methods=["GET"])
+@login_required
+def get_week_newsfeed() -> Response:
+    """Returns the 3 most recent articles from the followed companies in the last week."""
+    # Get the 3 most recent articles from the followed companies in the last week
+    newsfeed = (
+        db.session.execute(
+            db.select(Article)
+            .filter(
+                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+            )
+            .order_by(desc(Article.PublicationDate))
+            .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    newsfeed_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in newsfeed
+    ]
+    return jsonify(newsfeed_list)
+
+
+@app.route("/api/get_week_newsfeed_full", methods=["GET"])
+@login_required
+def get_week_newsfeed_full() -> Response:
+    """Returns the full list of articles from the followed companies in the last week."""
+    # Get the full list of articles from the followed companies in the last week
+    newsfeed = (
+        db.session.execute(
+            db.select(Article)
+            .filter(
+                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+            )
+            .order_by(desc(Article.PublicationDate)),
         )
         .scalars()
         .all()
@@ -623,13 +807,6 @@ def get_article_comments(article_id: str) -> Response:
         for comment in comments
     ]
     return jsonify(comments_list)
-
-
-@app.route("/api/check_verified", methods=["GET"])
-@login_required
-def check_verified() -> Response:
-    """Returns whether the user is verified."""
-    return jsonify({"verified": current_user.IsVerified})
 
 
 @app.route("/api/add_article_comment/<string:article_id>", methods=["GET", "POST"])
@@ -1031,9 +1208,17 @@ def get_profile_data() -> Response:
     user = {
         "username": current_user.Username,
         "email": current_user.Email,
+        "is_verified": current_user.IsVerified,
         "preferences": current_user.Preferences,
     }
     return jsonify(user)
+
+
+@app.route("/api/verify_email", methods=["GET"])
+@login_required
+def verify_email() -> Response:
+    """Sends a verification email to the user."""
+    return send_verify_email(current_user)
 
 
 @app.route("/api/logout")
@@ -1054,20 +1239,22 @@ def delete_user() -> Response:
     logout_user()
     db.session.delete(user)
     db.session.commit()
-    return jsonify({"success": "Successfully deleted user."})
+    return redirect(url_for("home", success="Successfully deleted account."), code=301)
 
 
 def daily_company_update() -> bool:
     """Calls once a day (?) to update price_related fields."""
     return update_all_companies_daily()
 
+
 def predict_stock_price() -> None:
+    """Predicts the stock price of each company."""
     companies = db.session.execute(db.select(Company)).scalars().all()
     for company in companies:
         # get the sentiment scores of the articles in the last 7 days
         article_sentiment_scores = []
         company_articles = db.session.execute(
-            db.session(Article).filter_by(CompanyID=company.CompanyID)
+            db.select(Article).filter_by(CompanyID=company.CompanyID),
         )
 
 

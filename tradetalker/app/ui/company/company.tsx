@@ -4,9 +4,12 @@ import LineChart from '@/app/ui/company/linechart';
 import FollowButton from '@/app/ui/company/follow-button';
 import ScrollUp from '../scroll-up';
 import Description from './description';
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 
 async function getCompanyData(id: string) {
-  const response = await fetch(`http:/localhost:8080/api/get_company/${id}`);
+  const response = await fetch(`http:/localhost:8080/api/get_company/${id}`, {
+    cache: 'no-store',
+  });
   if (!response.ok) {
     throw new Error('Error fetching company');
   }
@@ -34,36 +37,53 @@ export default async function CompanyPage({
     companyData.stock_d1,
     companyData.stock_price,
   ];
+  const diff = companyData.stock_price - companyData.stock_d7;
+  const perc_change = (diff / companyData.stock_d7) * 100;
 
   return (
     <>
       <ScrollUp />
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
         <div className='flex flex-row items-center justify-between'>
-          <div className='text-2xl'>{companyData.name}</div>
-          <div className='text-2xl'>{companyData.symbol}</div>
+          <h1 className='text-2xl'>{companyData.name}</h1>
+          <h1 className='text-2xl'>{companyData.symbol}</h1>
         </div>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-col items-start lg:flex-row lg:justify-between'>
           <div className='w-full lg:w-[58%]'>
             <div className='flex w-full flex-row items-start justify-between'>
               <div>
-                <div className='text-3xl'>{companyData.stock_price}</div>
-                <div className='text-lg'>
+                <div className='flex flex-row items-center gap-2'>
+                  <h2 className='text-3xl'>{companyData.stock_price}</h2>
+                  <div
+                    className={`flex flex-row flex-wrap items-center gap-1 ${diff > 0 ? 'text-green-700' : 'text-red-700'}`}
+                  >
+                    <p className='text-lg'>
+                      {diff > 0 ? '+' : ''}
+                      {diff.toFixed(2)} ({perc_change > 0 ? '+' : ''}
+                      {perc_change.toFixed(2)}%)
+                    </p>
+                    {diff > 0 ? (
+                      <ArrowUpIcon className='h-4 w-4 stroke-green-700 stroke-[2] text-green-700' />
+                    ) : (
+                      <ArrowDownIcon className='h-4 w-4 stroke-red-700 stroke-[2] text-red-700' />
+                    )}
+                    <p>past 7 days</p>
+                  </div>
+                </div>
+                <p className='text-lg'>
                   Predicted stock price:&nbsp;
                   {companyData.predicted_stock_price !== null
                     ? companyData.predicted_stock_price
                     : 'N/A'}
-                </div>
-                <div className='text-lg'>
+                </p>
+                <p className='text-lg'>
                   Stock variance:&nbsp;
                   {companyData.stock_variance !== null
                     ? companyData.stock_variance
                     : 'N/A'}
-                </div>
-                <div className='text-lg'>
-                  Industry:&nbsp;{companyData.industry}
-                </div>
+                </p>
+                <p className='text-lg'>Industry:&nbsp;{companyData.industry}</p>
               </div>
               <div className='mt-2'>
                 <FollowButton companyId={id} isLoggedIn={isLoggedIn} />
@@ -72,7 +92,7 @@ export default async function CompanyPage({
             <LineChart stockLastDays={stockLastDays} />
           </div>
           <div className='mt-2 flex flex-col lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
-            <div className='text-xl'>Description</div>
+            <h2 className='text-xl'>Description</h2>
             <hr className='border-1 my-2 rounded-lg border-slate-400' />
             <Description description={companyData.description} />
           </div>

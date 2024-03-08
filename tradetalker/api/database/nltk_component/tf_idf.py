@@ -1,7 +1,7 @@
 import pandas as pd
-import numpy as np
-from preprocessing import PreprocessText, GetPOSClass
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer 
+#import numpy as np
+#from preprocessing import PreprocessText, GetPOSClass
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 

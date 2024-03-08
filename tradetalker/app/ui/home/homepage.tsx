@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/20/solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import ReadParams from '@/app/ui/read-params';
 
 async function fetchArticles() {
   const response = await fetch('http://localhost:8080/api/home_articles', {
@@ -24,8 +25,9 @@ export default async function HomeComponent() {
 
   return (
     <>
+      <ReadParams url='' />
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Welcome to TradeTalk.</div>
+        <h1 className='text-2xl'>Welcome to TradeTalk.</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <p>
           Stay informed about the latest news sentiment in the financial
@@ -33,7 +35,7 @@ export default async function HomeComponent() {
         </p>
         <br></br>
         <div className='rounded-lg bg-slate-300 p-4'>
-          <div className='text-xl'>Recent articles</div>
+          <h2 className='text-xl'>Recent articles</h2>
           {articles.map((article, index) => (
             <div
               className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
@@ -41,28 +43,29 @@ export default async function HomeComponent() {
             >
               <Link href={`/article/${article.id}`}>
                 <div className='flex flex-row flex-wrap items-center justify-between'>
-                  <div>{article.title}</div>
+                  <h3 className='text-lg'>{article.title}</h3>
                   <div className='text-sm text-gray-600'>
                     {dayjs(article.date).fromNow()}
                   </div>
                 </div>
                 <hr className='border-1 my-2 rounded-lg border-slate-300' />
-                <div>{article.summary}</div>
-                <div>
+                <p>{article.summary}</p>
+                <hr className='border-1 my-2 rounded-lg border-slate-300' />
+                <div className='flex flex-row items-center justify-between'>
                   {article.score > 0.5 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowUpCircleIcon className='h-12 w-12 text-green-500' />
-                      <div className='pl-2'>Positive</div>
+                      <ArrowUpCircleIcon className='h-10 w-10 text-green-600' />
+                      <p className='pl-2 text-green-600'>Positive</p>
                     </div>
                   ) : article.score < 0.5 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
-                      <div className='pl-2'>Negative</div>
+                      <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
+                      <p className='pl-2 text-red-600'>Negative</p>
                     </div>
                   ) : (
                     <div className='flex flex-row items-center'>
-                      <MinusCircleIcon className='h-12 w-12 text-slate-400' />
-                      <div className='pl-2'>Neutral</div>
+                      <MinusCircleIcon className='h-10 w-10 text-slate-400' />
+                      <p className='pl-2 text-slate-500'>Neutral</p>
                     </div>
                   )}
                 </div>

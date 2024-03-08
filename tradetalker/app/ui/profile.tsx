@@ -13,6 +13,8 @@ export default function ProfileComponent({
   isLoggedIn: boolean;
 }) {
   const [data, setData] = useState<Record<string, any>>({});
+  const [verified, setVerified] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,67 +33,89 @@ export default function ProfileComponent({
     }
   }, [setData, isLoggedIn, router]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetch('/api/check_verified', { credentials: 'include' })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.verified) {
+            setVerified(true);
+          }
+        })
+        .catch(() => {
+          console.error('Error verifying user.');
+        });
+    }
+  }, [isLoggedIn]);
+
+  function VerifyUser() {
+    fetch('/api/verify_email', {
+      credentials: 'include',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          toast.success('We have sent you an email to verify your account.');
+          setDisabled(true);
+        }
+      })
+      .catch(() => {
+        toast.error('Error verifying user.');
+      });
+  }
+
   return (
     isLoggedIn && (
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Profile</div>
+        <h1 className='text-2xl'>Profile</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-col items-start rounded-lg bg-slate-200'>
           <div>
-            <div className='text-xl'>Username: {data.username}</div>
-            <div className='text-xl'>Email: {data.email}</div>
-          </div>
-          <Button
-            type='button'
-            className='mt-4 rounded-lg bg-blue-500 p-4 text-white transition hover:bg-blue-600 hover:shadow-lg'
-          >
-            <Link href='/forgot-password'>Reset password</Link>
-          </Button>
-          <div>
-            <button
-              onClick={() => Logout(isLoggedIn)}
+            <p className='text-xl'>Username: {data.username}</p>
+            <div className='flex flex-row items-center'>
+              <p className='text-xl'>Email: {data.email}</p>
+              <div className='ml-4'>
+                {verified ? (
+                  <div className='rounded-lg bg-green-500 p-2 text-white'>
+                    Verified
+                  </div>
+                ) : (
+                  <button
+                    disabled={disabled}
+                    type='button'
+                    onClick={() => VerifyUser()}
+                    className='rounded-lg bg-blue-500 p-2 text-white hover:bg-blue-600 hover:drop-shadow-lg active:bg-blue-700'
+                  >
+                    Verify
+                  </button>
+                )}
+              </div>
+            </div>
+            <Button
               type='button'
-              className='mt-4 rounded-lg bg-red-500 p-4 text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
+              className='mt-4 rounded-lg bg-blue-500 p-4 text-white transition hover:bg-blue-600 hover:shadow-lg active:bg-blue-700'
             >
-              Log out
-            </button>
+              <Link href='/forgot-password'>Reset password</Link>
+            </Button>
+            <div>
+              <button
+                type='button'
+                className='mt-4 rounded-lg bg-red-500 p-4 text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
+                onClick={() => Logout(isLoggedIn)}
+              >
+                Log out
+              </button>
+            </div>
+            <DeleteUserModal />
           </div>
-          <DeleteUserModal isLoggedIn={isLoggedIn} />
         </div>
       </div>
     )
   );
 }
 
-export function DeleteUserModal({ isLoggedIn }: { isLoggedIn: boolean }) {
+export function DeleteUserModal() {
   const [showModal, setShowModal] = React.useState(false);
-
-  const DeleteUser = async (isLoggedIn: boolean) => {
-    try {
-      if (isLoggedIn) {
-        fetch('/api/delete_user', {
-          headers: {
-            'Content-Type': 'application/json',
-            credentials: 'include',
-          },
-        })
-          .then((response) => response.json())
-          .then(() => {
-            localStorage.clear();
-            window.location.href = '/home';
-          })
-          .catch(() => {
-            toast.error('Error deleting account.');
-          });
-      } else {
-        window.location.href = '/login';
-        toast.error('You must be logged in.');
-      }
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      toast.error('Error deleting account.');
-    }
-  };
 
   return (
     <>
@@ -136,9 +160,8 @@ export function DeleteUserModal({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <button
                     className='mb-1 mr-1 rounded-lg bg-red-500 px-6 py-3 text-lg text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600'
                     type='button'
-                    onClick={() => DeleteUser(isLoggedIn)}
                   >
-                    Delete account
+                    <Link href='/api/delete_user'>Delete account</Link>
                   </button>
                 </div>
               </div>

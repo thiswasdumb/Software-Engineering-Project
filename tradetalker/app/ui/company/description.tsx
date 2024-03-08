@@ -23,7 +23,7 @@ export default function Description({ description }: { description: string }) {
   };
 
   return (
-    <div className=''>
+    <div>
       <p>{descriptionText}</p>
       {description.length > 500 && (
         <button

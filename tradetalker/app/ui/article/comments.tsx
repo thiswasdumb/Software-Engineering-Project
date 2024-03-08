@@ -10,6 +10,7 @@ export default function Comments({
   isLoggedIn: boolean;
 }) {
   const [comments, setComments] = useState<any[]>([]);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     fetch(`/api/article/${articleId}/comments`)
@@ -20,11 +21,30 @@ export default function Comments({
       .catch((error) => console.error(error));
   }, [articleId, setComments]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetch('/api/check_verified', { credentials: 'include' })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.verified) {
+            setIsVerified(true);
+          }
+        })
+        .catch(() => {
+          console.error('Error verifying user.');
+        });
+    }
+  }, [isLoggedIn]);
+
   return (
-    <div>
-      <div className='text-xl'>Comments ({comments.length})</div>
+    <div id='comments'>
+      <h2 className='text-xl'>Comments ({comments.length})</h2>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <CommentForm articleId={articleId} isLoggedIn={isLoggedIn} />
+      <CommentForm
+        articleId={articleId}
+        isLoggedIn={isLoggedIn}
+        isVerified={isVerified}
+      />
       <div>
         {comments.map((comment, index) => (
           <div key={index} className='my-4'>
@@ -33,7 +53,7 @@ export default function Comments({
               <div className='ml-2 text-sm text-slate-500'>{comment.time}</div>
             </div>
             <div className='flex flex-row items-center'>
-              <div>{comment.content}</div>
+              <p>{comment.content}</p>
             </div>
           </div>
         ))}
