@@ -7,6 +7,11 @@ import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 
+/**
+ * Search bar component.
+ * @param placeholder - The placeholder text
+ * @returns JSX.Element - Search bar component
+ */
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const [articles, setArticles] = useState<any[]>([]);
   const [keyArticles, setKeyArticles] = useState<any[]>([]);
@@ -15,6 +20,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  // Fetch search results
   const handleSearch = useDebouncedCallback((term: string) => {
     if (term !== '') {
       fetch(`/api/search/${term}`)

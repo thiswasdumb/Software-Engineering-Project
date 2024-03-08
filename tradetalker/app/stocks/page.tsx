@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   title: 'Stocks',
 };
 
+/**
+ * Stocks page.
+ * @returns JSX.Element - Stocks page component
+ */
 export default function Stocks() {
   return (
     <Suspense fallback={<Loading message={'Loading stocks...'} />}>

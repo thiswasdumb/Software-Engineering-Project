@@ -3,6 +3,10 @@ import { UserIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import clsx from 'clsx';
 
+/**
+ * Profile button component.
+ * @returns JSX.Element - Profile button component
+ */
 export default function ProfileButton() {
   return (
     <>

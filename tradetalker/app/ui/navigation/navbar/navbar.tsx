@@ -10,11 +10,17 @@ import NotifButton from './notif-button';
 import BookmarkButton from './bookmark-button';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Navbar component.
+ * @param props.isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Navbar component
+ */
 export default function Navbar(props: { isLoggedIn: boolean }) {
   const [notifs, setNotifs] = useState(0);
   const [menuToggled, setMenuToggled] = useState(false);
   const toggleMenu = () => setMenuToggled(!menuToggled);
 
+  // Fetch notification count on login
   useEffect(() => {
     if (props.isLoggedIn) {
       localStorage.clear();
@@ -29,14 +35,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
     }
   }, [notifs, props.isLoggedIn]);
 
-  useEffect(() => {
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768 && menuToggled) {
-        setMenuToggled(false);
-      }
-    });
-  }, [menuToggled]);
-
+  // Close mobile navbar on window resize
   useEffect(() => {
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768 && menuToggled) {

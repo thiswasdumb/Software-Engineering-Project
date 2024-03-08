@@ -1,6 +1,10 @@
 'use client';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Logout function.
+ * @param isLoggedIn - Whether the user is logged in
+ */
 export default function Logout(isLoggedIn: boolean) {
   try {
     if (isLoggedIn) {

@@ -7,6 +7,11 @@ import { Button } from 'app/ui/button';
 import Logout from 'app/ui/logout';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 
+/**
+ * Profile component.
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Profile component
+ */
 export default function ProfileComponent({
   isLoggedIn,
 }: {
@@ -17,6 +22,7 @@ export default function ProfileComponent({
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
 
+  // Fetch the user's profile data
   useEffect(() => {
     if (isLoggedIn) {
       fetch('/api/get_profile_data')
@@ -33,6 +39,7 @@ export default function ProfileComponent({
     }
   }, [setData, isLoggedIn, router]);
 
+  // Check if the user is verified
   useEffect(() => {
     if (isLoggedIn) {
       fetch('/api/check_verified', { credentials: 'include' })
@@ -48,6 +55,7 @@ export default function ProfileComponent({
     }
   }, [isLoggedIn]);
 
+  // Verify the user's email
   function VerifyUser() {
     fetch('/api/verify_email', {
       credentials: 'include',
@@ -114,6 +122,10 @@ export default function ProfileComponent({
   );
 }
 
+/**
+ * Delete user modal
+ * @returns JSX.Element - Delete user modal
+ */
 export function DeleteUserModal() {
   const [showModal, setShowModal] = React.useState(false);
 

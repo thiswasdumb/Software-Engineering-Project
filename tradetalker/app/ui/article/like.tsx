@@ -4,6 +4,12 @@ import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
 import toast from 'react-hot-toast';
 
+/**
+ * Like component.
+ * @param articleId - Article ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Like component
+ */
 export default function Like({
   articleId,
   isLoggedIn,
@@ -13,6 +19,7 @@ export default function Like({
 }) {
   const [liked, setLiked] = useState(false);
 
+  // Set the liked state accordingly
   useEffect(() => {
     if (isLoggedIn) {
       const fetchLikeStatus = async () => {
@@ -30,6 +37,7 @@ export default function Like({
     }
   }, [isLoggedIn, articleId]);
 
+  // Handle the like button click
   const handleClick = async () => {
     if (!liked) {
       try {

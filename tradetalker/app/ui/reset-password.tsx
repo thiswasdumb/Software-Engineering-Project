@@ -7,6 +7,11 @@ import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Reset password form component.
+ * @param token - The reset password token
+ * @returns JSX.Element - Reset password form component
+ */
 export default function ResetPasswordForm({ token }: { token: string }) {
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
@@ -15,6 +20,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  // Check if the token is valid
   useEffect(() => {
     if (!token) {
       router.push('/not-found');

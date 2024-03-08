@@ -3,6 +3,11 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { BellIcon } from '@heroicons/react/24/outline';
 
+/**
+ * Notification button component.
+ * @param props.notifCount - Number of notifications
+ * @returns JSX.Element - Notification button component
+ */
 export default function NotifButton({ notifCount }: { notifCount: number }) {
   return (
     <>

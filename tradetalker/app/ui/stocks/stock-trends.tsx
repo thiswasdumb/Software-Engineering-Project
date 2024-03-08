@@ -1,6 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
+/**
+ * Get stock trends
+ * @returns Promise - Stock trends
+ */
 async function getStockTrends() {
   const response = await fetch('http://localhost:8080/api/get_stock_trends', {
     cache: 'no-store',
@@ -11,6 +15,10 @@ async function getStockTrends() {
   return response.json();
 }
 
+/**
+ * Stock trends component
+ * @returns Promise - StockTrends component
+ */
 export default async function StockTrends() {
   const stockTrends: any[] = await getStockTrends();
 

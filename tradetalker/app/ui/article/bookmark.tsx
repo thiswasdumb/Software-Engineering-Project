@@ -4,6 +4,12 @@ import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as SolidBookmarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Bookmark component.
+ * @param articleId - Article ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Bookmark component
+ */
 export default function Bookmark({
   articleId,
   isLoggedIn,

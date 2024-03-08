@@ -9,6 +9,11 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { ClockIcon } from '@heroicons/react/24/outline';
 
+/**
+ * Get article data from the server.
+ * @param id - Article ID 
+ * @returns Promise - Article data
+ */
 async function getArticle(id: string) {
   const response = await fetch(`http://localhost:8080/api/get_article/${id}`);
   if (!response.ok) {
@@ -17,6 +22,12 @@ async function getArticle(id: string) {
   return response.json();
 }
 
+/**
+ * Article page component.
+ * @param id - Article ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Article page component
+ */
 export default async function ArticlePage({
   id,
   isLoggedIn,
@@ -26,9 +37,9 @@ export default async function ArticlePage({
 }) {
   const articleData = await getArticle(id);
   if (articleData.error) {
-    redirect('/not-found');
+    redirect('/not-found'); // Redirect to 404 page if article is not found
   }
-  dayjs.extend(relativeTime);
+  dayjs.extend(relativeTime); // Extend dayjs with relativeTime plugin
 
   return (
     <>
@@ -52,6 +63,15 @@ export default async function ArticlePage({
         </div>
 
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
+        <div>
+          <a
+            href={articleData.url}
+            target='_blank'
+            className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
+          >
+            {articleData.url}
+          </a>
+        </div>
         <span className='text-lg'>
           Company:&nbsp;
           <Link
@@ -61,13 +81,6 @@ export default async function ArticlePage({
             {articleData.company_name}
           </Link>
         </span>
-        <a
-          href={articleData.url}
-          target='_blank'
-          className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
-        >
-          {articleData.url}
-        </a>
         <p className='text-lg'>Summary: {articleData.summary}</p>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <p className='text-lg'>{articleData.content}</p>
@@ -76,8 +89,4 @@ export default async function ArticlePage({
       </div>
     </>
   );
-}
-
-export function formatDate(string: string) {
-  return new Date(string).toLocaleDateString();
 }

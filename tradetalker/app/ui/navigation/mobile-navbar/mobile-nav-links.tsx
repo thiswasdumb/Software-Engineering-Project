@@ -4,6 +4,13 @@ import { usePathname } from 'next/navigation';
 import Logout from 'app/ui/logout';
 import clsx from 'clsx';
 
+/**
+ * Mobile navigation links.
+ * @param props.toggle - Function to toggle the mobile navbar
+ * @param props.session - Whether the user is logged in
+ * @param props.notifCount - Number of notifications
+ * @returns JSX.Element - Mobile navigation links
+ */
 export default function MobileNavLinks(props: {
   toggle: () => void;
   session: boolean;
@@ -19,18 +26,18 @@ export default function MobileNavLinks(props: {
     { name: 'Support', href: '/support', onClick: props.toggle },
     ...(props.session
       ? [
-          {
-            name: `Notifications (${props.notifCount})`,
-            href: '/notifications',
-            onClick: props.toggle,
-          },
-          { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
-          { name: 'Profile', href: '/profile', onClick: props.toggle },
-        ]
+        {
+          name: `Notifications (${props.notifCount})`,
+          href: '/notifications',
+          onClick: props.toggle,
+        },
+        { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
+        { name: 'Profile', href: '/profile', onClick: props.toggle },
+      ]
       : [
-          { name: 'Login', href: '/login', onClick: props.toggle },
-          { name: 'Sign up', href: '/signup', onClick: props.toggle },
-        ]),
+        { name: 'Login', href: '/login', onClick: props.toggle },
+        { name: 'Sign up', href: '/signup', onClick: props.toggle },
+      ]),
   ];
   const pathname = usePathname();
 

@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: 'Search',
 };
 
+/**
+ * Search page.
+ * @returns JSX.Element - Search page component
+ */
 export default function Search() {
   return (
     <div className='md:p-10'>

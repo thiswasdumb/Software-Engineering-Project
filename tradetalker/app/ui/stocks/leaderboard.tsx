@@ -1,6 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
+/**
+ * Fetch the leaderboard.
+ * @returns Promise - Leaderboard data
+ */
 async function getLeaderboard() {
   const response = await fetch('http://localhost:8080/api/get_leaderboard', {
     cache: 'no-store',
@@ -11,8 +15,12 @@ async function getLeaderboard() {
   return response.json();
 }
 
-export default async function StockTrends() {
-  const leaderboard: any[] = await getLeaderboard();
+/**
+ * Stock trends component.
+ * @returns Promise - StockTrends component
+ */
+export default async function Leaderboard() {
+  const leaderboard: any[] = await getLeaderboard(); // Wait for the promise to resolve
 
   return (
     <div className='md:w-[30%]'>

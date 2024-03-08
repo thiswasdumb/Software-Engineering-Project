@@ -3,14 +3,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-// Map of links to display in the navbar.
-const links = [
-  { name: 'Log in', href: '/login' },
-  { name: 'Sign up', href: '/signup' },
-];
-
+/**
+ * White buttons component.
+ * @returns JSX.Element - White buttons component
+ */
 export default function WhiteButtons() {
   const pathname = usePathname();
+  // Map of links to display in the navbar.
+  const links = [
+    { name: 'Log in', href: '/login' },
+    { name: 'Sign up', href: '/signup' },
+  ];
   return (
     <>
       {links.map((link) => {

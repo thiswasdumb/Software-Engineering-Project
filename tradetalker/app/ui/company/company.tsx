@@ -5,7 +5,13 @@ import FollowButton from '@/app/ui/company/follow-button';
 import ScrollUp from '../scroll-up';
 import Description from './description';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
+import ShareCompany from '../company/share-comp';
 
+/**
+ * 
+ * @param id - Company ID
+ * @returns Promise - Company data
+ */
 async function getCompanyData(id: string) {
   const response = await fetch(`http:/localhost:8080/api/get_company/${id}`, {
     cache: 'no-store',
@@ -16,6 +22,12 @@ async function getCompanyData(id: string) {
   return response.json();
 }
 
+/**
+ * Company page component.
+ * @param id - Company ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Company page component
+ */
 export default async function CompanyPage({
   id,
   isLoggedIn,
@@ -25,7 +37,7 @@ export default async function CompanyPage({
 }) {
   const companyData = await getCompanyData(id);
   if (companyData.error) {
-    redirect('/not-found');
+    redirect('/not-found'); // Redirect to 404 page if company is not found
   }
   const stockLastDays = [
     companyData.stock_d7,
@@ -36,7 +48,8 @@ export default async function CompanyPage({
     companyData.stock_d2,
     companyData.stock_d1,
     companyData.stock_price,
-  ];
+  ]; // Stock prices for the last 7 days
+  // Calculate the difference and percentage change in stock price
   const diff = companyData.stock_price - companyData.stock_d7;
   const perc_change = (diff / companyData.stock_d7) * 100;
 
@@ -90,6 +103,7 @@ export default async function CompanyPage({
               </div>
             </div>
             <LineChart stockLastDays={stockLastDays} />
+            <ShareCompany id={id} />
           </div>
           <div className='mt-2 flex flex-col lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
             <h2 className='text-xl'>Description</h2>

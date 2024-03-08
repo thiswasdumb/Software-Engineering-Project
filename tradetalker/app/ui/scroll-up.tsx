@@ -1,6 +1,10 @@
 'use client';
 import { useEffect } from 'react';
 
+/**
+ * Scroll up component.
+ * @returns null
+ */
 export default function ScrollUp() {
   useEffect(() => {
     // Scroll to top of page when not viewing comments
