@@ -42,7 +42,7 @@ from database.db_schema import (
     get_company_article_sentiment_scores,
     get_company_data_for_linear_regression,
     get_articles_from_news_api,
-    get_following_status,
+    get_recommendation_system_info,
     set_all_companies_predicted_price,
 )
 from database.search_component import ArticleSearch
@@ -127,9 +127,9 @@ if reset:
             comp_data["PriceHistoric"],
         ).calculate_stock_price()
         print(predicted_price)
-        set_all_companies_predicted_price()
-        #get_articles_from_news_api()
-        #print(get_following_status(1))
+        #set_all_companies_predicted_price()
+        get_articles_from_news_api()
+        #print(get_recommendation_system_info(1))
 
 
 

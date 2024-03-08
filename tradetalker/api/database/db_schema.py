@@ -1038,7 +1038,7 @@ def get_articles_from_news_api() -> None:
         get_article_from_news_script(article)
 
 
-def get_following_status(user_id):
+def get_recommendation_system_info(user_id):
     # Get the CompanyIDs the user is following
     followed_companies = set(
         db.session.execute(
@@ -1056,6 +1056,8 @@ def get_following_status(user_id):
     following_companies = []
     non_following_companies = []
 
+    keywords = []  # Initialize an empty list for keywords
+
     for company in all_companies:
         company_dict = {
             'CompanyID': company.CompanyID,
@@ -1063,12 +1065,20 @@ def get_following_status(user_id):
             'Industry': company.Industry,
             # Add more company information as needed
         }
+
         if company.CompanyID in followed_companies:
             following_companies.append(company_dict)
+            # Query keywords for followed companies
+            company_keywords = db.session.execute(
+                db.select(Article.KeyWords)
+                .filter(Article.CompanyID == company.CompanyID)
+            ).scalars().all()
+            keywords.extend(company_keywords)  # Add keywords to the list
         else:
             non_following_companies.append(company_dict)
 
     return {
         'following': following_companies,
-        'non_following': non_following_companies
+        'non_following': non_following_companies,
+        'keywords': list(set(keywords))  # Remove duplicates and convert to list
     }
