@@ -1,5 +1,4 @@
 import datetime
-
 from flask import Flask
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
@@ -9,6 +8,7 @@ from tf_idf import TF_IDF
 from vader import SentimentAnalyser
 
 app = Flask(__name__)
+
 
 
 class GetNewsClass:
@@ -24,62 +24,66 @@ class GetNewsClass:
         Returns
         -------
         - None
-
         """
-        # self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
-        # self.news_api = NewsApiClient(api_key='fb9cdea752a44045b9235bc4c5d69e12')
-        self.news_api = NewsApiClient(api_key="ee57dcf14e0a4903905440d1cdbed356")
 
+        self.api_keys = ['Fb9cdea752a44045b9235bc4c5d69e12', '8968c158e1a44a5388312c35d8193541','Ee57dcf14e0a4903905440d1cdbed356']
+        self.api_num = 0 
+        self.news_api = NewsApiClient(api_key=self.api_keys[self.api_num])
         get_pos_class = GetPOSClass()
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()
-        self.t = TextSummariser(2)
+        self.t = TextSummariser(num_sentences=2)
+        self.all_articles = {}
+        self.fetch_articles_from_api(list_of_companies)
 
-        self.all_articles = (
-            {}
-        )  # Dictionary with key = company, value = Dictionary obj returned from News API call
-        for company in list_of_companies:
-            self.all_articles[company] = self.news_api.get_everything(
-                q=company,
-                from_param="2024-02-08",
-                language="en",
-                sort_by="relevancy",
-                page=1,
-            )
+
+    def fetch_articles_from_api(self, list_of_companies: list):
+        # Fetch articles for each company and store them in self.all_articles
+        i = 0 
+        while i < len(list_of_companies):
+            try: 
+                self.all_articles[list_of_companies[i]] = self.news_api.get_everything(
+                    q=list_of_companies[i],
+                    from_param="2024-02-08",
+                    language="en",
+                    sort_by="relevancy",
+                    page=1,
+                )
+                i += 1 
+            except Exception as e:
+                self.alternate_api()
+                print(f'Switching API key due to the following exception {e}')
+                continue
+
+    def alternate_api(self):
+        self.api_num = (self.api_num + 1) % 3
+
 
     def fetch_all_articles(self) -> list[dict]:
         """Main function.
 
-        Fetches and processes news articles for all companies specified during initialization and puts them into a list of dict objects
+        Fetches and processes news articles for all companies specified during initialization and puts them into a list of dict objects.
 
         Then for each company's article corpus calculate the tf_idf matrix,
-        for each article calculate the top 20 keywords using the words associated tf_idf scores
+        for each article calculate the top 20 keywords using the words associated tf_idf scores.
 
-        Parameters
-        ----------
-        - None
-        Returns:
+        Returns
+        -------
         - A list of dictionaries: each dictionary correlates to an article and all its attributes, to be inserted into the db
-
         """
-        # final output of the function
         list_of_article_dictionaries = []
 
-        for (
-            company_name
-        ) in self.all_articles.keys():  # self.all_articles keys are the company names
-            article_dictionaries_for_one_company = self.get_articles(
-                company_name,
-            )  # without keywords inserted
-
+        for company_name in self.all_articles.keys():
+            article_dictionaries_for_one_company = self.get_articles(company_name)
             list_of_article_dictionaries.extend(article_dictionaries_for_one_company)
 
+        # Calculate and insert tf_idf scores
         article_dictionaries_with_keywords = self.insert_tf_idf_scores(
             list_of_article_dictionaries,
         )
-        # calculate and insert tf_idf scores
         list_of_article_dictionaries.extend(article_dictionaries_with_keywords)
         return list_of_article_dictionaries
+
 
     def get_articles(self, company_name: str) -> list[dict]:
         """Fetches and processes news articles for a specific company.
@@ -90,25 +94,28 @@ class GetNewsClass:
 
         Returns
         -------
-        - None: A list of dictionaries, each dictionary is an article object for the company
-
+        - A list of dictionaries, each dictionary is an article object for the company
         """
-        # final output of the function
         list_of_article_dictionaries = []
 
-        # Accessing articles for the company from self.all_articles
-        articles = self.all_articles.get(company_name, {}).get("articles", [])
+        #to ensure no duplicates news articles are added
+        seen_headers = set()
 
-        # dictionary to store the article data
-        article_object = {}
+        articles = self.all_articles.get(company_name, {}).get("articles", [])
 
         for article in articles:
             article_title = article["title"]
+            #check if article has already been added, if so skip current article 
+            if article_title.lower() in seen_headers:
+                continue
+
+            seen_headers.add(article_title.lower())
+            
+            #filter out irrelevant articles
             if company_name.lower() not in article_title.lower():
                 continue
-            # Get the URL of the article
+
             article_url = article["url"]
-            # Use newspaper3k to extract text content from the article URL
             news_article = Article(article_url)
 
             try:
@@ -118,62 +125,40 @@ class GetNewsClass:
                 print(f"Error downloading article: {e}")
                 continue
 
-            article_object["ArticleID"] = (
-                GetNewsClass.article_id
-            )  # used to bookmark article objects, not used in actual db
+            article_object = {
+                "ArticleID": GetNewsClass.article_id,
+                "Company": company_name,
+                "Content": news_article.text,
+                "ProcessedArticle": self.preprocess_text.preprocess_text(
+                    news_article.text,
+                ),
+                "PredictionScore": self.s.get_article_sentiment(
+                    news_article.text,
+                )["overall"],
+                "Title": str(news_article.title),
+                "Summary": self.t.summarise(news_article.text),
+                "URL": str(article_url),
+                "PublicationDate": news_article.publish_date
+                if news_article.publish_date
+                else datetime.datetime.now(),
+                "KeyWords": None,  # Will be calculated later
+            }
+            print(article_object["Title"])
             GetNewsClass.article_id += 1
-            article_object["Company"] = company_name
-            article_object["Content"] = news_article.text
-            article_object["ProcessedArticle"] = self.preprocess_text.preprocess_text(
-                article_object["Content"],
-            )
-            # sentiment analysis
-            article_object["PredictionScore"] = self.s.get_article_sentiment(
-                article_object["ProcessedArticle"],
-            )["overall"]
-            article_object["Title"] = str(news_article.title)
-            article_object["Summary"] = self.t.summarise(article_object["Content"])
-            article_object["URL"] = str(article_url)
-            article_object["PublicationDate"] = news_article.publish_date
-            if not article_object[
-                "PublicationDate"
-            ]:  # in some cases we got NULL date which would then prevent the insertion
-                article_object["PublicationDate"] = datetime.datetime.now()
-
-            print(
-                article_object["Title"],
-                article_object["URL"],
-                article_object["PredictionScore"],
-            )
-
-            # Will be calculated later after the company article corpus is fully fetched
-            article_object["KeyWords"] = None
-
             list_of_article_dictionaries.append(article_object)
 
         return list_of_article_dictionaries
 
+
     def insert_tf_idf_scores(self, processed_articles: dict):
-        if len(processed_articles) <= 0:
+        if not processed_articles:
             print("No Articles")
             return processed_articles
-        # get the top 20 words
+
         tf_idf = TF_IDF(processed_articles)
         return tf_idf.get_top_n_terms_for_all_articles(top_n_words=20)
 
 
-# Function to be used in index
-
-# def insert_articles_and_keywords(company_names):
-#     #initializing an instance of GetNewsClass
-#     GetNewsClass = GetNewsClass(company_names)
-#     #calling the main function to fetch, preprocess, carry out sentiment analysis for each article for each FTSE 100 company
-#     GetNewsClass.get_all_articles()
-#     #All company articles have already been inserted into the db. The tf_idf score can now be calculated
-
-
 # Example usage
-test = GetNewsClass(["WPP"])
+test = GetNewsClass(["google"])
 results = test.fetch_all_articles()
-
-# print("TEST RESULT:", results)
