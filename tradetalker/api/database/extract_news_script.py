@@ -27,7 +27,7 @@ class GetNewsClass:
         """
 
         self.api_keys = ['Fb9cdea752a44045b9235bc4c5d69e12', '8968c158e1a44a5388312c35d8193541','Ee57dcf14e0a4903905440d1cdbed356']
-        self.api_num = 0 
+        self.api_num = 0
         self.news_api = NewsApiClient(api_key=self.api_keys[self.api_num])
         get_pos_class = GetPOSClass()
         self.preprocess_text = PreprocessText(get_pos_class)
@@ -35,6 +35,7 @@ class GetNewsClass:
         self.t = TextSummariser(num_sentences=2)
         self.all_articles = {}
         self.fetch_articles_from_api(list_of_companies)
+        print(self.api_keys[self.api_num])
 
 
     def fetch_articles_from_api(self, list_of_companies: list):
@@ -160,5 +161,5 @@ class GetNewsClass:
 
 
 # Example usage
-test = GetNewsClass(["google"])
-results = test.fetch_all_articles()
+# test = GetNewsClass(["M&S"])
+# results = test.fetch_all_articles()
