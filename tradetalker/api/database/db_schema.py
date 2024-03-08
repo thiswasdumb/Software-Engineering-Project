@@ -29,6 +29,7 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 from werkzeug.security import generate_password_hash
 
 from linear_regression import Linear_Regression
+from .nltk_component import extract_news_script
 
 db = SQLAlchemy()
 
@@ -969,3 +970,68 @@ def update_all_companies_daily() -> bool:
         db.session.rollback()  # Rollback changes in case of an error
         return False
     return True
+
+def get_articles_from_news_api() -> None:
+    """
+    Calls the News Api script with the names of the companies and retrieves articles
+    test with names
+    """
+    company_names = [
+        "3i", "Admiral Group", "Airtel Africa", "Anglo American", "Antofagasta", "Ashtead Group", "Associated British Foods",
+        "AstraZeneca", "Auto Trader Group", "Aviva", "B&M", "BAE Systems", "Barclays", "Barratt Developments",]
+    others = [
+        "Beazley", "Berkeley Group", "BP", "British American Tobacco", "BT Group", "Bunzl", "Burberry", "Centrica",
+        "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",
+        "Entain", "Experian", "F&C Investment”", "Flutter Entertainment", "Frasers Group", "Fresnillo", "Glencore", "GSK",
+        "Haleon", "Halma", "Hikma Pharmaceuticals", "Howdens Joinery", "HSBC", "InterContinental Hotels", "IMI",
+        "Imperial Brands", "Informa", "Intermediate Capital", "International Airlines Group", "Intertek", "JD Sports",
+        "Kingfisher", "Land Securities", "Legal & General", "Lloyds Banking Group", "London Stock Exchange",
+        "M&G plc", "Marks and Spencer", "Melrose Industries", "Mondi", "National Grid", "NatWest",
+        "Next plc", "Ocado Group", "Pearson", "Pershing Square Holdings", "Persimmon", "Phoenix Group", "Prudential", "Reckitt",
+        "RELX", "Rentokil Initial", "Rightmove", "Rio Tinto", "Rolls-Royce Holdings", "RS Group", "Sage Group", "Sainsbury",
+        "Schroders", "Scottish Mortgage", "Segro", "Severn Trent", "Shell", "DS Smith", "Smiths Group", "Smith & Nephew",
+        "Smurfit Kappa", "Spirax-Sarco Engineering", "SSE", "Standard Chartered", "St. James Place", "Taylor Wimpey",
+        "Tesco", "Unilever", "United Utilities", "Unite Group", "Vodafone Group", "Weir Group", "Whitbread", "WPP",
+    ]
+
+    get_news = extract_news_script.GetNewsClass(company_names)
+    articles_dict = get_news.fetch_all_articles()
+    #print(articles_dict)
+    for article in articles_dict:
+        get_article_from_news_script(article)
+
+
+def get_following_status(user_id):
+    # Get the CompanyIDs the user is following
+    followed_companies = set(
+        db.session.execute(
+            db.select(Follow.CompanyID).filter(Follow.UserID == user_id),
+        )
+        .scalars()
+        .all()
+    )
+
+    # Get all companies
+    all_companies = db.session.execute(
+        db.select(Company)
+    ).scalars().all()
+
+    following_companies = []
+    non_following_companies = []
+
+    for company in all_companies:
+        company_dict = {
+            'CompanyID': company.CompanyID,
+            'CompanyName': company.CompanyName,
+            'Industry': company.Industry,
+            # Add more company information as needed
+        }
+        if company.CompanyID in followed_companies:
+            following_companies.append(company_dict)
+        else:
+            non_following_companies.append(company_dict)
+
+    return {
+        'following': following_companies,
+        'non_following': non_following_companies
+    }

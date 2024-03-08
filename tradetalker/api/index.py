@@ -41,6 +41,9 @@ from database.db_schema import (
     get_articles_by_company_name,
     get_article_from_news_script,
     get_company_data_for_linear_regression,
+    get_articles_from_news_api,
+    get_following_status,
+    set_all_companies_predicted_price,
 )
 
 from linear_regression import Linear_Regression
@@ -98,10 +101,11 @@ if reset:
             'Summary': "3i nice!",
             'PublicationDate': datetime.datetime.now(),
             'ProcessedArticle': "Article processed!",
-            "PredictionScore": 1
+            "PredictionScore": 1,
+            "ArticleID": 0
         })
         print(get_articles_by_company_name("3i"))
-        company_name="3i"
+        company_name="ocado"
         comp = db.session.execute(db.select(Company).filter(Company.CompanyName.like(f'%{company_name}%'))
                                      ).scalars().first()
         print(comp)
@@ -111,6 +115,10 @@ if reset:
             comp_data['StockSymbol'], comp_data['SentimentScores'], comp_data['PriceHistoric']
         ).calculate_stock_price()
         print(predicted_price)
+        set_all_companies_predicted_price()
+        #get_articles_from_news_api()
+        #print(get_following_status(1))
+
 
 
 
