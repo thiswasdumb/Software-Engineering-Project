@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const [articles, setArticles] = useState<any[]>([]);
+  const [keyArticles, setKeyArticles] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -19,7 +20,8 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
       fetch(`/api/search/${term}`)
         .then((response) => response.json())
         .then((data) => {
-          setArticles(data.articles);
+          setArticles(data.article_titles);
+          setKeyArticles(data.article_keywords);
           setCompanies(data.companies);
         })
         .catch((error) => {
@@ -62,17 +64,19 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
           </div>
         </div>
         {searchParams.get('query') == null && (
-          <div className='flex justify-center pt-20 text-center text-xl text-black '>
+          <p className='flex justify-center pt-20 text-center text-xl text-black'>
             Start typing to search for news articles or companies.
-          </div>
+          </p>
         )}
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row md:items-start'>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Articles</div>
+            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+              <h1 className='text-2xl'>Articles (by title)</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {articles.length === 0 && (
-                <div className='text-gray-600'>No matching articles found.</div>
+                <span className='text-gray-600'>
+                  No matching articles found.
+                </span>
               )}
               <div className='flex flex-col justify-between'>
                 {articles.map((article, index) => (
@@ -88,23 +92,51 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                           searchParams.get('query')
                         )}
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <span className='text-sm text-gray-600'>
                         {dayjs(article.date).format('D MMM YYYY')}
-                      </div>
+                      </span>
                     </div>
                     <div>{article.summary}</div>
                   </Link>
                 ))}
               </div>
             </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Companies</div>
+            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+              <h1 className='text-2xl'>Articles (by keyword)</h1>
+              <hr className='my-2 rounded-lg border-2 border-slate-400' />
+              {keyArticles.length === 0 && (
+                <span className='text-gray-600'>
+                  No matching articles found.
+                </span>
+              )}
+              <div className='flex flex-col justify-between'>
+                {keyArticles.map((article, index) => (
+                  <Link
+                    key={index}
+                    className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
+                    href={`/article/${article.id}`}
+                  >
+                    <div className='flex flex-row flex-wrap justify-between'>
+                      <div>
+                        {article.title}
+                      </div>
+                      <span className='text-sm text-gray-600'>
+                        {dayjs(article.date).format('D MMM YYYY')}
+                      </span>
+                    </div>
+                    <div>{article.summary}</div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+              <h1 className='text-2xl'>Companies</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               <div className='md:max-[80%]'>
                 {companies.length === 0 && (
-                  <div className='text-gray-600'>
+                  <span className='text-gray-600'>
                     No matching companies found.
-                  </div>
+                  </span>
                 )}
                 <div className='flex flex-col justify-between'>
                   {companies.map((company, index) => (
@@ -124,8 +156,8 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                           searchParams.get('query')
                         )}
                       </div>
-                      <div className='text-base'>{company.stock_price}</div>
-                      <div className='text-sm'>{company.industry}</div>
+                      <p className='text-base'>{company.stock_price}</p>
+                      <p className='text-sm'>{company.industry}</p>
                     </Link>
                   ))}
                 </div>

@@ -8,7 +8,7 @@ export default function Logout(isLoggedIn: boolean) {
         .then((response) => response.json())
         .then(() => {
           localStorage.clear();
-          window.location.href = '/home';
+          window.location.href = '/home?success=Logged%20out.';
         })
         .catch(() => {
           toast.error('Error logging out.');

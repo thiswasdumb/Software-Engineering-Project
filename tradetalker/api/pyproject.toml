@@ -34,8 +34,24 @@ module = 'yfinance'
 ignore_missing_imports = true # No typing support for yfinance
 
 [[tool.mypy.overrides]]
+module = 'sklearn.linear_model'
+ignore_missing_imports = true # No typing support for sklearn.linear_model
+
+[[tool.mypy.overrides]]
+module = 'sklearn.metrics'
+ignore_missing_imports = true # No typing support for sklearn.metrics
+
+[[tool.mypy.overrides]]
+module = 'sklearn.model_selection'
+ignore_missing_imports = true # No typing support for sklearn.model_selection
+
+[[tool.mypy.overrides]]
 module = 'database.*'
-follow_imports = 'skip' # No typing support for database
+follow_imports = 'skip' # Prevent mypy from checking database twice
+
+[[tool.mypy.overrides]]
+module = 'linear_regression.*'
+follow_imports = 'skip' # Prevent mypy from checking linear_regression twice
 
 
 [tool.ruff]

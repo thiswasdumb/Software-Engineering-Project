@@ -36,7 +36,7 @@ export default async function ArticlePage({
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
         <div className='flex flex-row justify-between'>
           <div>
-            <div className='text-2xl'>{articleData.title}</div>
+            <h1 className='text-2xl'>{articleData.title}</h1>
             <span className='flex flex-row items-center text-sm text-slate-500'>
               {dayjs(articleData.publication_date).format('D MMMM YYYY')}
               <ClockIcon className='mx-1 inline-block h-4 w-4' />
@@ -52,7 +52,7 @@ export default async function ArticlePage({
         </div>
 
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
-        <div className='text-lg'>
+        <span className='text-lg'>
           Company:&nbsp;
           <Link
             className='underline hover:drop-shadow-lg'
@@ -60,7 +60,7 @@ export default async function ArticlePage({
           >
             {articleData.company_name}
           </Link>
-        </div>
+        </span>
         <a
           href={articleData.url}
           target='_blank'
@@ -68,9 +68,9 @@ export default async function ArticlePage({
         >
           {articleData.url}
         </a>
-        <div className='text-lg'>Summary: {articleData.summary}</div>
+        <p className='text-lg'>Summary: {articleData.summary}</p>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
-        <div className='text-lg'>{articleData.content}</div>
+        <p className='text-lg'>{articleData.content}</p>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <Comments articleId={id} isLoggedIn={isLoggedIn} />
       </div>

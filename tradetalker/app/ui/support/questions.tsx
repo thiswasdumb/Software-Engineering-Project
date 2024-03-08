@@ -18,22 +18,22 @@ export default async function Questions({
 
   return (
     <div className='m-8 rounded-lg bg-slate-200 p-8'>
-      <div className='bold text-2xl'>Support</div>
+      <h1 className='bold text-2xl'>Support</h1>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='text-xl'>FAQ</div>
+      <h2 className='text-xl'>FAQ</h2>
       <hr className='my-2 w-[50%] rounded-lg border border-slate-400' />
-      <div className='mt-2 w-[30%] rounded-lg bg-slate-200'>
+      <div className='mt-2 rounded-lg bg-slate-200'>
         {questions.map((question, index) => (
           <div key={index} className='my-2'>
-            <div className='text-lg'>{question.question}</div>
-            <div className='text-lg'>{question.answer}</div>
+            <h3 className='text-lg'>{question.question}</h3>
+            <p>{question.answer}</p>
             <hr className='my-2 rounded-lg border border-slate-400' />
           </div>
         ))}
       </div>
-      <div className='mt-8 text-xl'>
+      <h2 className='mt-8 text-xl'>
         Send us a question and we&apos;ll get back to you!
-      </div>
+      </h2>
       <hr className='my-2 w-full rounded-lg border border-slate-400 md:w-[50%]' />
       {isLoggedIn ? (
         <QuestionForm />
