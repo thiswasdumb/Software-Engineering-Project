@@ -10,7 +10,7 @@ import requests
 from datetime import datetime, timedelta
 import yfinance as yf
 
-class Linear_Regression:
+class TTLinearRegression:
     # Commenting the initialization of global variables
     # end_date is set to today's date in the format YYYY-MM-DD
     global end_date 
@@ -122,7 +122,7 @@ class Linear_Regression:
         sentiment = np.array(self.Sentiment_Score)
         if len(self.Sentiment_Score) == 0 or len(self.Sentiment_Score) == 1:
             sentiment = np.append(sentiment, [0, 0])
-
+        
         # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase 
         stock_price = stock_data[-1] * (CAPM + 1)  * ((sentiment * 0.1) + 1)
 
@@ -208,4 +208,4 @@ if __name__ == "__main__":
     Sentiment_Score = []
     company_data = [175.55, 176.887, 174.987, 179.555, 180.454]
     # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
-    predicted_stock_price = Linear_Regression(company_symbol, Sentiment_Score, company_data).calculate_stock_price()  
+    predicted_stock_price = TTLinearRegression(company_symbol, Sentiment_Score, company_data).calculate_stock_price()  
