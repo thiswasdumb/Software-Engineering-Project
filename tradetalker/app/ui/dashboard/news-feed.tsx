@@ -4,14 +4,20 @@ import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+/**
+ * NewsFeed component
+ * @returns JSX.Element - NewsFeed component
+ */
 export default function NewsFeed() {
   const [articles, setArticles] = useState<any[]>([]);
+  const [clicked, setClicked] = useState(false);
   dayjs.extend(relativeTime);
 
+  // Fetch the latest 3 articles from the past week
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('/api/get_newsfeed');
+        const response = await fetch('/api/get_week_newsfeed');
         const data = await response.json();
         setArticles(data);
       } catch (error) {
@@ -20,6 +26,24 @@ export default function NewsFeed() {
     };
     fetchArticles();
   }, [setArticles]);
+
+  // When button is clicked, hide the button and fetch all articles from the past week
+  const handleClick = async () => {
+    setClicked(true);
+    await fetchFullWeekArticles();
+  }
+
+  // Fetch all articles from the past week
+  const fetchFullWeekArticles = async () => {
+    console.log('fetching full week articles');
+    try {
+      const response = await fetch('/api/get_week_newsfeed_full');
+      const data = await response.json();
+      setArticles(data);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  }
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
@@ -34,15 +58,23 @@ export default function NewsFeed() {
             className='opacity:30 my-2 w-full rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
           >
             <div className='flex flex-row flex-wrap items-center justify-between'>
-              <p>{article.title}</p>
-              <p className='text-sm text-gray-500'>
+              <span className='mr-2'>{article.title}</span>
+              <span className='text-sm text-gray-500'>
                 {dayjs(article.date).fromNow()}
-              </p>
+              </span>
             </div>
             <p className='text-sm'>{article.summary}</p>
           </Link>
         ))}
       </div>
+      {!clicked && (
+        <button
+          onClick={() => handleClick()}
+          className='w-full bg-slate-400 text-white rounded-lg p-2 mt-2 hover:bg-slate-500 transition active:bg-slate-600'
+        >
+          Show all articles from the past week
+        </button>
+      )}
     </div>
   );
 }
