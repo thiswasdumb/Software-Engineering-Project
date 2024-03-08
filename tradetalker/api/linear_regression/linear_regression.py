@@ -240,4 +240,4 @@ if __name__ == "__main__":
     sent_score = []
     comp_data = [175.55, 176.887, 174.987, 179.555, 180.454]
     # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
-    predicted_stock_price = Linear_Regression(comp_symbol, sent_score, comp_data).calculate_stock_price()  
+    predicted_stock_price = TTLinearRegression(comp_symbol, sent_score, comp_data).calculate_stock_price()

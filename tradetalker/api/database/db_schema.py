@@ -28,7 +28,8 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 )
 from werkzeug.security import generate_password_hash
 
-from linear_regression.linear_regression import TTLinearRegression
+from .linear_regression.linear_regression import TTLinearRegression
+from .nltk_component import extract_news_script
 
 db = SQLAlchemy()
 
@@ -855,6 +856,8 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
         print(article.ArticleID)
         sentiment_scores.append(article.PredictionScore)
     print("sentiment scores: ", sentiment_scores)
+    if not sentiment_scores:
+        sentiment_scores = [0, 0]
     return sentiment_scores
 
 
@@ -977,7 +980,8 @@ def set_all_companies_predicted_price() -> None:
                 predicted_stock_price = TTLinearRegression(
                     company.StockSymbol, get_company_article_sentiment_scores(company.CompanyID), [
                         company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4, company.StockPrice_D_5
-                    ])
+                    ]).calculate_stock_price()
+                print("predicted stock price for ", company.CompanyName, " is: ", predicted_stock_price)
                 db.session.execute(
                     update(Company).where(Company.CompanyID == company.CompanyID)
                     .values(PredictedStockPrice=predicted_stock_price)
