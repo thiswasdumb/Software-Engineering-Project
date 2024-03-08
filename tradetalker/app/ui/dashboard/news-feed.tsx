@@ -35,7 +35,6 @@ export default function NewsFeed() {
 
   // Fetch all articles from the past week
   const fetchFullWeekArticles = async () => {
-    console.log('fetching full week articles');
     try {
       const response = await fetch('/api/get_week_newsfeed_full');
       const data = await response.json();

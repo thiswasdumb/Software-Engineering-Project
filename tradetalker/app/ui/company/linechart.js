@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 function LineChart(stockLastDays) {
   Chart.register(Title);
   useEffect(() => {
-    console.log(stockLastDays);
     var ctx = document.getElementById('myChart').getContext('2d');
     /* eslint-disable @typescript-eslint/no-unused-vars */
     var labels = [];
