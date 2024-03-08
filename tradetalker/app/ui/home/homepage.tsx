@@ -46,7 +46,7 @@ export default async function HomeComponent() {
           <h2 className='text-xl'>Recent articles</h2>
           {articles.map((article, index) => (
             <div
-              className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
+              className='my-2 rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
               key={index}
             >
               <Link href={`/article/${article.id}`}>
