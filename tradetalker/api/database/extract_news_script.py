@@ -2,10 +2,10 @@ import datetime
 from flask import Flask
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
-from .preprocessing import GetPOSClass, PreprocessText
-from .text_summariser import TextSummariser
-from .tf_idf import TF_IDF
-from .vader import SentimentAnalyser
+from preprocessing import GetPOSClass, PreprocessText
+from text_summariser import TextSummariser
+from tf_idf import TF_IDF
+from vader import SentimentAnalyser
 
 app = Flask(__name__)
 
@@ -34,6 +34,8 @@ class GetNewsClass:
         self.s = SentimentAnalyser()
         self.t = TextSummariser(num_sentences=2)
         self.all_articles = {}
+        #blacklisted websites (they require a paywall)
+        self.black_listed = ['thefly.com']
         self.fetch_articles_from_api(list_of_companies)
         print(self.api_keys[self.api_num])
 
@@ -45,7 +47,7 @@ class GetNewsClass:
             try: 
                 self.all_articles[list_of_companies[i]] = self.news_api.get_everything(
                     q=list_of_companies[i],
-                    from_param="2024-03-06",
+                    from_param="2024-03-01",
                     language="en",
                     sort_by="relevancy",
                     page=1,
@@ -98,7 +100,8 @@ class GetNewsClass:
         list_of_article_dictionaries = []
 
         #to ensure no duplicates news articles are added
-        seen_headers = set()
+        seen_urls = set()
+        
 
         articles = self.all_articles.get(company_name, {}).get("articles", [])
 
@@ -107,10 +110,10 @@ class GetNewsClass:
             article_url = article["url"]
 
             #check if article has already been added, if so skip current article 
-            if article_url.lower() in seen_headers:
+            if article_url.lower() in seen_urls or article_url in self.black_listed:
                 continue
 
-            seen_headers.add(article_url.lower())
+            seen_urls.add(article_url.lower())
             
             #filter out irrelevant articles
             if company_name.lower() not in article_title.lower():
@@ -143,7 +146,7 @@ class GetNewsClass:
                 else datetime.datetime.now(),
                 "KeyWords": None,  # Will be calculated later
             }
-            print(article_object["Title"])
+            print(article_object["PublicationDate"])
 
             GetNewsClass.article_id += 1
             list_of_article_dictionaries.append(article_object)
@@ -162,5 +165,5 @@ class GetNewsClass:
 
 
 # Example usage
-#test = GetNewsClass(["Ashtead"])
-#results = test.fetch_all_articles()
+test = GetNewsClass(["Ashtead"])
+results = test.fetch_all_articles()
