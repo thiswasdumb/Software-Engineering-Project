@@ -29,7 +29,7 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 from werkzeug.security import generate_password_hash
 
 from .linear_regression.linear_regression import TTLinearRegression
-from .nltk_component import extract_news_script
+from . import extract_news_script
 
 db = SQLAlchemy()
 
@@ -1015,7 +1015,7 @@ def get_articles_from_news_api() -> None:
     """
     company_names = [
         "3i", "Admiral Group", "Airtel Africa", "Anglo American", "Antofagasta", "Ashtead Group", "Associated British Foods",
-        "AstraZeneca", "Auto Trader Group", "Aviva", "B&M", "BAE Systems", "Barclays", "Barratt Developments",]
+        "AstraZeneca", "Auto Trader Group", "Aviva plc", "B&M", "BAE Systems", "Barclays", "Barratt Developments",]
     others = [
         "Beazley", "Berkeley Group", "BP", "British American Tobacco", "BT Group", "Bunzl", "Burberry", "Centrica",
         "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",
@@ -1033,7 +1033,7 @@ def get_articles_from_news_api() -> None:
 
     get_news = extract_news_script.GetNewsClass(company_names)
     articles_dict = get_news.fetch_all_articles()
-    #print(articles_dict)
+
     for article in articles_dict:
         get_article_from_news_script(article)
 
