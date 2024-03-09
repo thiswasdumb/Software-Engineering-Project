@@ -693,7 +693,7 @@ def add_data() -> None:
             "New article: The headline of Article 1",
         ),
         Notification(
-            2,
+            1,
             "New article: The headline of Article 2",
         ),
     ]
@@ -728,7 +728,7 @@ def add_data() -> None:
         ),
         ArticleComment(
             2,
-            2,
+            1,
             "Another comment.",
             None,
         ),
@@ -932,8 +932,6 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
 
     sentiment_scores = []
     for article in articles:
-        print(article.Content)
-        print(article.ArticleID)
         sentiment_scores.append(article.PredictionScore)
 
     if not sentiment_scores:
@@ -1254,11 +1252,13 @@ def insert_user_notification_read_objects(notification: Notification, company_id
     given a new notification and the related company_id, creates individual UNR objects for users following that company
     """
     user_ids = get_company_followers(company_id)
+    print("notification added for company: ", company_id)
     user_notification_read_list = []
     for user_id in user_ids:
         user_notification_read_list.append(UserNotificationRead(user_id, notification.NotificationIDa))
-    db.session.add_all(user_notification_read_list)
-    db.session.commit()
+    if user_notification_read_list:
+        db.session.add_all(user_notification_read_list)
+        db.session.commit()
 
 
 def get_recommendation_system_info(user_id: int) -> dict:
