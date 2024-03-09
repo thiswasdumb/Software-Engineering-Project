@@ -1236,7 +1236,8 @@ def get_articles_from_news_api() -> None:
                 .first()
             )
             company_id = company.CompanyID
-            notification_content = "New notification for " + company_name
+            notification_content = "Great news for " if article["PredictionScore"] > HIGHLY_POSITIVE_SCORE else "Terrible news for "
+            notification_content += company_name
             new_notification = Notification(article_id, notification_content)
             db.session.add(new_notification)
             db.session.commit()
