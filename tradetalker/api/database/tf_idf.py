@@ -38,7 +38,7 @@ class TFIDF:
         """Generates a DataFrame of the tf-idf scores for each article."""
         # get article index array
         article_index = [f"Article {i}" for i in range(self.num_articles)]
-        self.df_tf_idf: pd.DataFrame = pd.DataFrame(
+        self.df_tf_idf: pd.DataFrame = pd.DataFrame(  # type: ignore  [no-redef, assignment]
             self.tfidf_scores.T.todense(),
             index=self.feature_names,
             columns=article_index,
@@ -62,7 +62,7 @@ class TFIDF:
         """Returns the top n words for the given article as a string."""
         # sorting the columns (each article) by their values (tf-idf score) for each term/word/feature
 
-        top_terms: pd.DataFrame = self.df_tf_idf[[f"Article {matrix_id}"]].nlargest(
+        top_terms: pd.DataFrame = self.df_tf_idf[[f"Article {matrix_id}"]].nlargest(  # type: ignore [index]
             n,
             columns=[f"Article {matrix_id}"],
         )
@@ -73,12 +73,12 @@ class TFIDF:
     def get_top_n_terms_tfidf_scores(self, n: int, matrix_id: int) -> list:
         """Returns the top n words for the given article as a list."""
         # sorting the columns (each article) by their values (tf-idf score) for each term/word/feature
-        top_terms: pd.DataFrame = self.df_tf_idf[[f"Article {matrix_id}"]].nlargest(
+        top_terms: pd.DataFrame = self.df_tf_idf[[f"Article {matrix_id}"]].nlargest(  # type: ignore [index]
             n,
             columns=[f"Article {matrix_id}"],
         )
         # retrieving only the feature columns (tf_idf score)
-        return top_terms[[f"Article {matrix_id}"]].to_numpy.tolist()
+        return top_terms[[f"Article {matrix_id}"]].to_numpy.tolist()  # type: ignore [attr-defined]
 
 
 # Example use case

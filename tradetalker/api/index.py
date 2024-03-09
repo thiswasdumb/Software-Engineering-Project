@@ -37,20 +37,13 @@ from database.db_schema import (
     add_data,
     db,
     get_all_company_names,
-    get_article_from_news_script,
-    get_articles_by_company_name,
-    get_company_article_sentiment_scores,
-    get_company_data_for_linear_regression,
     get_articles_from_news_api,
-    get_recommendation_system_info,
     set_all_companies_predicted_price,
 )
 from database.search_component import ArticleSearch
-from linear_regression.linear_regression import TTLinearRegression
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-
 
 IMAGE_FOLDER = "../public/"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
@@ -93,44 +86,9 @@ if reset:
         db.create_all()
         add_base_company_data()
         add_data()
-        get_company_article_sentiment_scores(1)
         get_all_company_names()
-        get_article_from_news_script(
-            {
-                "Company": "3i",
-                "Title": "Test article for 3i",
-                "Content": "Blah blah blah 3i so good",
-                "URL": "idk.whocares",
-                "Summary": "3i nice!",
-                "PublicationDate": datetime.now(UTC),
-                "ProcessedArticle": "Article processed!",
-                "PredictionScore": 1,
-            },
-        )
-        print(get_articles_by_company_name("3i"))
-        comp_name = "3i"
-        comp = (
-            db.session.execute(
-                db.select(Company).filter(
-                    Company.CompanyName.like(f"%{comp_name}%"),
-                ),
-            )
-            .scalars()
-            .first()
-        )
-        print(comp)
-        comp_data = get_company_data_for_linear_regression(comp)
-        print(comp_data)
-        predicted_price = TTLinearRegression(
-            comp_data["StockSymbol"],
-            comp_data["SentimentScores"],
-            comp_data["PriceHistoric"],
-        ).calculate_stock_price()
-        print(predicted_price)
         get_articles_from_news_api()
         set_all_companies_predicted_price()
-        #print(get_recommendation_system_info(1))
-
 
 
 MAX_EMAIL_LENGTH = 100
@@ -449,7 +407,13 @@ def search(query: str | None) -> Response:
     key_article_ids = ArticleSearch(all_articles).search(query)
     key_articles = (
         db.session.execute(
-            db.select(Article).filter(Article.ArticleID.in_(key_article_ids[0])),
+            db.select(Article).filter(
+                (Article.ArticleID.in_(key_article_ids[0]))
+                | (Article.ArticleID.in_(key_article_ids[1]))
+                | (Article.ArticleID.in_(key_article_ids[2]))
+                | (Article.ArticleID.in_(key_article_ids[3]))
+                | (Article.ArticleID.in_(key_article_ids[4])),
+            ),
         )
         .scalars()
         .all()
@@ -566,8 +530,43 @@ def get_followed_companies() -> Response:
 @app.route("/api/get_recommended_articles", methods=["GET"])
 @login_required
 def get_recommended_articles() -> Response:
-    """Returns the user's recommended articles."""
-    return jsonify({"error": "Not implemented yet."})
+    """Returns 3 articles linked to companies the user follows."""
+    # Get the 3 most recent articles from followed companies that the user has not liked
+    followed_company_ids = (
+        db.session.execute(
+            db.select(Follow.CompanyID).filter(Follow.UserID == current_user.id),
+        )
+        .scalars()
+        .all()
+    )
+    recommended_articles = (
+        db.session.execute(
+            db.select(Article)
+            .filter(Article.CompanyID.in_(followed_company_ids))
+            .filter(
+                ~Article.ArticleID.in_(
+                    db.select(LikeTable.ArticleID).filter(
+                        LikeTable.UserID == current_user.id,
+                    ),
+                ),
+            )
+            .order_by(desc(Article.PublicationDate))
+            .limit(3),
+        )
+        .scalars()
+        .all()
+    )
+    recommended_articles_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in recommended_articles
+    ]
+    return jsonify(recommended_articles_list)
 
 
 @app.route("/api/get_recommended_companies", methods=["GET"])

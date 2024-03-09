@@ -1,5 +1,6 @@
 """Uses linear regression to predict stock prices based on CAPM and sentiment score."""
 
+import logging
 from datetime import UTC, datetime, timedelta
 
 import numpy as np
@@ -20,7 +21,9 @@ end_date = datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 class TTLinearRegression:
-    """Uses linear regression to predict stock prices based on CAPM and sentiment score."""
+    """Uses linear regression to predict stock prices based on CAPM and sentiment
+    score.
+    """
 
     def __init__(
         self,
@@ -39,8 +42,7 @@ class TTLinearRegression:
         # Assign the provided company_data to the instance variable
         self.company_data = company_data
 
-
-    def get_data(self, url: str) -> np.ndarray:
+    def get_data(self, url: str) -> np.ndarray | None:
         """Fetches stock market data from the MarketStack API."""
         # Our MarketStack API
         api_key = "f22b6caa5edecd4bdcbc0b962fb54a71"
@@ -57,21 +59,19 @@ class TTLinearRegression:
                 # Parse the JSON response
                 data = response.json()
                 # Process the data as needed
-                print(data)
             else:
-                print("Error:", response.status_code)
+                logging.error("Error: %d", response.status_code)
 
             # Extracting relevant information from the response
             if "data" in data and len(data["data"]) > 0:
                 eod_data = data["data"]["eod"]
                 close_prices = [day["close"] for day in eod_data]
                 return np.array(close_prices)
-            print("No data found for the given symbol.")
+            logging.info("No data found for the given symbol.")
             return None
-        except RequestException as e:
-            print("Error fetching data:", e)
+        except RequestException:
+            logging.exception("Error fetching data")
             return None
-
 
     def calculate_capm(self) -> tuple[float, np.ndarray]:
         """Calculates the Capital Asset Pricing Model (CAPM) using historical data."""
@@ -123,16 +123,15 @@ class TTLinearRegression:
         # Printing the calculated CAPM value
         return capm, stock_data
 
-
     def create_dataframe(self, capm: float, stock_data: np.ndarray) -> tuple:
         """Creates a dataframe using CAPM and stock data."""
         # Access database and api to retrieve sentiment score and CAPM
-        print("CAPM: ", capm)
         sentiment = np.array(self.sentiment_score)
         if len(self.sentiment_score) == 0 or len(self.sentiment_score) == 1:
             sentiment = np.append(sentiment, [0, 0])
 
-        # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase
+        # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary
+        # rapid increase
         stock_price = stock_data[-1] * (capm + 1) * ((sentiment * 0.1) + 1)
 
         # Create the dataset
@@ -151,7 +150,6 @@ class TTLinearRegression:
 
         return x, y
 
-
     def create_test_data(self, x: tuple, y: tuple) -> tuple[list, list, list, list]:
         """Creates training and testing data for the model."""
         # Splitting the dataset into training and testing sets
@@ -164,20 +162,10 @@ class TTLinearRegression:
             random_state=18,
         )
 
-        # Check the shapes of the training and testing data
-        print("X_train shape:", X_train.shape)
-        print("y_train shape:", y_train.shape)
-        print("X_test shape:", X_test.shape)
-        print("y_test shape:", y_test.shape)
-
         min_stock_price = y_test.min()
         max_stock_price = y_test.max()
 
-        print("Minimum stock price:", min_stock_price)
-        print("Maximum stock price:", max_stock_price)
-
         return X_train, X_test, y_train, y_test
-
 
     def create_linear_model(
         self,
@@ -197,23 +185,15 @@ class TTLinearRegression:
         predictions = model.predict(X_test)
 
         # predicted_stock_price = np.median(predictions)
-        predicted_stock_price = predictions.mean()
-
-        # Calls Mean Absolute Evaluation method
-        mae = self.mae_evaluation(y_test, predictions)
 
         # Visualizing the actual vs predicted values using a scatter plot
         # plt.scatter(X_test["sentiment_score"], y_test, color="black", label="Actual")
 
-        return predicted_stock_price
-
+        return predictions.mean()
 
     def mae_evaluation(self, y_test: list, predictions: np.ndarray) -> float:
         """Calculates Mean Absolute Error (MAE) to evaluate model performance."""
-        mae = mean_absolute_error(y_test, predictions)
-        print(f"Mean Absolute Error: {mae}")
-        return mae
-
+        return mean_absolute_error(y_test, predictions)
 
     def calculate_stock_price(self) -> float:
         """Calculates the stock price using Linear Regression."""
@@ -224,20 +204,22 @@ class TTLinearRegression:
         # Split the dataset into training and testing data
         X_train, X_test, y_train, y_test = self.create_test_data(x, y)
         # Create a linear regression model and predict the stock price
-        predicted_stock_price = self.create_linear_model(
+        return self.create_linear_model(
             X_train,
             X_test,
             y_train,
             y_test,
         )
-        # Print the predicted stock price
-        print("Predicted Stock Price: ", predicted_stock_price)
-        return predicted_stock_price
 
 
 if __name__ == "__main__":
-    comp_symbol = 'UU.L'
-    sent_score = []
+    comp_symbol = "UU.L"
+    sent_score: list = []
     comp_data = [175.55, 176.887, 174.987, 179.555, 180.454]
-    # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
-    predicted_stock_price = TTLinearRegression(comp_symbol, sent_score, comp_data).calculate_stock_price()
+    # Create an instance of the Linear_Regression class with provided parameters and
+    # calculate the stock price
+    predicted_stock_price = TTLinearRegression(
+        comp_symbol,
+        sent_score,
+        comp_data,
+    ).calculate_stock_price()

@@ -78,18 +78,24 @@ export default function ShareCompany({
     doc.setFontSize(16);
     doc.text(`Company: ${company.name}`, 40, 60).setFontSize(16);
     doc.text(`Symbol: ${company.symbol}`, 40, 80).setFontSize(20);
-    doc.text(`${company.stock_price}`, 40, 120).setFontSize(12);
+    doc.text(`GBX ${company.stock_price}`, 40, 120).setFontSize(12);
     doc.text(`${diffStr} (${changeStr})`, 40, 140);
+    doc.text(
+      `Predicted stock price in 7 days: ${company.predicted_stock_price}`,
+      40,
+      160
+    );
+    doc.text('Industry: ' + company.industry, 40, 180);
     doc
-      .text('Description: ' + company.description, 40, 180, { maxWidth: 500 })
+      .text('Description: ' + company.description, 40, 200, { maxWidth: 500 })
       .setFontSize(16);
-    doc.addImage(img, 'PNG', 40, 360, 500, 250);
-    doc.text('Statistics:', 40, 640).setFontSize(12);
-    doc.text(`Max: ${max}`, 40, 660).setFontSize(12);
-    doc.text(`Min: ${min}`, 40, 680).setFontSize(12);
-    doc.text(`Mean: ${mean}`, 40, 700).setFontSize(12);
-    doc.text(`Median: ${median}`, 40, 720).setFontSize(12);
-    doc.text(`Standard deviation: ${sd}`, 40, 740).setFontSize(12);
+    doc.addImage(img, 'PNG', 40, 380, 500, 250);
+    doc.text('Statistics:', 40, 660).setFontSize(12);
+    doc.text(`Max: ${max}`, 40, 680).setFontSize(12);
+    doc.text(`Min: ${min}`, 40, 700).setFontSize(12);
+    doc.text(`Mean: ${mean}`, 40, 720).setFontSize(12);
+    doc.text(`Median: ${median}`, 40, 740).setFontSize(12);
+    doc.text(`Standard deviation: ${sd}`, 40, 760).setFontSize(12);
     doc.save(`${company.symbol}-summary.pdf`);
   }
 

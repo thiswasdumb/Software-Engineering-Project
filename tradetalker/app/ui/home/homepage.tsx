@@ -34,7 +34,7 @@ export default async function HomeComponent() {
   return (
     <>
       <ReadParams url='' />
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
         <h1 className='text-2xl'>Welcome to TradeTalk.</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <p>
@@ -62,7 +62,7 @@ export default async function HomeComponent() {
                 <div className='flex flex-row items-center justify-between'>
                   {article.score > 0.33 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowUpCircleIcon className='h-10 w-10 text-green-600' />
+                      <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
                       <p className='pl-2 text-green-600'>Positive</p>
                     </div>
                   ) : article.score < -0.33 ? (

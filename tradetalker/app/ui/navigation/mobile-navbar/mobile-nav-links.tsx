@@ -35,7 +35,7 @@ export default function MobileNavLinks(props: {
           { name: 'Profile', href: '/profile', onClick: props.toggle },
         ]
       : [
-          { name: 'Login', href: '/login', onClick: props.toggle },
+          { name: 'Log in', href: '/login', onClick: props.toggle },
           { name: 'Sign up', href: '/signup', onClick: props.toggle },
         ]),
   ];
