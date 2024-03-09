@@ -97,7 +97,7 @@ export function CommentForm({
               href='/login'
               className='text-blue-600 underline hover:text-blue-700 active:text-orange-400'
             >
-              login
+              log in
             </a>
             &nbsp;and be verified before you can comment.
           </p>
