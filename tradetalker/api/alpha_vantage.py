@@ -26,7 +26,3 @@ def get_formatted_data() -> list[dict]:
         )
 
     return formatted_data
-
-
-# (replace symbol with the companies and replace the API key with the one we actually
-# got from James)
