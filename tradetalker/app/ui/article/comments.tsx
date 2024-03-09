@@ -55,14 +55,15 @@ export default function Comments({
       />
       <div>
         {comments.map((comment, index) => (
-          <div key={index} className='my-4'>
+          <div key={index} className='my-2'>
             <div className='flex flex-row items-end'>
               <div>{comment.username}</div>
               <div className='ml-2 text-sm text-slate-500'>{comment.time}</div>
             </div>
-            <div className='flex flex-row items-center'>
+            <div>
               <p>{comment.content}</p>
             </div>
+            <hr className='my-2 rounded-lg border-1 border-slate-400' />
           </div>
         ))}
       </div>
