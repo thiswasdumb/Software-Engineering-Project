@@ -924,10 +924,10 @@ def get_articles_from_news_api() -> None:
     """
     company_names = [
         "3i", "Admiral Group", "Airtel Africa", "Anglo American", "Antofagasta", "Ashtead Group", "Associated British Foods",
-        "AstraZeneca", "Auto Trader Group", "Aviva plc", "B&M", "BAE Systems", "Barclays", "Barratt Developments",]
-    others = [
+        "AstraZeneca", "Auto Trader Group", "Aviva plc", "B&M", "BAE Systems", "Barclays", "Barratt Developments",
         "Beazley", "Berkeley Group", "BP", "British American Tobacco", "BT Group", "Bunzl", "Burberry", "Centrica",
-        "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",
+        "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",]
+    others = [
         "Entain", "Experian", "F&C Investment”", "Flutter Entertainment", "Frasers Group", "Fresnillo", "Glencore", "GSK",
         "Haleon", "Halma", "Hikma Pharmaceuticals", "Howdens Joinery", "HSBC", "InterContinental Hotels", "IMI",
         "Imperial Brands", "Informa", "Intermediate Capital", "International Airlines Group", "Intertek", "JD Sports",
