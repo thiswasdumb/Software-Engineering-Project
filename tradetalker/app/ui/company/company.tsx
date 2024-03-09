@@ -56,7 +56,7 @@ export default async function CompanyPage({
   return (
     <>
       <ScrollUp />
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
         <div className='flex flex-row items-center justify-between'>
           <div className='flex flex-row flex-wrap items-center gap-3'>
             <h1 className='text-2xl'>{companyData.name}</h1>

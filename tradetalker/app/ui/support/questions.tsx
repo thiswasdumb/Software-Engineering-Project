@@ -22,7 +22,7 @@ export default async function Questions({
   const questions: any[] = await getQuestions();
 
   return (
-    <div className='m-8 rounded-lg bg-slate-200 p-8'>
+    <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
       <h1 className='bold text-2xl'>Support</h1>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
       <h2 className='text-xl'>FAQ</h2>
@@ -49,7 +49,7 @@ export default async function Questions({
             href='/login'
             className='text-blue-600 underline hover:text-blue-700 active:text-orange-400'
           >
-            login
+            log in
           </a>
           &nbsp;before you can submit a question.
         </p>

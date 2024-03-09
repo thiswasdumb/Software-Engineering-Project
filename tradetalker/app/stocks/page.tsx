@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function Stocks() {
   return (
     <Suspense fallback={<Loading message={'Loading stocks...'} />}>
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
         <div className='text-2xl'>Stocks</div>
         <hr className='mt-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-col gap-2 md:flex-row'>

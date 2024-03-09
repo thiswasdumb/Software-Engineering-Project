@@ -44,7 +44,7 @@ export default async function ArticlePage({
   return (
     <>
       <ScrollUp />
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
         <div className='flex flex-row justify-between'>
           <div>
             <h1 className='text-2xl'>{articleData.title}</h1>
@@ -94,13 +94,15 @@ export default async function ArticlePage({
         </div>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <p className='mb-4'>{articleData.content}</p>
-        <a
-          href={articleData.url}
-          target='_blank'
-          className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
-        >
-          {articleData.url}
-        </a>
+        <div className='truncate'>
+          <a
+            href={articleData.url}
+            target='_blank'
+            className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
+          >
+            {articleData.url}
+          </a>
+        </div>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <Comments articleId={id} isLoggedIn={isLoggedIn} />
       </div>

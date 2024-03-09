@@ -74,7 +74,7 @@ export default function ProfileComponent({
 
   return (
     isLoggedIn && (
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
+      <div className='rounded-lg bg-slate-200 p-8 md:m-8'>
         <h1 className='text-2xl'>Profile</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-col items-start rounded-lg bg-slate-200'>
