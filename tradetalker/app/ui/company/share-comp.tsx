@@ -67,14 +67,12 @@ export default function ShareCompany({
   ];
   sd = Math.sqrt(
     stockLastDays.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
-      stockLastDays.length
+    stockLastDays.length
   );
 
   function savePdf() {
     const doc = new jsPDF('p', 'pt', 'a4');
     const canvas = document.getElementById('myChart') as HTMLCanvasElement;
-    canvas.width = 500;
-    canvas.height = 250;
     const img = canvas.toDataURL('image/png');
     console.log(img);
     doc.setFontSize(16);
