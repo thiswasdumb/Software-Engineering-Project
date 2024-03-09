@@ -1,29 +1,35 @@
-import datetime
+"""Fetches news articles from NewsAPI and processes them for sentiment analysis and keyword extraction."""
+
+from datetime import UTC, datetime
 
 from flask import Flask
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException
-from preprocessing import GetPOSClass, PreprocessText
-from text_summariser import TextSummariser
-from tf_idf import TF_IDF
-from vader import SentimentAnalyser
+
+from database.preprocessing import GetPOSClass, PreprocessText
+from database.text_summariser import TextSummariser
+from database.tf_idf import TFIDF
+from database.vader import SentimentAnalyser
 
 app = Flask(__name__)
 
 
 class GetNewsClass:
+    """Class to fetch news articles from NewsAPI and process them for sentiment analysis and keyword extraction."""
+
     article_id = 0
 
-    def __init__(self, list_of_companies):
+    def __init__(self, list_of_companies: list[str]) -> None:
         """Initializes an instance of GetNewsClass.
 
         Parameters
         ----------
-        - list_of_companies (list): A list (string) of company names for which news articles will be fetched.
+        list_of_companies : list
+            A list (string) of company names for which news articles will be fetched.
 
         Returns
         -------
-        - None
+        None
 
         """
         # self.news_api = NewsApiClient(api_key='78c2cc21e0c04b9db286b7952f34a9f8')
@@ -67,7 +73,7 @@ class GetNewsClass:
 
         for (
             company_name
-        ) in self.all_articles.keys():  # self.all_articles keys are the company names
+        ) in self.all_articles:  # self.all_articles are the company names
             article_dictionaries_for_one_company = self.get_articles(
                 company_name,
             )  # without keywords inserted
@@ -86,11 +92,13 @@ class GetNewsClass:
 
         Parameters
         ----------
-        - company_name (str): The name of the company for which news articles will be fetched.
+        company_name : str
+            The name of the company for which news articles will be fetched.
 
         Returns
         -------
-        - None: A list of dictionaries, each dictionary is an article object for the company
+        list[dict]
+            A list of dictionaries. Each dictionary is an article object for the company.
 
         """
         # final output of the function
@@ -138,7 +146,7 @@ class GetNewsClass:
             if not article_object[
                 "PublicationDate"
             ]:  # in some cases we got NULL date which would then prevent the insertion
-                article_object["PublicationDate"] = datetime.datetime.now()
+                article_object["PublicationDate"] = datetime.now(UTC)
 
             print(
                 article_object["Title"],
@@ -153,12 +161,13 @@ class GetNewsClass:
 
         return list_of_article_dictionaries
 
-    def insert_tf_idf_scores(self, processed_articles: dict):
+    def insert_tf_idf_scores(self, processed_articles: list) -> list:
+        """Calculates and inserts tf_idf scores for each article in the list."""
         if len(processed_articles) <= 0:
             print("No Articles")
             return processed_articles
         # get the top 20 words
-        tf_idf = TF_IDF(processed_articles)
+        tf_idf = TFIDF(processed_articles)
         return tf_idf.get_top_n_terms_for_all_articles(top_n_words=20)
 
 
