@@ -75,6 +75,7 @@ export default async function CompanyPage({
             <div className='flex w-full flex-row items-start justify-between'>
               <div>
                 <div className='flex flex-row items-center gap-2'>
+                  <h2 className='text-2xl'>GBX</h2>
                   <h2 className='text-3xl'>{companyData.stock_price}</h2>
                   <div
                     className={`flex flex-row flex-wrap items-center gap-1 ${diff > 0 ? 'text-green-700' : 'text-red-700'}`}
@@ -93,7 +94,7 @@ export default async function CompanyPage({
                   </div>
                 </div>
                 <p className='text-lg'>
-                  Predicted stock price:&nbsp;
+                  Predicted stock price in 7 days:&nbsp;
                   {companyData.predicted_stock_price !== null
                     ? companyData.predicted_stock_price
                     : 'N/A'}
