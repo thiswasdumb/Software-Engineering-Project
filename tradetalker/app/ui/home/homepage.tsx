@@ -62,7 +62,7 @@ export default async function HomeComponent() {
                 <div className='flex flex-row items-center justify-between'>
                   {article.score > 0.33 ? (
                     <div className='flex flex-row items-center'>
-                      <ArrowUpCircleIcon className='h-10 w-10 text-green-600' />
+                      <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
                       <p className='pl-2 text-green-600'>Positive</p>
                     </div>
                   ) : article.score < -0.33 ? (
