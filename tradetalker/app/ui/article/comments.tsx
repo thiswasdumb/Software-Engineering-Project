@@ -63,7 +63,7 @@ export default function Comments({
             <div>
               <p>{comment.content}</p>
             </div>
-            <hr className='my-2 rounded-lg border-1 border-slate-400' />
+            <hr className='border-1 my-2 rounded-lg border-slate-400' />
           </div>
         ))}
       </div>

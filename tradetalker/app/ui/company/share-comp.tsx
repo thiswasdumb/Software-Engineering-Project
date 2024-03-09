@@ -67,7 +67,7 @@ export default function ShareCompany({
   ];
   sd = Math.sqrt(
     stockLastDays.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
-    stockLastDays.length
+      stockLastDays.length
   );
 
   function savePdf() {
@@ -80,7 +80,11 @@ export default function ShareCompany({
     doc.text(`Symbol: ${company.symbol}`, 40, 80).setFontSize(20);
     doc.text(`GBX ${company.stock_price}`, 40, 120).setFontSize(12);
     doc.text(`${diffStr} (${changeStr})`, 40, 140);
-    doc.text(`Predicted stock price in 7 days: ${company.predicted_stock_price}`, 40, 160);
+    doc.text(
+      `Predicted stock price in 7 days: ${company.predicted_stock_price}`,
+      40,
+      160
+    );
     doc.text('Industry: ' + company.industry, 40, 180);
     doc
       .text('Description: ' + company.description, 40, 200, { maxWidth: 500 })
