@@ -76,7 +76,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
         )}
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row md:items-start'>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+            <div className='m-4 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
               <h1 className='text-2xl'>Articles (by title)</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {articles.length === 0 && (
@@ -107,7 +107,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                 ))}
               </div>
             </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+            <div className='m-4 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
               <h1 className='text-2xl'>Articles (by keyword)</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {keyArticles.length === 0 && (
@@ -135,7 +135,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                 ))}
               </div>
             </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
+            <div className='m-4 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
               <h1 className='text-2xl'>Companies</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               <div className='md:max-[80%]'>
