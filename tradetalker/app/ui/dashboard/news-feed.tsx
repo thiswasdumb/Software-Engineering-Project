@@ -48,7 +48,7 @@ export default function NewsFeed() {
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
       <h2 className='text-xl'>News feed</h2>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='flex flex-col'>
+      <div className='flex flex-col max-h-[60vh] overflow-scroll rounded-lg'>
         {articles.length === 0 && <p>No recent news.</p>}
         {articles.map((article, index) => (
           <Link
