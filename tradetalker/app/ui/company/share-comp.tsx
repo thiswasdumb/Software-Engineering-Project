@@ -67,7 +67,7 @@ export default function ShareCompany({
   ];
   sd = Math.sqrt(
     stockLastDays.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
-    stockLastDays.length
+      stockLastDays.length
   );
 
   function savePdf() {
