@@ -33,6 +33,9 @@ from .linear_regression.linear_regression import TTLinearRegression
 
 db = SQLAlchemy()
 
+HIGHLY_POSITIVE_SCORE = 0.95
+HIGHLY_NEGATIVE_SCORE = -0.95
+
 
 class Company(db.Model):  # type: ignore [name-defined]
     """Contains the details of the companies in the database."""
@@ -128,10 +131,13 @@ class Company(db.Model):  # type: ignore [name-defined]
         """Selects a company by its ID."""
         try:
             company = (
-                db.session.execute(db.select(Company)
-                .filter(Company.CompanyID == self.CompanyID)
-                .first()
-                ).scalars().all()
+                db.session.execute(
+                    db.select(Company)
+                    .filter(Company.CompanyID == self.CompanyID)
+                    .first(),
+                )
+                .scalars()
+                .all()
             )
         except SQLAlchemyError:
             logging.exception("Found an error while selecting the company by ID.")
@@ -587,7 +593,7 @@ class Notification(db.Model):  # type: ignore [name-defined]
     )
 
     NotificationID = mapped_column(Integer, primary_key=True)
-    ArticleID = mapped_column(Integer, nullable=False)
+    ArticleID = mapped_column(Integer, nullable=True)
     Content = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=False)
     Time = mapped_column(DateTime, nullable=False)
 
@@ -598,7 +604,7 @@ class Notification(db.Model):  # type: ignore [name-defined]
         back_populates="notification",
     )
 
-    def __init__(self, article_id: int, content: str) -> None:
+    def __init__(self, article_id: int | None, content: str) -> None:
         """Initializes the notification object."""
         self.ArticleID = article_id
         self.Content = content
@@ -725,12 +731,6 @@ def add_data() -> None:
             1,
             1,
             "This is a comment.",
-            None,
-        ),
-        ArticleComment(
-            2,
-            2,
-            "Another comment.",
             None,
         ),
     ]
@@ -994,7 +994,7 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
             )
 
 
-def get_article_from_news_script(article: dict) -> int:
+def get_article_from_news_script(article: dict) -> int | None:
     """Inserts the article recieved from the news script into the database."""
     # need the company_id first
     company = (
@@ -1008,7 +1008,7 @@ def get_article_from_news_script(article: dict) -> int:
     )
     if not company:
         print("Couldn't find the company name in the table for ", article["Company"])
-        return
+        return None
     print(company.CompanyID)
 
     new_article = Article(
@@ -1223,8 +1223,11 @@ def get_articles_from_news_api() -> None:
         """
         if the article is notification-worthy, we create and broadcast the notification
         """
-        if article["PredictionScore"] > 0.95 or article["PredictionScore"] < -0.95:
-            company_name =  article["Company"]
+        if (
+            article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
+            or article["PredictionScore"] < HIGHLY_NEGATIVE_SCORE
+        ):
+            company_name = article["Company"]
             company = (
                 db.session.execute(
                     db.select(Company).filter(
@@ -1241,23 +1244,30 @@ def get_articles_from_news_api() -> None:
             db.session.commit()
             insert_user_notification_read_objects(new_notification, company_id)
 
-def get_company_followers(company_id: int) -> list:
-    """
-    Given a company_id, returns all the user_id of users following that company
-    """
-    user_ids = db.session.execute(
-        db.select(Follow.UserID).filter(Follow.CompanyID == company_id)
-    ).scalars().all()
-    return user_ids
 
-def insert_user_notification_read_objects(notification: Notification, company_id: int) -> None:
-    """
-    given a new notification and the related company_id, creates individual UNR objects for users following that company
+def get_company_followers(company_id: int) -> list:
+    """Given a company_id, returns all the user_id of users following that company."""
+    return (
+        db.session.execute(
+            db.select(Follow.UserID).filter(Follow.CompanyID == company_id),
+        )
+        .scalars()
+        .all()
+    )
+
+
+def insert_user_notification_read_objects(
+    notification: Notification,
+    company_id: int,
+) -> None:
+    """Given a new notification and the related company_id, creates individual UNR
+    objects for users following that company.
     """
     user_ids = get_company_followers(company_id)
-    user_notification_read_list = []
-    for user_id in user_ids:
-        user_notification_read_list.append(UserNotificationRead(user_id, notification.NotificationIDa))
+    user_notification_read_list = [
+        UserNotificationRead(user_id, notification.NotificationIDa)
+        for user_id in user_ids
+    ]
     db.session.add_all(user_notification_read_list)
     db.session.commit()
 
