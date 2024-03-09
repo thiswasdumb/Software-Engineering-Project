@@ -63,30 +63,47 @@ export default async function ArticlePage({
         </div>
 
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
-        <div>
-          <a
-            href={articleData.url}
-            target='_blank'
-            className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
-          >
-            {articleData.url}
-          </a>
+        <div className='flex flex-row justify-between items-start flex-wrap'>
+          <div>
+            <div>
+              {articleData.prediction_score > 0.33 ? (
+                <p className='text-green-600'>
+                  Positive ({articleData.prediction_score.toFixed(2)})
+                </p>
+              ) : articleData.prediction_score < -0.33 ? (
+                <p className='text-red-600'>
+                  Negative ({articleData.prediction_score.toFixed(2)})
+                </p>
+              ) : (
+                <p className='text-gray-400'>
+                  Neutral ({articleData.prediction_score.toFixed(2)})
+                </p>
+              )}
+            </div>
+            <div>
+              Company:&nbsp;
+              <Link
+                className='underline hover:drop-shadow-lg'
+                href={`/company/${articleData.company_id}`}
+              >
+                {articleData.company_name}
+              </Link>
+            </div>
+            <p>Summary: {articleData.summary}</p>
+          </div>
         </div>
-        <span className='text-lg'>
-          Company:&nbsp;
-          <Link
-            className='underline hover:drop-shadow-lg'
-            href={`/company/${articleData.company_id}`}
-          >
-            {articleData.company_name}
-          </Link>
-        </span>
-        <p className='text-lg'>Summary: {articleData.summary}</p>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
-        <p className='text-lg'>{articleData.content}</p>
+        <p className='mb-4'>{articleData.content}</p>
+        <a
+          href={articleData.url}
+          target='_blank'
+          className='text-blue-600 underline hover:text-blue-500 active:text-orange-400'
+        >
+          {articleData.url}
+        </a>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <Comments articleId={id} isLoggedIn={isLoggedIn} />
-      </div>
+      </div >
     </>
   );
 }
