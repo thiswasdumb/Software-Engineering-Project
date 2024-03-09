@@ -2,6 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '/public/images/logo.png';
 
+/**
+ * Footer component
+ * @returns JSX.Element - Footer component
+ */
 export default function Footer() {
   return (
     <>

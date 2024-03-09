@@ -10,10 +10,15 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import CommentsButton from '@/app/ui/comments-button';
 
+/**
+ * Recommended articles component
+ * @returns JSX.Element - Recommended articles component
+ */
 export default function RecommendedArticles() {
   const [articles, setArticles] = useState<any[]>([]);
   dayjs.extend(relativeTime);
 
+  // Fetch the latest 3 articles from the past week
   useEffect(() => {
     fetch('/api/home_articles') // Replace with actual route
       .then((response) => response.json())
@@ -36,7 +41,7 @@ export default function RecommendedArticles() {
         >
           <Link href={`/article/${article.id}`}>
             <div className='flex flex-row flex-wrap items-center justify-between'>
-              <p className='text-lg'>{article.title}</p>
+              <h3 className='mr-2 text-lg'>{article.title}</h3>
               <p className='text-sm text-gray-600'>
                 {dayjs(article.date).fromNow()}
               </p>

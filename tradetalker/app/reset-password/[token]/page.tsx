@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   title: 'Reset Password',
 };
 
+/**
+ * Reset password page.
+ * @param {string} token - Reset password token from the URL
+ * @returns JSX.Element - Reset password page component
+ */
 export default function ResetPassword({
   params,
 }: {

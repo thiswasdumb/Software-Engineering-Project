@@ -8,8 +8,14 @@ export const metadata: Metadata = {
   title: 'Support',
 };
 
+/**
+ * Support page.
+ * @returns JSX.Element - Support page component
+ */
 export default function Support() {
+  // Check if the user is logged in
   const session = cookies().get('session') !== undefined;
+
   return (
     <Suspense fallback={<Loading message={'Loading questions...'} />}>
       <Questions isLoggedIn={session} />

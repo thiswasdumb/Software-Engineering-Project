@@ -1,3 +1,7 @@
+/**
+ * Privacy page.
+ * @returns JSX.Element - Privacy page component
+ */
 export default function PrivacyPage() {
   return (
     <div className='m-8 flex flex-col rounded-lg bg-slate-200 p-8'>

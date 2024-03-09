@@ -1,11 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
+/**
+ * Notifications component.
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Notifications component
+ */
 export default function NotifClientComponent({
   isLoggedIn,
 }: {

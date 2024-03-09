@@ -4,7 +4,7 @@ target-version = ['py311']
 
 
 [tool.pylint.MASTER]
-ignore-patterns = ['venv/*', 'pycache/*']
+ignore-patterns = ['venv/*', 'pycache/*', 'recommendation_system.py']
 init-hook = 'import sys; sys.path.append(".")' # Fixes import errors in pylint
 disable = [
     'C0103', # Invalid variable name
@@ -15,6 +15,9 @@ disable = [
     'R0911', # Too many return statements
     'R0913', # Too many arguments
     'C0302', # Too many lines in module
+    'R1705', # Unnecessary "else" after "return"
+    'W0105', # String statement has no effect
+    'W0612', # Unused variable
 ]
 
 
@@ -53,13 +56,37 @@ follow_imports = 'skip' # Prevent mypy from checking database twice
 module = 'linear_regression.*'
 follow_imports = 'skip' # Prevent mypy from checking linear_regression twice
 
+[[tool.mypy.overrides]]
+module = 'nltk.*'
+ignore_missing_imports = true # No typing support for nltk
+
+[[tool.mypy.overrides]]
+module = 'sumy.*'
+ignore_missing_imports = true # No typing support for sumy
+
+[[tool.mypy.overrides]]
+module = 'sklearn.*'
+ignore_missing_imports = true # No typing support for sklearn
+
+[[tool.mypy.overrides]]
+module = 'newsapi'
+ignore_missing_imports = true # No typing support for newsapi
+
+[[tool.mypy.overrides]]
+module = 'newspaper'
+ignore_missing_imports = true # No typing support for newspaper
+
 
 [tool.ruff]
 target-version = 'py311'
 # Defaults + pyflakes + pycodestyle + pylint + isort
 lint.select = ['ALL']
 # Ignore conflicting docstring errors
-lint.ignore = ['ANN101', 'D203', 'D204', 'D213', 'D401']
+lint.ignore = ['ANN101', 'D203', 'D204', 'D205', 'D213', 'D401', 'D415']
+exclude = [
+    "recommendation_system.py",
+]
+
 
 [tool.ruff.lint.pylint]
 max-args = 9
@@ -71,6 +98,7 @@ max-args = 9
 "index.py" = [
     'S105', # Hardcoded password
     'PLR0911', # Too many return statements
+    'T201', # Use of print statement
 ]
 "database/database_connection.py" = [
     'E501', # Line too long
@@ -78,4 +106,36 @@ max-args = 9
 "database/db_schema.py" = [
     'E501', # Line too long
     'PLR0913', # Too many arguments
+    'ERA001', # Commented out code
+    'T201', # Use of print statement
+]
+"database/mock_article_objects.py" = [
+    'E501', # Line too long
+]
+"database/extract_news_script.py" = [
+    'E501', # Line too long
+    'ERA001', # Commented out code
+    'T201', # Use of print statement
+]
+"database/search_component.py" = [
+    'E501', # Line too long
+    'ERA001', # Commented out code
+    'T201', # Use of print statement
+]
+"database/tf_idf.py" = [
+    'E501', # Line too long
+    'ERA001', # Commented out code
+]
+"database/text_summariser.py" = [
+    'ERA001', # Commented out code
+]
+"linear_regression/capm.py" = [
+    'T201', # Use of print statement
+]
+"linear_regression/linear_regression.py" = [
+    'T201', # Use of print statement
+    'N803', # Argument name should be lowercase
+    'ERA001', # Commented out code
+    'N806', # Variable in function should be lowercase
+    'F841', # Unused variable
 ]

@@ -7,8 +7,10 @@ import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { Toaster } from 'react-hot-toast';
 
+// Inter font
 const inter = Inter({ subsets: ['latin'] });
 
+// Title metadata for the root layout
 export const metadata: Metadata = {
   title: {
     template: '%s | TradeTalk',
@@ -18,6 +20,11 @@ export const metadata: Metadata = {
     'The TradeTalk website for sentiment-based financial news reports.',
 };
 
+/**
+ * Root layout component.
+ * @param children - The children to render
+ * @returns JSX.Element - The root layout component
+ */
 export default function RootLayout({ children }: { children: ReactNode }) {
   // Check if the user is logged in
   const session = cookies().get('session') !== undefined;

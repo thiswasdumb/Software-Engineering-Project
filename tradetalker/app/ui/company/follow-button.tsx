@@ -1,8 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { usePathname } from 'next/navigation';
 
+/**
+ * Follow button component.
+ * @param companyId - Company ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Follow button component
+ */
 export default function FollowButton({
   companyId,
   isLoggedIn,
@@ -12,6 +18,8 @@ export default function FollowButton({
 }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const pathname = usePathname();
+
+  // Set the following state accordingly on page load
   useEffect(() => {
     if (isLoggedIn) {
       const fetchFollowStatus = async () => {
@@ -29,6 +37,7 @@ export default function FollowButton({
     }
   }, [isLoggedIn, companyId]);
 
+  // Handle the follow button click
   const handleFollowClick = async () => {
     if (!isFollowing) {
       try {

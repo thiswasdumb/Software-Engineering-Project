@@ -1,6 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
+/**
+ * Get companies data from the server.
+ * @returns Promise<any> - Companies data
+ */
 async function getCompanies() {
   const response = await fetch('http://localhost:8080/api/get_companies', {
     cache: 'no-store',
@@ -11,6 +15,10 @@ async function getCompanies() {
   return response.json();
 }
 
+/**
+ * Companies component.
+ * @returns JSX.Element - Companies component
+ */
 export default async function CompaniesComponent() {
   const companies: any[] = await getCompanies();
 

@@ -20,7 +20,7 @@ from sqlalchemy import (
     update,
 )
 from sqlalchemy.dialects.mysql import TINYINT
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import (  # type: ignore [attr-defined]
     Mapped,
     mapped_column,
@@ -121,7 +121,53 @@ class Company(db.Model):  # type: ignore [name-defined]
             "stock_d5": self.StockPrice_D_5,
             "stock_d6": self.StockPrice_D_6,
             "stock_d7": self.StockPrice_D_7,
+            "rank": self.get_company_stock_rank(),
         }
+
+    def select_company_by_id(self) -> None:
+        """Selects a company by its ID."""
+        try:
+            company = (
+                db.session.query(Company)
+                .filter(Company.CompanyID == self.CompanyID)
+                .first()
+            )
+        except SQLAlchemyError:
+            logging.exception("Found an error while selecting the company by ID.")
+            return None
+        else:
+            return company
+
+    def select_company_by_name(self) -> str | None:
+        """Selects a company by its name."""
+        try:
+            company = (
+                db.session.execute(
+                    db.select(Company)
+                    .filter(Company.CompanyName == self.CompanyName)
+                    .first(),
+                )
+                .scalars()
+                .all()
+            )
+        except SQLAlchemyError:
+            logging.exception("Found an error while selecting the company by name.")
+            return None
+        else:
+            return company
+
+    def get_company_stock_rank(self) -> int:
+        """Gets the rank of a company based on its stock price."""
+        try:
+            rank = db.session.execute(
+                db.select(db.func.count())
+                .select_from(Company)
+                .filter(Company.StockPrice > self.StockPrice),
+            ).scalar()
+            return rank + 1
+        except SQLAlchemyError:
+            logging.exception("Found an error while getting the company stock rank.")
+            return 0
 
 
 class Faq(db.Model):  # type: ignore [name-defined]
@@ -152,7 +198,6 @@ class User(UserMixin, db.Model):  # type: ignore [name-defined]
     Username = mapped_column(String(50, "utf8mb4_general_ci"), nullable=False)
     Password = mapped_column(String(200, "utf8mb4_general_ci"), nullable=False)
     Email = mapped_column(String(100, "utf8mb4_general_ci"), nullable=False)
-    Preferences = mapped_column(Integer, nullable=False, server_default=text("'0'"))
     IsVerified = mapped_column(TINYINT(1), nullable=False, server_default=text("'0'"))
 
     follow: Mapped[list["Follow"]] = relationship(
@@ -206,9 +251,7 @@ class User(UserMixin, db.Model):  # type: ignore [name-defined]
             "Username": self.Username,
             "Password": self.Password,
             "Email": self.Email,
-            "Preferences": self.Preferences,
             "IsVerified": self.IsVerified,
-            "TempToken": self.TempToken,
         }
 
     def get_reset_token(self, expires_sec: int = 1800) -> str:
@@ -304,6 +347,29 @@ class Article(db.Model):  # type: ignore [name-defined]
         self.Summary = summary
         self.PredictionScore = prediction_score
         self.ProcessedArticle = processed_article
+
+
+"""Not working at the moment.
+@event.listens_for(Article, "after_insert")
+def receive_after_insert(mapper, connection, target) -> None:
+    ""Sends a notification to the users when a new article linked to a company that they follow is posted.""
+    try:
+        print("New article added", flush=True)
+        company_id = target.CompanyID
+        user_ids = connection.execute(
+            db.select(Follow.UserID).where(Follow.CompanyID == company_id)
+        )
+        notification = Notification(target.ArticleID, f"New article: {target.Title}")
+        connection.add(notification)
+        connection.commit()
+        for user_id in user_ids:
+            usernotificationread = UserNotificationRead(user_id, notification.NotificationID)
+            connection.add(usernotificationread)
+            connection.commit()
+    except SQLAlchemyError as e:
+        logging.exception(e)
+        connection.rollback()
+"""
 
 
 class Follow(db.Model):  # type: ignore [name-defined]
@@ -490,6 +556,21 @@ class LikeTable(db.Model):  # type: ignore [name-defined]
         self.ArticleID = article_id
         self.LikeDate = datetime.now(UTC)
 
+    def get_liked_articles_keywords(self, user_id: int) -> list[str] | None:
+        """Gets the keywords of the articles that the user has liked."""
+        try:
+            liked_articles = (
+                db.session.query(LikeTable)
+                .filter(LikeTable.UserID == user_id)
+                .join(Article, LikeTable.ArticleID == Article.ArticleID)
+                .with_entities(Article.KeyWords)
+                .all()
+            )
+            return [article.KeyWords for article in liked_articles]
+        except SQLAlchemyError:
+            logging.exception("Found an error while getting the liked articles.")
+            return None
+
 
 class Notification(db.Model):  # type: ignore [name-defined]
     """Contains the notifications that the users receive."""
@@ -582,9 +663,9 @@ def add_data() -> None:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
             datetime.now(UTC),
             "URL1",
-            "A short summary of the article.",
+            "A short summary of the article. This is a very long summary. A summary that is very long. Can you believe how long this summary is? It's very long. Very long indeed. It's so long that it's the longest summary ever. It's the longest summary in the world. It's the longest summary in the universe. It's the longest summary in the multiverse. It's the longest summary in the omniverse. It's the longest summary in the metaverse. It's the longest summary in the megaverse. It's the longest summary in the xenoverse. It's the longest summary in the hyperverse. It's the longest summary in the ultraverse",
             0.5,
-            None,
+            "A processsd article for article 1. This is a very long article that has been processed.",
         ),
         Article(
             2,
@@ -594,7 +675,27 @@ def add_data() -> None:
             "URL2",
             "Summary2",
             0.6,
-            None,
+            "A processsd article for article 2. This is a very long article that has been processed.",
+        ),
+        Article(
+            4,
+            "A longer headline for Article 4. This is a very long headline. Very long.",
+            "AI article. ChatGPT, a language model developed by OpenAI, is now available for general use. The model is based on the GPT-3 architecture and is capable of generating human-like text. The model has been trained on a diverse range of internet text and",
+            datetime.now(UTC) - timedelta(days=1),
+            "https://www.google.com",
+            "A short summary of the article.",
+            -0.7,
+            "AI article. ChatGPT, a language model developed by OpenAI, is now available for general use. The model is based on the GPT-3 architecture and is capable of generating human-like text. The model has been trained on a diverse range of internet text and",
+        ),
+        Article(
+            5,
+            "The headline of Article 5",
+            "content",
+            datetime.now(UTC) - timedelta(days=2),
+            "URL5",
+            "Summary5",
+            0.8,
+            "Google has invested $1bn (£790m) to build its first UK data centre. The tech giant saArticleID construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too ea",
         ),
     ]
     faq_list = [
@@ -603,18 +704,26 @@ def add_data() -> None:
             "TradeTalk is a platform that provides users with the latest news and information about the stock market and companies. It also allows users to follow companies and receive notifications about them.",
         ),
         Faq(
+            "How do I post comments?",
+            "To post a comment, you must be verified. Once you are verified, you can post a comment on any article.",
+        ),
+        Faq(
             "How do I follow a company?",
             "To follow a company, simply search for the company using the search bar and click on the 'Follow' button on the company's page. You will then receive notifications about the company's news and updates.",
+        ),
+        Faq(
+            "How do I get notifications?",
+            "You will receive notifications about the companies you follow when new articles are posted about them. You can also receive notifications about your questions being answered.",
         ),
     ]
     notification_list = [
         Notification(
             1,
-            "The content of notification 1.",
+            "New article: The headline of Article 1",
         ),
         Notification(
             2,
-            "The content of notification 2.",
+            "New article: The headline of Article 2",
         ),
     ]
     user_notification_read_list = [
@@ -796,11 +905,12 @@ def get_articles_by_company_name(company_name: str) -> list:
 def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
     """Updates the keywords of articles in the database based on the provided pairs of article IDs and corresponding keywords.
 
-    Args:
-    ----
-        article_keywords_pairs (list[dict]): List of dictionaries containing article ID as the key and keywords as the value.
+    Parameters
+    ----------
+    article_keywords_pairs : list[dict]
+        List of dictionaries containing article ID as the key and keywords as the value.
 
-    Raises:
+    Raises
     ------
         Any errors encountered during the execution will be propagated.
 
@@ -878,29 +988,38 @@ def get_company_data_for_linear_regression(company: Company) -> dict:
 
 
 def set_all_companies_predicted_price() -> None:
-    """
-    Sets the predicted_stock_price of all companies by running their data through the linear regression model
+    """Sets the predicted_stock_price of all companies by running their data through the linear regression model
     to be called after the articles have been fetched.
     """
     try:
         companies = db.session.execute(db.select(Company)).scalars().all()
-        for idx, company in enumerate(companies):
+        for company in companies:
             try:
                 predicted_stock_price = TTLinearRegression(
-                    company.StockSymbol, get_company_article_sentiment_scores(company.CompanyID), [
-                        company.StockPrice_D_1, company.StockPrice_D_2, company.StockPrice_D_3, company.StockPrice_D_4, company.StockPrice_D_5
-                    ]).calculate_stock_price()
+                    company.StockSymbol,
+                    get_company_article_sentiment_scores(company.CompanyID),
+                    [
+                        company.StockPrice_D_1,
+                        company.StockPrice_D_2,
+                        company.StockPrice_D_3,
+                        company.StockPrice_D_4,
+                        company.StockPrice_D_5,
+                    ],
+                ).calculate_stock_price()
                 print("predicted stock price for ", company.CompanyName, " is: ", predicted_stock_price)
                 db.session.execute(
-                    update(Company).where(Company.CompanyID == company.CompanyID)
-                    .values(PredictedStockPrice=predicted_stock_price)
+                    update(Company)
+                    .where(Company.CompanyID == company.CompanyID)
+                    .values(PredictedStockPrice=predicted_stock_price),
                 )
                 db.session.commit()
-            except Exception as e:
-                # exceptions
-                print(f"An error occurred in processing company with ID {company.CompanyID}: {e}")
-    except Exception as ex:
-        # exceptions
+            except SQLAlchemyError as e:
+                # Handle exceptions appropriately
+                print(
+                    f"An error occurred in processing company with ID {company.CompanyID}: {e}",
+                )
+    except SQLAlchemyError as ex:
+        # Handle exceptions appropriately
         print(f"An error occurred while retrieving companies: {ex}")
 
 
@@ -911,7 +1030,7 @@ def update_all_companies_daily() -> bool:
         for company in companies:
             company_daily_update(company)
         logging.info("Daily updates for all companies completed successfully.")
-    except IntegrityError:
+    except SQLAlchemyError:
         logging.exception("Error updating daily stock prices")
         db.session.rollback()  # Rollback changes in case of an error
         return False

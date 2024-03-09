@@ -2,6 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
+/**
+ * Comment form component.
+ * @param articleId - Article ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @param isVerified - Flag to check if the user is verified
+ * @returns JSX.Element - Comment form component
+ */
 export function CommentForm({
   articleId,
   isLoggedIn,
@@ -14,10 +21,12 @@ export function CommentForm({
   const [commentData, setCommentData] = useState<any[]>([]);
   const [comment, setComment] = useState('');
 
+  // Set the comment data
   useEffect(() => {
     setCommentData(commentData);
   }, [commentData]);
 
+  // Handle the comment form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     fetch(`/api/add_article_comment/${articleId}`, {
@@ -33,13 +42,14 @@ export function CommentForm({
           toast.error(data.error);
         }
         if (data.success) {
-          window.location.reload();
+          window.location.reload(); // Reload the page to show the new comment
           setComment('');
         }
       })
       .catch((error) => console.error(error));
   };
 
+  // Return the comment form if the user is logged in and verified
   if (isLoggedIn && isVerified) {
     return (
       <div className='flex w-full flex-row md:max-w-[80%]'>
@@ -97,6 +107,12 @@ export function CommentForm({
   }
 }
 
+/**
+ * Reply form component.
+ * @param articleId - Article ID
+ * @param commentId - Comment ID
+ * @returns JSX.Element - Reply form component
+ */
 export function ReplyForm({
   articleId,
 }: {
@@ -109,6 +125,7 @@ export function ReplyForm({
     setCommentData(commentData);
   }, [commentData]);
 
+  // Handle the reply form submission
   const handleReplySubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -117,7 +134,7 @@ export function ReplyForm({
       const response = await fetch(
         `http://localhost:8080/api/add_article_reply/${articleId}`,
         {
-          method: 'post',
+          method: 'POST',
           body: JSON.stringify({ articleId, comment }),
         }
       );

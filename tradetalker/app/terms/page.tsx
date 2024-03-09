@@ -1,3 +1,7 @@
+/**
+ * Terms of Service page.
+ * @returns JSX.Element - Terms of Service page component
+ */
 export default function Terms() {
   return (
     <div className='m-8 flex flex-col rounded-lg bg-slate-200 p-8'>

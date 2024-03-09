@@ -12,6 +12,11 @@ import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Login form component.
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Login form component
+ */
 export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [errorMessage, setErrorMessage] = useState('');
   const searchParams = useSearchParams();

@@ -1,4 +1,8 @@
-export default function ContactPage() {
+/**
+ * About page.
+ * @returns JSX.Element - About page
+ */
+export default function AboutPage() {
   return (
     <div className='m-8 flex flex-col rounded-lg bg-slate-200 p-8'>
       <h1 className='text-2xl'>About</h1>

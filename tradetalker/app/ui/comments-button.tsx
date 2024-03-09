@@ -2,6 +2,12 @@
 import { ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
+/**
+ * Comments button component.
+ * @param id - Article ID
+ * @param comments - Number of comments
+ * @returns JSX.Element - Comments button component
+ */
 export default function CommentsButton({
   id,
   comments,

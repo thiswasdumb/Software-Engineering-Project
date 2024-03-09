@@ -2,6 +2,10 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
+/**
+ * Question form component.
+ * @returns JSX.Element - Question form component
+ */
 export default function QuestionForm() {
   const [question, setQuestion] = useState('');
 

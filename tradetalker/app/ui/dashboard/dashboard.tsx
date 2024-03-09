@@ -6,9 +6,14 @@ import RecommendedArticles from './rec-articles';
 import RecommendedCompanies from './rec-companies';
 import NewsFeed from './news-feed';
 import FollowedCompanies from './followed-companies';
-import Share from './share';
+import ShareSite from './share-site';
 import ReadParams from '../read-params';
 
+/**
+ * Dashboard component
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Dashboard component
+ */
 export default function DashboardComponent({
   isLoggedIn,
 }: {
@@ -17,6 +22,7 @@ export default function DashboardComponent({
   const [data, setData] = useState('Loading...');
   const router = useRouter();
 
+  // Fetch the user data on page load
   useEffect(() => {
     if (isLoggedIn) {
       fetch('/api/get_dashboard_data')
@@ -53,7 +59,7 @@ export default function DashboardComponent({
               <FollowedCompanies isLoggedIn={isLoggedIn} />
             </div>
           </div>
-          <Share />
+          <ShareSite />
         </div>
       </>
     )

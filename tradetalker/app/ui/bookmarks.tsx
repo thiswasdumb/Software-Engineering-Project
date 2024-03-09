@@ -6,6 +6,11 @@ import { toast } from 'react-hot-toast';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
+/**
+ * Bookmark component
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Bookmark component
+ */
 export default function BookmarkComponent({
   isLoggedIn,
 }: {

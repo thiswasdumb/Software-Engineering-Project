@@ -3,10 +3,14 @@ import { useEffect } from 'react';
 import { Chart, Title } from 'chart.js/auto';
 import dayjs from 'dayjs';
 
+/**
+ * Creates a line chart of the last 7 days of stock price
+ * @param stockLastDays - The last 7 days of stock prices
+ * @returns A line chart of the last 7 days of stock prices
+ */
 function LineChart(stockLastDays) {
   Chart.register(Title);
   useEffect(() => {
-    console.log(stockLastDays);
     var ctx = document.getElementById('myChart').getContext('2d');
     /* eslint-disable @typescript-eslint/no-unused-vars */
     var labels = [];

@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import FollowButton from '../company/follow-button';
 
+/**
+ * Recommended companies component.
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Recommended companies component
+ */
 export default function RecommendedCompanies({
   isLoggedIn,
 }: {
   isLoggedIn: boolean;
 }) {
   const [companies, setCompanies] = useState<any[]>([]);
+
+  // Fetch all recommended companies on page load
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
