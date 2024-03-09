@@ -636,13 +636,15 @@ def get_newsfeed() -> Response:
 @app.route("/api/get_week_newsfeed", methods=["GET"])
 @login_required
 def get_week_newsfeed() -> Response:
-    """Returns the 3 most recent articles from the followed companies in the last week."""
+    """Returns the 3 most recent articles from the followed companies in the last
+    week.
+    """
     # Get the 3 most recent articles from the followed companies in the last week
     newsfeed = (
         db.session.execute(
             db.select(Article)
             .filter(
-                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+                Article.PublicationDate >= datetime.now(UTC) - timedelta(days=7),
             )
             .order_by(desc(Article.PublicationDate))
             .limit(3),
@@ -666,13 +668,15 @@ def get_week_newsfeed() -> Response:
 @app.route("/api/get_week_newsfeed_full", methods=["GET"])
 @login_required
 def get_week_newsfeed_full() -> Response:
-    """Returns the full list of articles from the followed companies in the last week."""
+    """Returns the full list of articles from the followed companies in the last
+    week.
+    """
     # Get the full list of articles from the followed companies in the last week
     newsfeed = (
         db.session.execute(
             db.select(Article)
             .filter(
-                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+                Article.PublicationDate >= datetime.now(UTC) - timedelta(days=7),
             )
             .order_by(desc(Article.PublicationDate)),
         )
@@ -720,9 +724,37 @@ def get_stock_trends() -> Response:
     return jsonify(stock_trends_list)
 
 
-@app.route("/api/get_leaderboard", methods=["GET"])
-def get_leaderboard() -> Response:
-    """Returns the leaderboard."""
+@app.route("/api/get_most_positive_leaderboard", methods=["GET"])
+def get_most_positive_leaderboard() -> Response:
+    """Returns the leaderboard of the most positive companies by articles."""
+    # Get the leaderboard of companies sorted by descending average sentiment score of
+    # articles that mention them
+    companies = (
+        db.session.execute(
+            db.select(Company, db.func.avg(Article.PredictionScore).label("avg_score"))
+            .join(Article)
+            .group_by(Company.CompanyID)
+            .order_by(db.func.avg(Article.PredictionScore).desc()),
+        )
+        .scalars()
+        .all()
+    )
+    print(companies, flush=True)
+    leaderboard_list = [
+        {
+            "company_id": company.CompanyID,
+            "company_name": company.CompanyName,
+            "company_symbol": company.StockSymbol,
+            "stock_price": company.StockPrice,
+        }
+        for company in companies
+    ]
+    return jsonify(leaderboard_list)
+
+
+@app.route("/api/get_top_stocks_leaderboard", methods=["GET"])
+def get_top_stocks_leaderboard() -> Response:
+    """Returns the leaderboard of companies with the highest stock price."""
     # Get the leaderboard
     leaderboard = (
         db.session.execute(db.select(Company).order_by(Company.StockPrice.desc()))
@@ -1209,7 +1241,6 @@ def get_profile_data() -> Response:
         "username": current_user.Username,
         "email": current_user.Email,
         "is_verified": current_user.IsVerified,
-        "preferences": current_user.Preferences,
     }
     return jsonify(user)
 

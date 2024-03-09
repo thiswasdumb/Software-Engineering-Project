@@ -9,6 +9,10 @@ import { toast } from 'react-hot-toast';
 import { useFormStatus } from 'react-dom';
 import { Button } from 'app/ui/button';
 
+/**
+ * Forgot password component.
+ * @returns JSX.Element - Forgot password component
+ */
 export default function ForgotPasswordComponent() {
   const [errorMessage, setErrorMessage] = useState('');
   const [data, setData] = useState({});

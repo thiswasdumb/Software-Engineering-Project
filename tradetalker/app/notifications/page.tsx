@@ -8,7 +8,12 @@ export const metadata: Metadata = {
   title: 'Notifications',
 };
 
+/**
+ * Notifications page.
+ * @returns JSX.Element - Notifications page component
+ */
 export default function Notifications() {
+  // Check if the user is logged in
   const session = cookies().get('session') !== undefined;
 
   return (

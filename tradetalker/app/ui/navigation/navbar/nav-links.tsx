@@ -3,6 +3,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
+/**
+ * Navigation links.
+ * @param props.session - Whether the user is logged in
+ * @returns JSX.Element - Navigation links
+ */
 export default function NavLinks(props: { session: boolean }) {
   // Map of links to display in the navbar.
   const links = [

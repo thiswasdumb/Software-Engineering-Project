@@ -7,8 +7,14 @@ export const metadata: Metadata = {
   title: 'Sign Up',
 };
 
+/**
+ * Signup page.
+ * @returns JSX.Element - Signup page component
+ */
 export default function LoginPage() {
+  // Check if the user is logged in
   const session = cookies().get('session') !== undefined;
+
   return (
     <div className='md:p-10'>
       <SignupForm isLoggedIn={session} />

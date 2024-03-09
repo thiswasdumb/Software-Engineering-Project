@@ -2,6 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { CommentForm } from './comment-form';
 
+/**
+ * Comments component.
+ * @param articleId - Article ID
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Comments component
+ */
 export default function Comments({
   articleId,
   isLoggedIn,
@@ -12,6 +18,7 @@ export default function Comments({
   const [comments, setComments] = useState<any[]>([]);
   const [isVerified, setIsVerified] = useState(false);
 
+  // Fetch the comments
   useEffect(() => {
     fetch(`/api/article/${articleId}/comments`)
       .then((response) => response.json())
@@ -21,6 +28,7 @@ export default function Comments({
       .catch((error) => console.error(error));
   }, [articleId, setComments]);
 
+  // Check if the user is verified
   useEffect(() => {
     if (isLoggedIn) {
       fetch('/api/check_verified', { credentials: 'include' })

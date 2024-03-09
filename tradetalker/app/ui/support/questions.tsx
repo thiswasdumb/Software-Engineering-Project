@@ -9,6 +9,11 @@ async function getQuestions() {
   return response.json();
 }
 
+/**
+ * Questions component
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns Promise - Questions component
+ */
 export default async function Questions({
   isLoggedIn,
 }: {

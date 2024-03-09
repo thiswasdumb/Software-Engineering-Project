@@ -3,12 +3,19 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import FollowButton from '../company/follow-button';
 
+/**
+ * Followed companies component.
+ * @param isLoggedIn - Flag to check if the user is logged in
+ * @returns JSX.Element - Followed companies component
+ */
 export default function FollowedCompanies({
   isLoggedIn,
 }: {
   isLoggedIn: boolean;
 }) {
   const [companies, setCompanies] = useState<any[]>([]);
+
+  // Fetch all followed companies on page load
   useEffect(() => {
     const fetchCompanies = async () => {
       try {

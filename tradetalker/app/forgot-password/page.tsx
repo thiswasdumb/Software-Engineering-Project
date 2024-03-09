@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: 'Forgot Password',
 };
 
+/**
+ * Forgot password page.
+ * @returns JSX.Element - Forgot password page component
+ */
 export default function ForgotPassword() {
   return <ForgotPasswordComponent />;
 }

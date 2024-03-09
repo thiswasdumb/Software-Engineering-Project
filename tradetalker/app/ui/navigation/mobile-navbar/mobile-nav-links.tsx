@@ -4,6 +4,13 @@ import { usePathname } from 'next/navigation';
 import Logout from 'app/ui/logout';
 import clsx from 'clsx';
 
+/**
+ * Mobile navigation links.
+ * @param props.toggle - Function to toggle the mobile navbar
+ * @param props.session - Whether the user is logged in
+ * @param props.notifCount - Number of notifications
+ * @returns JSX.Element - Mobile navigation links
+ */
 export default function MobileNavLinks(props: {
   toggle: () => void;
   session: boolean;

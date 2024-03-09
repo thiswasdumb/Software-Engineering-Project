@@ -13,6 +13,11 @@ import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
+/**
+ * Signup form component.
+ * @param isLoggedIn - Whether the user is logged in
+ * @returns JSX.Element - Signup form component
+ */
 export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -22,6 +27,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -54,6 +60,7 @@ export default function SignupForm({ isLoggedIn }: { isLoggedIn: boolean }) {
     }
   };
 
+  // Check if the user is already logged in
   useEffect(() => {
     if (!isLoggedIn) {
       const error = searchParams.get('error');
