@@ -15,6 +15,7 @@ export default function ProfileButton() {
         className={clsx(
           'flex items-center justify-center p-2 hover:opacity-50'
         )}
+        title='Profile'
       >
         <button type='button'>
           <UserIcon className='h-6 w-6' />

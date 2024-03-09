@@ -20,6 +20,7 @@ export default function BookmarkButton(props: {
         className={clsx(
           'relative flex items-center justify-center p-2 hover:opacity-50'
         )}
+        title='Bookmarks'
       >
         <button type='button'>
           <BookmarkIcon className='h-8 w-8 md:h-6 md:w-6' />

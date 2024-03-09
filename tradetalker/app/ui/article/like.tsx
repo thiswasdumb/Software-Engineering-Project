@@ -73,6 +73,7 @@ export default function Like({
     (liked ? (
       <SolidHeartIcon
         type='button'
+        title='Unlike this article'
         cursor='pointer'
         className={`h-10 w-10 text-red-500 transition hover:drop-shadow-lg ${liked ? 'text-red-500' : ''}`}
         onClick={handleClick}
@@ -80,6 +81,7 @@ export default function Like({
     ) : (
       <HeartIcon
         type='button'
+        title='Like this article'
         cursor='pointer'
         className={`h-10 w-10 text-gray-400 transition hover:text-red-500 ${liked ? 'text-red-500' : ''}`}
         onClick={handleClick}

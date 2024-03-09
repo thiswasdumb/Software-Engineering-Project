@@ -84,6 +84,7 @@ export default function Bookmark({
     (bookmarked ? (
       <SolidBookmarkIcon
         type='button'
+        title='Remove bookmark'
         cursor='pointer'
         className='h-10 w-10 text-blue-500 transition hover:drop-shadow-lg'
         onClick={handleClick}
@@ -91,6 +92,7 @@ export default function Bookmark({
     ) : (
       <BookmarkIcon
         type='button'
+        title='Bookmark this article'
         cursor='pointer'
         className='h-10 w-10 text-gray-400 transition hover:text-blue-500'
         onClick={handleClick}
