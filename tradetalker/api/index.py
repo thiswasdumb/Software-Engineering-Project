@@ -629,7 +629,9 @@ def get_newsfeed() -> Response:
 @app.route("/api/get_week_newsfeed", methods=["GET"])
 @login_required
 def get_week_newsfeed() -> Response:
-    """Returns the 3 most recent articles from the followed companies in the last week."""
+    """Returns the 3 most recent articles from the followed companies in the last
+    week.
+    """
     # Get the 3 most recent articles from the followed companies in the last week
     newsfeed = (
         db.session.execute(
@@ -659,7 +661,9 @@ def get_week_newsfeed() -> Response:
 @app.route("/api/get_week_newsfeed_full", methods=["GET"])
 @login_required
 def get_week_newsfeed_full() -> Response:
-    """Returns the full list of articles from the followed companies in the last week."""
+    """Returns the full list of articles from the followed companies in the last
+    week.
+    """
     # Get the full list of articles from the followed companies in the last week
     newsfeed = (
         db.session.execute(
@@ -716,7 +720,8 @@ def get_stock_trends() -> Response:
 @app.route("/api/get_most_positive_leaderboard", methods=["GET"])
 def get_most_positive_leaderboard() -> Response:
     """Returns the leaderboard of the most positive companies by articles."""
-    # Get the leaderboard of companies sorted by descending average sentiment score of articles that mention them
+    # Get the leaderboard of companies sorted by descending average sentiment score of
+    # articles that mention them
     companies = (
         db.session.execute(
             db.select(Company, db.func.avg(Article.PredictionScore).label("avg_score"))
@@ -1267,7 +1272,7 @@ def predict_stock_price() -> None:
     for company in companies:
         # Get the sentiment scores of the articles in the last 7 days
         # Remove underscores if working with the actual data
-        _article_sentiment_scores = []
+        _article_sentiment_scores: list = []
         _company_articles = db.session.execute(
             db.select(Article).filter_by(CompanyID=company.CompanyID),
         )
