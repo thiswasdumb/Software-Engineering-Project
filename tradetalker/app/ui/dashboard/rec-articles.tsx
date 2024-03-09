@@ -20,7 +20,7 @@ export default function RecommendedArticles() {
 
   // Fetch the latest 3 articles from the past week
   useEffect(() => {
-    fetch('/api/home_articles') // Replace with actual route
+    fetch('/api/get_recommended_articles') // Replace with actual route
       .then((response) => response.json())
       .then((data) => {
         setArticles(data);
@@ -32,8 +32,8 @@ export default function RecommendedArticles() {
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <h2 className='text-xl'>Your suggested articles</h2>
-      {articles.length === 0 && <p>No suggested articles.</p>}
+      <h2 className='text-xl'>New articles about companies you follow</h2>
+      {articles.length === 0 && <p>No new articles.</p>}
       {articles.map((article, index) => (
         <div
           className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
@@ -50,12 +50,12 @@ export default function RecommendedArticles() {
             <p>{article.summary}</p>
             <hr className='border-1 my-2 rounded-lg border-slate-300' />
             <div className='flex flex-row items-center justify-between'>
-              {article.score > 0.5 ? (
+              {article.score > 0.33 ? (
                 <div className='flex flex-row items-center'>
-                  <ArrowUpCircleIcon className='h-10 w-10 text-green-600' />
+                  <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
                   <p className='pl-2 text-green-600'>Positive</p>
                 </div>
-              ) : article.score < 0.5 ? (
+              ) : article.score < -0.33 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
                   <p className='pl-2 text-red-600'>Negative</p>
