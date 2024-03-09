@@ -77,7 +77,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row md:items-start'>
             <div className='m-4 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
-              <h1 className='text-2xl'>Articles (by title)</h1>
+              <h1 className='text-2xl'>Articles (by headline)</h1>
               <hr className='my-2 rounded-lg border-2 border-slate-400' />
               {articles.length === 0 && (
                 <span className='text-gray-600'>
