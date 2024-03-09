@@ -14,7 +14,6 @@ from database.vader import SentimentAnalyser
 app = Flask(__name__)
 
 
-
 class GetNewsClass:
     """Class to fetch news articles from NewsAPI and process them for sentiment analysis and keyword extraction."""
 
@@ -31,36 +30,40 @@ class GetNewsClass:
         Returns
         -------
         None
-        """
 
-        self.api_keys = ['9256e34369fb4a259418bb28cb0e9843', 'Fb9cdea752a44045b9235bc4c5d69e12', '8968c158e1a44a5388312c35d8193541','Ee57dcf14e0a4903905440d1cdbed356',
-                         '78c2cc21e0c04b9db286b7952f34a9f8', '856923ce4cc34541b8815df3c2265878', 'F90a2f0d38714c18b4ad0e5a991fa558',
-                         'a72e7943397b482b90543d57a1e3aaba']
+        """
+        self.api_keys = [
+            "9256e34369fb4a259418bb28cb0e9843",
+            "Fb9cdea752a44045b9235bc4c5d69e12",
+            "8968c158e1a44a5388312c35d8193541",
+            "Ee57dcf14e0a4903905440d1cdbed356",
+            "78c2cc21e0c04b9db286b7952f34a9f8",
+            "856923ce4cc34541b8815df3c2265878",
+            "F90a2f0d38714c18b4ad0e5a991fa558",
+            "a72e7943397b482b90543d57a1e3aaba",
+        ]
         self.api_num = 0
         self.news_api = NewsApiClient(api_key=self.api_keys[self.api_num])
         get_pos_class = GetPOSClass()
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()
         self.t = TextSummariser(num_sentences=2)
-        self.all_articles = {}
-        #blacklisted websites (they require a paywall)
-        self.black_listed = ['thefly.com']
+        self.all_articles: dict = {}
+        # blacklisted websites (they require a paywall)
+        self.black_listed = ["thefly.com"]
         self.fetch_articles_from_api(list_of_companies)
         print(self.api_keys[self.api_num])
 
-
     def check_if_blacklisted(self, url_to_check: str) -> bool:
-        for domain in self.black_listed:
-            if domain in url_to_check:
-                return True
-        return False
+        """Checks if a URL is blacklisted."""
+        return any(domain in url_to_check for domain in self.black_listed)
 
-
-    def fetch_articles_from_api(self, list_of_companies: list):
+    def fetch_articles_from_api(self, list_of_companies: list) -> None:
+        """Fetches news articles from the NewsAPI for each company in the list."""
         # Fetch articles for each company and store them in self.all_articles
-        i = 0 
+        i = 0
         while i < len(list_of_companies):
-            try: 
+            try:
                 self.all_articles[list_of_companies[i]] = self.news_api.get_everything(
                     q=list_of_companies[i],
                     from_param="2024-03-05",
@@ -68,15 +71,15 @@ class GetNewsClass:
                     sort_by="relevancy",
                     page=1,
                 )
-                i += 1 
+                i += 1
             except Exception as e:
                 self.alternate_api()
-                print(f'Switching API key due to the following exception {e}')
+                print(f"Switching API key due to the following exception {e}")
                 i += 1
 
-    def alternate_api(self):
+    def alternate_api(self) -> None:
+        """Switches to the next API key."""
         self.api_num = (self.api_num + 1) % 8
-
 
     def fetch_all_articles(self) -> list[dict]:
         """Main function.
@@ -89,6 +92,7 @@ class GetNewsClass:
         Returns
         -------
         - A list of dictionaries: each dictionary correlates to an article and all its attributes, to be inserted into the db
+
         """
         list_of_article_dictionaries = []
 
@@ -101,11 +105,8 @@ class GetNewsClass:
 
             list_of_article_dictionaries.extend(article_dictionaries_for_one_company)
 
-
         # Calculate and insert tf_idf scores
-        list_of_article_dictionaries = self.insert_tf_idf_scores(list_of_article_dictionaries)
-        return list_of_article_dictionaries
-
+        return self.insert_tf_idf_scores(list_of_article_dictionaries)
 
     def get_articles(self, company_name: str) -> list[dict]:
         """Fetches and processes news articles for a specific company.
@@ -119,12 +120,12 @@ class GetNewsClass:
         -------
         list[dict]
             A list of dictionaries. Each dictionary is an article object for the company.
+
         """
         list_of_article_dictionaries = []
 
-        #to ensure no duplicates news articles are added
+        # to ensure no duplicates news articles are added
         seen_urls = set()
-        
 
         articles = self.all_articles.get(company_name, {}).get("articles", [])
 
@@ -132,13 +133,15 @@ class GetNewsClass:
             article_title = article["title"]
             article_url = article["url"]
 
-            #check if article has already been added, if so skip current article 
-            if article_url.lower() in seen_urls or self.check_if_blacklisted(article_url):
+            # check if article has already been added, if so skip current article
+            if article_url.lower() in seen_urls or self.check_if_blacklisted(
+                article_url,
+            ):
                 continue
 
             seen_urls.add(article_url.lower())
-            
-            #filter out irrelevant articles
+
+            # filter out irrelevant articles
             if company_name.lower() not in article_title.lower():
                 continue
 
@@ -164,16 +167,17 @@ class GetNewsClass:
                 "Title": str(news_article.title),
                 "Summary": self.t.summarise(news_article.text),
                 "URL": str(article_url),
-                "PublicationDate": news_article.publish_date
-                if news_article.publish_date
-                else datetime.now(UTC),
+                "PublicationDate": (
+                    news_article.publish_date
+                    if news_article.publish_date
+                    else datetime.now(UTC)
+                ),
                 "KeyWords": None,  # Will be calculated later
             }
             print(article_object["PublicationDate"])
 
             GetNewsClass.article_id += 1
             list_of_article_dictionaries.append(article_object)
-
 
         return list_of_article_dictionaries
 
@@ -188,5 +192,5 @@ class GetNewsClass:
 
 
 # Example usage
-#test = GetNewsClass(["Ashtead"])
-#results = test.fetch_all_articles()
+# test = GetNewsClass(["Ashtead"])
+# results = test.fetch_all_articles()

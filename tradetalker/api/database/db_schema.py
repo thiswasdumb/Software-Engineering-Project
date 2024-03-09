@@ -28,8 +28,8 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 )
 from werkzeug.security import generate_password_hash
 
-from .linear_regression.linear_regression import TTLinearRegression
 from . import extract_news_script
+from .linear_regression.linear_regression import TTLinearRegression
 
 db = SQLAlchemy()
 
@@ -657,45 +657,16 @@ def add_data() -> None:
         ),
     ]
     article_list = [
+        # This article should not show up in the weekly feed
         Article(
             1,
-            "The headline of Article 1",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            datetime.now(UTC),
-            "URL1",
-            "A short summary of the article. This is a very long summary. A summary that is very long. Can you believe how long this summary is? It's very long. Very long indeed. It's so long that it's the longest summary ever. It's the longest summary in the world. It's the longest summary in the universe. It's the longest summary in the multiverse. It's the longest summary in the omniverse. It's the longest summary in the metaverse. It's the longest summary in the megaverse. It's the longest summary in the xenoverse. It's the longest summary in the hyperverse. It's the longest summary in the ultraverse",
-            0.5,
-            "A processsd article for article 1. This is a very long article that has been processed.",
-        ),
-        Article(
-            2,
-            "The headline of Article 2",
-            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-            datetime.now(UTC),
-            "URL2",
-            "Summary2",
-            0.6,
-            "A processsd article for article 2. This is a very long article that has been processed.",
-        ),
-        Article(
-            4,
-            "A longer headline for Article 4. This is a very long headline. Very long.",
-            "AI article. ChatGPT, a language model developed by OpenAI, is now available for general use. The model is based on the GPT-3 architecture and is capable of generating human-like text. The model has been trained on a diverse range of internet text and",
-            datetime.now(UTC) - timedelta(days=1),
-            "https://www.google.com",
-            "A short summary of the article.",
-            -0.7,
-            "AI article. ChatGPT, a language model developed by OpenAI, is now available for general use. The model is based on the GPT-3 architecture and is capable of generating human-like text. The model has been trained on a diverse range of internet text and",
-        ),
-        Article(
-            5,
-            "The headline of Article 5",
-            "content",
-            datetime.now(UTC) - timedelta(days=2),
-            "URL5",
-            "Summary5",
+            "Google investing $1bn in UK data centre",
+            "Google has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
+            datetime.now(UTC) - timedelta(days=8),
+            "https://www.bbc.co.uk/",
+            "Google has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
             0.8,
-            "Google has invested $1bn (£790m) to build its first UK data centre. The tech giant saArticleID construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too ea",
+            "google invest uk data centre construction job thousands site waltham cross hertfordshire 2025 first thousands",
         ),
     ]
     faq_list = [
@@ -774,15 +745,106 @@ def add_data() -> None:
 def add_base_company_data() -> None:
     """Adds initial data of the FTSE100 companies to the database."""
     symbols = [
-        "III.L", "ADM.L", "AAF.L", "AAL.L", "ANTO.L", "AHT.L", "ABF.L", "AZN.L", "AUTO.L", "AV.L", "BME.L", "BA.L", "BARC.L",
-        "BDEV.L", "BEZ.L", "BKG.L", "BP.L", "BATS.L", "BT-A.L", "BNZL.L", "BRBY.L", "CNA.L", "CCH.L", "CPG.L", "CTEC.L",
-        "CRDA.L", "DCC.L", "DGE.L", "DPLM.L", "EDV.L", "ENT.L", "EXPN.L", "FCIT.L", "FLTR.L", "FRAS.L", "FRES.L",
-        "GLEN.L", "GSK.L", "HLN.L", "HLMA.L", "HIK.L", "HWDN.L", "HSBA.L", "IHG.L", "IMI.L", "IMB.L", "INF.L", "ICP.L",
-        "IAG.L", "ITRK.L", "JD.L", "KGF.L", "LAND.L", "LGEN.L", "LLOY.L", "LSEG.L", "MNG.L", "MKS.L", "MRO.L", "MNDI.L",
-        "NG.L", "NWG.L", "NXT.L", "OCDO.L", "PSON.L", "PSH.L", "PSN.L", "PHNX.L", "PRU.L", "RKT.L", "REL.L", "RTO.L",
-        "RMV.L", "RIO.L", "RR.L", "RS1.L", "SGE.L", "SBRY.L", "SDR.L", "SMT.L", "SGRO.L", "SVT.L", "SHEL.L", "SMDS.L",
-        "SMIN.L", "SN.L", "SKG.L", "SPX.L", "SSE.L", "STAN.L", "STJ.L", "TW.L", "TSCO.L", "ULVR.L", "UU.L", "UTG.L",
-        "VOD.L", "WEIR.L", "WTB.L", "WPP.L",
+        "III.L",
+        "ADM.L",
+        "AAF.L",
+        "AAL.L",
+        "ANTO.L",
+        "AHT.L",
+        "ABF.L",
+        "AZN.L",
+        "AUTO.L",
+        "AV.L",
+        "BME.L",
+        "BA.L",
+        "BARC.L",
+        "BDEV.L",
+        "BEZ.L",
+        "BKG.L",
+        "BP.L",
+        "BATS.L",
+        "BT-A.L",
+        "BNZL.L",
+        "BRBY.L",
+        "CNA.L",
+        "CCH.L",
+        "CPG.L",
+        "CTEC.L",
+        "CRDA.L",
+        "DCC.L",
+        "DGE.L",
+        "DPLM.L",
+        "EDV.L",
+        "ENT.L",
+        "EXPN.L",
+        "FCIT.L",
+        "FLTR.L",
+        "FRAS.L",
+        "FRES.L",
+        "GLEN.L",
+        "GSK.L",
+        "HLN.L",
+        "HLMA.L",
+        "HIK.L",
+        "HWDN.L",
+        "HSBA.L",
+        "IHG.L",
+        "IMI.L",
+        "IMB.L",
+        "INF.L",
+        "ICP.L",
+        "IAG.L",
+        "ITRK.L",
+        "JD.L",
+        "KGF.L",
+        "LAND.L",
+        "LGEN.L",
+        "LLOY.L",
+        "LSEG.L",
+        "MNG.L",
+        "MKS.L",
+        "MRO.L",
+        "MNDI.L",
+        "NG.L",
+        "NWG.L",
+        "NXT.L",
+        "OCDO.L",
+        "PSON.L",
+        "PSH.L",
+        "PSN.L",
+        "PHNX.L",
+        "PRU.L",
+        "RKT.L",
+        "REL.L",
+        "RTO.L",
+        "RMV.L",
+        "RIO.L",
+        "RR.L",
+        "RS1.L",
+        "SGE.L",
+        "SBRY.L",
+        "SDR.L",
+        "SMT.L",
+        "SGRO.L",
+        "SVT.L",
+        "SHEL.L",
+        "SMDS.L",
+        "SMIN.L",
+        "SN.L",
+        "SKG.L",
+        "SPX.L",
+        "SSE.L",
+        "STAN.L",
+        "STJ.L",
+        "TW.L",
+        "TSCO.L",
+        "ULVR.L",
+        "UU.L",
+        "UTG.L",
+        "VOD.L",
+        "WEIR.L",
+        "WTB.L",
+        "WPP.L",
     ]
     companies = []
     for symbol in symbols:
@@ -1006,7 +1068,12 @@ def set_all_companies_predicted_price() -> None:
                         company.StockPrice_D_5,
                     ],
                 ).calculate_stock_price()
-                print("predicted stock price for ", company.CompanyName, " is: ", predicted_stock_price)
+                print(
+                    "predicted stock price for ",
+                    company.CompanyName,
+                    " is: ",
+                    predicted_stock_price,
+                )
                 db.session.execute(
                     update(Company)
                     .where(Company.CompanyID == company.CompanyID)
@@ -1036,27 +1103,114 @@ def update_all_companies_daily() -> bool:
         return False
     return True
 
+
 def get_articles_from_news_api() -> None:
-    """
-    Calls the News Api script with the names of the companies and retrieves articles
-    test with names
+    """Calls the News Api script with the names of the companies and retrieves articles
+    test with names.
     """
     company_names = [
-        "3i", "Admiral Group", "Airtel Africa", "Anglo American", "Antofagasta", "Ashtead Group", "Associated British Foods",
-        "AstraZeneca", "Auto Trader Group", "Aviva plc", "B&M", "BAE Systems", "Barclays", "Barratt Developments",
-        "Beazley", "Berkeley Group", "BP", "British American Tobacco", "BT Group", "Bunzl", "Burberry", "Centrica",
-        "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",]
+        "3i",
+        "Admiral Group",
+        "Airtel Africa",
+        "Anglo American",
+        "Antofagasta",
+        "Ashtead Group",
+        "Associated British Foods",
+        "AstraZeneca",
+        "Auto Trader Group",
+        "Aviva plc",
+        "B&M",
+        "BAE Systems",
+        "Barclays",
+        "Barratt Developments",
+        "Beazley",
+        "Berkeley Group",
+        "BP",
+        "British American Tobacco",
+        "BT Group",
+        "Bunzl",
+        "Burberry",
+        "Centrica",
+        "Coca-Cola",
+        "Compass Group",
+        "Convatec",
+        "Croda International",
+        "DCC",
+        "Diageo",
+        "Diploma",
+        "Endeavour Mining",
+    ]
     others = [
-        "Entain", "Experian", "F&C Investment”", "Flutter Entertainment", "Frasers Group", "Fresnillo", "Glencore", "GSK",
-        "Haleon", "Halma", "Hikma Pharmaceuticals", "Howdens Joinery", "HSBC", "InterContinental Hotels", "IMI",
-        "Imperial Brands", "Informa", "Intermediate Capital", "International Airlines Group", "Intertek", "JD Sports",
-        "Kingfisher", "Land Securities", "Legal & General", "Lloyds Banking Group", "London Stock Exchange",
-        "M&G plc", "Marks and Spencer", "Melrose Industries", "Mondi", "National Grid", "NatWest",
-        "Next plc", "Ocado Group", "Pearson", "Pershing Square Holdings", "Persimmon", "Phoenix Group", "Prudential", "Reckitt",
-        "RELX", "Rentokil Initial", "Rightmove", "Rio Tinto", "Rolls-Royce Holdings", "RS Group", "Sage Group", "Sainsbury",
-        "Schroders", "Scottish Mortgage", "Segro", "Severn Trent", "Shell", "DS Smith", "Smiths Group", "Smith & Nephew",
-        "Smurfit Kappa", "Spirax-Sarco Engineering", "SSE", "Standard Chartered", "St. James Place", "Taylor Wimpey",
-        "Tesco", "Unilever", "United Utilities", "Unite Group", "Vodafone Group", "Weir Group", "Whitbread", "WPP",
+        "Entain",
+        "Experian",
+        "F&C Investment”",
+        "Flutter Entertainment",
+        "Frasers Group",
+        "Fresnillo",
+        "Glencore",
+        "GSK",
+        "Haleon",
+        "Halma",
+        "Hikma Pharmaceuticals",
+        "Howdens Joinery",
+        "HSBC",
+        "InterContinental Hotels",
+        "IMI",
+        "Imperial Brands",
+        "Informa",
+        "Intermediate Capital",
+        "International Airlines Group",
+        "Intertek",
+        "JD Sports",
+        "Kingfisher",
+        "Land Securities",
+        "Legal & General",
+        "Lloyds Banking Group",
+        "London Stock Exchange",
+        "M&G plc",
+        "Marks and Spencer",
+        "Melrose Industries",
+        "Mondi",
+        "National Grid",
+        "NatWest",
+        "Next plc",
+        "Ocado Group",
+        "Pearson",
+        "Pershing Square Holdings",
+        "Persimmon",
+        "Phoenix Group",
+        "Prudential",
+        "Reckitt",
+        "RELX",
+        "Rentokil Initial",
+        "Rightmove",
+        "Rio Tinto",
+        "Rolls-Royce Holdings",
+        "RS Group",
+        "Sage Group",
+        "Sainsbury",
+        "Schroders",
+        "Scottish Mortgage",
+        "Segro",
+        "Severn Trent",
+        "Shell",
+        "DS Smith",
+        "Smiths Group",
+        "Smith & Nephew",
+        "Smurfit Kappa",
+        "Spirax-Sarco Engineering",
+        "SSE",
+        "Standard Chartered",
+        "St. James Place",
+        "Taylor Wimpey",
+        "Tesco",
+        "Unilever",
+        "United Utilities",
+        "Unite Group",
+        "Vodafone Group",
+        "Weir Group",
+        "Whitbread",
+        "WPP",
     ]
 
     get_news = extract_news_script.GetNewsClass(company_names)
@@ -1066,20 +1220,19 @@ def get_articles_from_news_api() -> None:
         get_article_from_news_script(article)
 
 
-def get_recommendation_system_info(user_id):
+def get_recommendation_system_info(user_id: int) -> dict:
+    """Returns the information needed for the recommendation system."""
     # Get the CompanyIDs the user is following
     followed_companies = set(
         db.session.execute(
             db.select(Follow.CompanyID).filter(Follow.UserID == user_id),
         )
         .scalars()
-        .all()
+        .all(),
     )
 
     # Get all companies
-    all_companies = db.session.execute(
-        db.select(Company)
-    ).scalars().all()
+    all_companies = db.session.execute(db.select(Company)).scalars().all()
 
     following_companies = []
     non_following_companies = []
@@ -1087,25 +1240,29 @@ def get_recommendation_system_info(user_id):
 
     for company in all_companies:
         company_dict = {
-            'CompanyID': company.CompanyID,
-            'CompanyName': company.CompanyName,
-            'Industry': company.Industry,
-
+            "CompanyID": company.CompanyID,
+            "CompanyName": company.CompanyName,
+            "Industry": company.Industry,
         }
 
         if company.CompanyID in followed_companies:
             following_companies.append(company_dict)
             # keywords for followed companies
-            company_keywords = db.session.execute(
-                db.select(Article.KeyWords)
-                .filter(Article.CompanyID == company.CompanyID)
-            ).scalars().all()
+            company_keywords = (
+                db.session.execute(
+                    db.select(Article.KeyWords).filter(
+                        Article.CompanyID == company.CompanyID,
+                    ),
+                )
+                .scalars()
+                .all()
+            )
             keywords.extend(company_keywords)  # Add keywords to the list
         else:
             non_following_companies.append(company_dict)
 
     return {
-        'following': following_companies,
-        'non_following': non_following_companies,
-        'keywords': list(set(keywords))  # Remove duplicates and convert to list
+        "following": following_companies,
+        "non_following": non_following_companies,
+        "keywords": list(set(keywords)),  # Remove duplicates and convert to list
     }

@@ -18,6 +18,8 @@ disable = [
     'R1705', # Unnecessary "else" after "return"
     'W0105', # String statement has no effect
     'W0612', # Unused variable
+    'W0613', # Unused argument
+    'W0718', # Catching too general exception
 ]
 
 
@@ -108,6 +110,7 @@ max-args = 9
     'PLR0913', # Too many arguments
     'ERA001', # Commented out code
     'T201', # Use of print statement
+    'F841', # Local variable is assigned to but never used
 ]
 "database/mock_article_objects.py" = [
     'E501', # Line too long
@@ -116,6 +119,7 @@ max-args = 9
     'E501', # Line too long
     'ERA001', # Commented out code
     'T201', # Use of print statement
+    'BLE001', # Do not catch blind Exception
 ]
 "database/search_component.py" = [
     'E501', # Line too long
@@ -129,13 +133,11 @@ max-args = 9
 "database/text_summariser.py" = [
     'ERA001', # Commented out code
 ]
-"linear_regression/capm.py" = [
-    'T201', # Use of print statement
-]
-"linear_regression/linear_regression.py" = [
-    'T201', # Use of print statement
+"database/linear_regression/linear_regression.py" = [
     'N803', # Argument name should be lowercase
     'ERA001', # Commented out code
     'N806', # Variable in function should be lowercase
     'F841', # Unused variable
+    'TRY300', # Move into else block
+    'ARG002', # Unused argument
 ]
