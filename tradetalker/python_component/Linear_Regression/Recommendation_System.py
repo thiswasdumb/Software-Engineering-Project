@@ -3,8 +3,84 @@ import random
 
 class Recommendation_System:
 	#data is a dict, each key has a list of dicts (records) keys: following, non_following, keywords
-	def __init__(self, data, industry_groups):
-		self.industry_groups = industry_groups
+	def __init__(self, data):
+		self.industry_groups = {
+			"Finance and Banking": [
+				"Insurance - Property & Casualty",
+				"Insurance - Diversified",
+				"Insurance - Specialty",
+				"Banks - Diversified",
+				"Banks - Regional",
+				"Financial Data & Stock Exchanges",
+				"Asset Management",
+			],
+			"Technology and Telecommunications": [
+				"Telecom Services",
+				"Internet Content & Information",
+				"Software - Application",
+			],
+			"Retail and Consumer Goods": [
+				"Discount Stores",
+				"Packaged Foods",
+				"Food Distribution",
+				"Luxury Goods",
+				"Beverages - Non-Alcoholic",
+				"Beverages - Wineries & Distilleries",
+				"Specialty Retail",
+				"Apparel Retail",
+				"Home Improvement Retail",
+				"Grocery Stores",
+				"Household & Personal Products",
+				"Department Stores",
+			],
+			"Manufacturing and Industrial": [
+				"Other Industrial Metals & Mining",
+				"Copper",
+				"Rental & Leasing Services",
+				"Aerospace & Defense",
+				"Residential Construction",
+				"Oil & Gas Integrated",
+				"Oil & Gas Refining & Marketing",
+				"Industrial Distribution",
+				"Specialty Chemicals",
+				"Specialty Industrial Machinery",
+				"Packaging & Containers",
+				"Paper & Paper Products",
+				"Furnishings, Fixtures & Appliances",
+			],
+			"Healthcare and Pharmaceuticals": [
+				"Drug Manufacturers - General",
+				"Drug Manufacturers - Specialty & Generic",
+				"Medical Instruments & Supplies",
+				"Medical Devices",
+			],
+			"Real Estate": [
+				"REIT - Diversified",
+				"REIT - Industrial",
+			],
+			"Utilities": [
+				"Utilities - Independent Power Producers",
+				"Utilities - Regulated Electric",
+				"Utilities - Regulated Water",
+				"Utilities - Diversified",
+			],
+			"Entertainment and Hospitality": [
+				"Restaurants",
+				"Lodging",
+				"Airlines",
+				"Gambling",
+			],
+			"Other": [
+				"Gold",
+				"Tobacco",
+				"Consulting Services",
+				"Conglomerates",
+				"Specialty Business Services",
+				"Advertising Agencies",
+				"Publishing",
+				"Other Precious Metals & Mining",
+			]
+		}
 		self.rand = random.Random
 		self.rec = set({})
 		self.followed = pd.DataFrame.from_dict(data['following'])
@@ -85,81 +161,5 @@ class Recommendation_System:
 		"""
 
 """
-industry_groups = {
-	"Finance and Banking": [
-		"Insurance - Property & Casualty",
-		"Insurance - Diversified",
-		"Insurance - Specialty",
-		"Banks - Diversified",
-		"Banks - Regional",
-		"Financial Data & Stock Exchanges",
-		"Asset Management",
-	],
-	"Technology and Telecommunications": [
-		"Telecom Services",
-		"Internet Content & Information",
-		"Software - Application",
-	],
-	"Retail and Consumer Goods": [
-		"Discount Stores",
-		"Packaged Foods",
-		"Food Distribution",
-		"Luxury Goods",
-		"Beverages - Non-Alcoholic",
-		"Beverages - Wineries & Distilleries",
-		"Specialty Retail",
-		"Apparel Retail",
-		"Home Improvement Retail",
-		"Grocery Stores",
-		"Household & Personal Products",
-		"Department Stores",
-	],
-	"Manufacturing and Industrial": [
-		"Other Industrial Metals & Mining",
-		"Copper",
-		"Rental & Leasing Services",
-		"Aerospace & Defense",
-		"Residential Construction",
-		"Oil & Gas Integrated",
-		"Oil & Gas Refining & Marketing",
-		"Industrial Distribution",
-		"Specialty Chemicals",
-		"Specialty Industrial Machinery",
-		"Packaging & Containers",
-		"Paper & Paper Products",
-		"Furnishings, Fixtures & Appliances",
-	],
-	"Healthcare and Pharmaceuticals": [
-		"Drug Manufacturers - General",
-		"Drug Manufacturers - Specialty & Generic",
-		"Medical Instruments & Supplies",
-		"Medical Devices",
-	],
-	"Real Estate": [
-		"REIT - Diversified",
-		"REIT - Industrial",
-	],
-	"Utilities": [
-		"Utilities - Independent Power Producers",
-		"Utilities - Regulated Electric",
-		"Utilities - Regulated Water",
-		"Utilities - Diversified",
-	],
-	"Entertainment and Hospitality": [
-		"Restaurants",
-		"Lodging",
-		"Airlines",
-		"Gambling",
-	],
-	"Other": [
-		"Gold",
-		"Tobacco",
-		"Consulting Services",
-		"Conglomerates",
-		"Specialty Business Services",
-		"Advertising Agencies",
-		"Publishing",
-		"Other Precious Metals & Mining",
-	]
-}
+
 """
