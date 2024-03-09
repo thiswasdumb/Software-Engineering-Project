@@ -2,14 +2,14 @@
 
 # Group 1 - CS261 Group Project
 
-## Members: 
-- Serene Alrawi 
-- Shayan Borhani Yazdi 
-- Louis Hudson 
-- Gabriel Hughes 
-- Hao-Yen Tang 
-- Alara Tindall
+## Members:
+- Serene Alrawi
+- Shayan Borhani Yazdi
+- Louis Hudson
+- Gabriel Hughes
 - Xun Khang Tan
+- Hao-Yen Tang
+- Alara Tindall
 
 <br>
 <img src="/tradetalker/public/images/logo.png" alt="TradeTalk" width="150"/>
