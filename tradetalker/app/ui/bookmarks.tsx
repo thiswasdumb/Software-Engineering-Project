@@ -77,7 +77,7 @@ export default function BookmarkComponent({
                     {dayjs(bookmark.date).format('D MMM YYYY LT')}
                   </p>
                   <p className='text-lg'>{bookmark.title}</p>
-                  <p className='truncate text-sm'>{bookmark.summary}</p>
+                  <p className='text-sm'>{bookmark.summary}</p>
                 </Link>
                 <button
                   type='button'
