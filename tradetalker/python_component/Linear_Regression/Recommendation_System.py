@@ -38,6 +38,7 @@ class Recommendation_System:
 		#adds companies appearing in key words to recommendations
 		#certain words appear in company names but do not imply any specific company, so should be blacklisted
 		blacklist = set(("group", "plc", "ord", "mining", "systems", "banking", "value", "retail", "european", "engineering", "industries", "investment", "trust", "american", "international"))
+		words = list(map((lambda x: x.lower()), words))
 		words = set(words).difference(blacklist)
 		#check if each word is a company, check if it is an already followed company so it doesn't waste time querying the db
 		for wrd in words:
