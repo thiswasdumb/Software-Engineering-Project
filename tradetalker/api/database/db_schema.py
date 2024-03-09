@@ -124,7 +124,7 @@ class Company(db.Model):  # type: ignore [name-defined]
             "rank": self.get_company_stock_rank(),
         }
 
-    def select_company_by_id(self) -> None:
+    def select_company_by_id(self) -> dict | None:
         """Selects a company by its ID."""
         try:
             company = (
@@ -136,7 +136,7 @@ class Company(db.Model):  # type: ignore [name-defined]
             logging.exception("Found an error while selecting the company by ID.")
             return None
         else:
-            return company
+            return company.to_dict()
 
     def select_company_by_name(self) -> str | None:
         """Selects a company by its name."""
