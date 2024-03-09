@@ -58,7 +58,10 @@ export default async function CompanyPage({
       <ScrollUp />
       <div className='m-8 rounded-lg bg-slate-200 p-8'>
         <div className='flex flex-row items-center justify-between'>
-          <h1 className='text-2xl'>{companyData.name}</h1>
+          <div className='flex flex-row flex-wrap items-center gap-3'>
+            <h1 className='text-2xl'>{companyData.name}</h1>
+            <span title='Company rank by stock price' className='select-none text-lg text-white rounded-lg px-2 bg-green-600'>#{companyData.rank}</span>
+          </div>
           <h1 className='text-2xl'>{companyData.symbol}</h1>
         </div>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
@@ -90,12 +93,6 @@ export default async function CompanyPage({
                     ? companyData.predicted_stock_price
                     : 'N/A'}
                 </p>
-                <p className='text-lg'>
-                  Stock variance:&nbsp;
-                  {companyData.stock_variance !== null
-                    ? companyData.stock_variance
-                    : 'N/A'}
-                </p>
                 <p className='text-lg'>Industry:&nbsp;{companyData.industry}</p>
               </div>
               <div className='mt-2'>
@@ -103,9 +100,9 @@ export default async function CompanyPage({
               </div>
             </div>
             <LineChart stockLastDays={stockLastDays} />
-            <ShareCompany id={id} />
+            <ShareCompany id={id} company={companyData} diff={diff} change={perc_change} stockLastDays={stockLastDays} />
           </div>
-          <div className='mt-2 flex flex-col lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
+          <div className='mt-2 flex flex-col w-full lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
             <h2 className='text-xl'>Description</h2>
             <hr className='border-1 my-2 rounded-lg border-slate-400' />
             <Description description={companyData.description} />
