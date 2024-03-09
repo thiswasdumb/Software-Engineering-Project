@@ -31,44 +31,39 @@ class ArticleSearch:
             new_dict["ArticleID"] = a.ArticleID
             converted.append(new_dict)
 
-        print(converted, flush=True)
+        # print(converted, flush=True)
 
         self.tf_idf_object = TF_IDF(converted)
 
         self.articles = article_objects_list
-        print(self.articles, flush=True)
+        # print(self.articles, flush=True)
 
         # dictionary to map article ID with their index in the self.articles list
         # used later to associate the calculated tf_idf scores with the article id and header
         self.articles_id = {}
         for i in range(len(self.articles)):
             self.articles_id[i] = self.articles[i].ArticleID
-        print(self.articles_id)
 
     def search(self, search_term: str, relevance_score: float = 0.2):
         # Preprocess user query
         user_query = preprocess_text.preprocess_text(search_term)
         # Calculate User query tf_idf vector
         user_query_tfidf = self.tf_idf_object.vectorizer.transform([user_query])
-        print("User query matrix:", user_query_tfidf)
+        # print("User query matrix:", user_query_tfidf)
 
         # Calculate similarity between user query vector and the td_idf scores vector
         similarities = polynomial_kernel(
             user_query_tfidf, self.tf_idf_object.tfidf_scores,
         ).flatten()
-        print("Similarity:", similarities)
+        # print("Similarity:", similarities)
         # sort articles based on similarity - idx 1 in the similarities[]. Highest score is more relevant
         article_ranking = sorted(
             list(enumerate(similarities)), key=lambda x: x[1], reverse=True,
         )
-        print("Article ranking", article_ranking)
+        # print("Article ranking", article_ranking)
 
         # Map indices back to articles, select articles greater than a certain relevance score
-        relevant_articles = [
-            (self.articles_id[idx], score)
-            for idx, score in article_ranking
-            if score >= relevance_score
-        ]
+        relevant_articles = [ (self.articles_id[idx], score) for idx, score in article_ranking if score >= relevance_score ]
         return relevant_articles
 
 
