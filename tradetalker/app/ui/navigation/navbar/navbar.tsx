@@ -4,7 +4,7 @@ import Logo from './logo';
 import NavLinks from './nav-links';
 import NavbarSessionComponent from './navbar-session-comp';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import Sidebar from '../mobile-navbar';
+import MobileNavbar from '../mobile-navbar';
 import SearchButton from './search-button';
 import NotifButton from './notif-button';
 import BookmarkButton from './bookmark-button';
@@ -67,7 +67,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
               {props.isLoggedIn && (
                 <BookmarkButton isOpen={menuToggled} toggle={toggleMenu} />
               )}
-              <button type='button' onClick={toggleMenu}>
+              <button type='button' onClick={toggleMenu} title='Menu'>
                 <Bars3Icon className='h-12 w-12 text-white hover:opacity-50' />
               </button>
             </div>
@@ -81,7 +81,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
               className='fixed h-full w-full bg-black opacity-30'
               onClick={toggleMenu}
             />
-            <Sidebar
+            <MobileNavbar
               isOpen={menuToggled}
               toggle={toggleMenu}
               session={props.isLoggedIn}
