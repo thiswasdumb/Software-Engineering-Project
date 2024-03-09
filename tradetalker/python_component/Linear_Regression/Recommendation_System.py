@@ -2,7 +2,14 @@ import pandas as pd
 import random
 
 class Recommendation_System:
-	#data is a dict, each key has a list of dicts (records) keys: following, non_following, keywords
+	"""
+	user_recommended_companies = Recommendation_System(get_recommendation_system_info(user_id)).recommend()
+	or
+	Recommendation_System(<dict('followed':[],'non-followed':[],'keywords':[])>).recommend()
+	returns set of company ids
+	"""
+	#data is a dict, first two keys' value are a list of dicts (records), last key is a list of strings, each string being 20 words separated by commas
+	#keys: following, non_following, keywords
 	def __init__(self, data):
 		self.industry_groups = {
 			"Finance and Banking": [
@@ -89,6 +96,7 @@ class Recommendation_System:
 		#joins list
 		self.article_words = set(','.join(data['keywords']).split(','))
 
+	#what will be called by
 	def recommend(self):
 		self.rec = set({})
 		self.article_recs()
