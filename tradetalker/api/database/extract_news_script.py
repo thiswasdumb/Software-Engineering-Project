@@ -33,7 +33,9 @@ class GetNewsClass:
         None
         """
 
-        self.api_keys = ['Fb9cdea752a44045b9235bc4c5d69e12', '8968c158e1a44a5388312c35d8193541','Ee57dcf14e0a4903905440d1cdbed356']
+        self.api_keys = ['9256e34369fb4a259418bb28cb0e9843', 'Fb9cdea752a44045b9235bc4c5d69e12', '8968c158e1a44a5388312c35d8193541','Ee57dcf14e0a4903905440d1cdbed356',
+                         '78c2cc21e0c04b9db286b7952f34a9f8', '856923ce4cc34541b8815df3c2265878', 'F90a2f0d38714c18b4ad0e5a991fa558',
+                         'a72e7943397b482b90543d57a1e3aaba']
         self.api_num = 0
         self.news_api = NewsApiClient(api_key=self.api_keys[self.api_num])
         get_pos_class = GetPOSClass()
@@ -47,6 +49,13 @@ class GetNewsClass:
         print(self.api_keys[self.api_num])
 
 
+    def check_if_blacklisted(self, url_to_check: str) -> bool:
+        for domain in self.black_listed:
+            if domain in url_to_check:
+                return True
+        return False
+
+
     def fetch_articles_from_api(self, list_of_companies: list):
         # Fetch articles for each company and store them in self.all_articles
         i = 0 
@@ -54,7 +63,7 @@ class GetNewsClass:
             try: 
                 self.all_articles[list_of_companies[i]] = self.news_api.get_everything(
                     q=list_of_companies[i],
-                    from_param="2024-03-01",
+                    from_param="2024-03-05",
                     language="en",
                     sort_by="relevancy",
                     page=1,
@@ -63,10 +72,10 @@ class GetNewsClass:
             except Exception as e:
                 self.alternate_api()
                 print(f'Switching API key due to the following exception {e}')
-                continue
+                i += 1
 
     def alternate_api(self):
-        self.api_num = (self.api_num + 1) % 3
+        self.api_num = (self.api_num + 1) % 8
 
 
     def fetch_all_articles(self) -> list[dict]:
@@ -124,7 +133,7 @@ class GetNewsClass:
             article_url = article["url"]
 
             #check if article has already been added, if so skip current article 
-            if article_url.lower() in seen_urls or article_url in self.black_listed:
+            if article_url.lower() in seen_urls or self.check_if_blacklisted(article_url):
                 continue
 
             seen_urls.add(article_url.lower())
@@ -157,7 +166,7 @@ class GetNewsClass:
                 "URL": str(article_url),
                 "PublicationDate": news_article.publish_date
                 if news_article.publish_date
-                else datetime.datetime.now(),
+                else datetime.now(UTC),
                 "KeyWords": None,  # Will be calculated later
             }
             print(article_object["PublicationDate"])
