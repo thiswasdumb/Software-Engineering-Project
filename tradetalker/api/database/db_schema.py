@@ -931,7 +931,7 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
             )
 
 
-def get_article_from_news_script(article: dict) -> None:
+def get_article_from_news_script(article: dict) -> int:
     """Inserts the article recieved from the news script into the database."""
     # need the company_id first
     company = (
@@ -960,6 +960,7 @@ def get_article_from_news_script(article: dict) -> None:
     )
     db.session.add(new_article)
     db.session.commit()
+    return new_article.ArticleID
 
 
 def get_all_company_names() -> list:
@@ -1063,7 +1064,47 @@ def get_articles_from_news_api() -> None:
     articles_dict = get_news.fetch_all_articles()
 
     for article in articles_dict:
-        get_article_from_news_script(article)
+        article_id = get_article_from_news_script(article)
+        """
+        if the article is notification-worthy, we create and broadcast the notification
+        """
+        if article["PredictionScore"] > 0.95 or article["PredictionScore"] < -0.95:
+            company_name =  article["Company"]
+            company = (
+                db.session.execute(
+                    db.select(Company).filter(
+                        Company.CompanyName.like(f'%{article["Company"]}%'),
+                    ),
+                )
+                .scalars()
+                .first()
+            )
+            company_id = company.CompanyID
+            notification_content = "New notification for " + company_name
+            new_notification = Notification(article_id, notification_content)
+            db.session.add(new_notification)
+            db.session.commit()
+            insert_user_notification_read_objects(new_notification, company_id)
+
+def get_company_followers(company_id: int) -> list:
+    """
+    Given a company_id, returns all the user_id of users following that company
+    """
+    user_ids = db.session.execute(
+        db.select(Follow.UserID).filter(Follow.CompanyID == company_id)
+    ).scalars().all()
+    return user_ids
+
+def insert_user_notification_read_objects(notification: Notification, company_id: int) -> None:
+    """
+    given a new notification and the related company_id, creates individual UNR objects for users following that company
+    """
+    user_ids = get_company_followers(company_id)
+    user_notification_read_list = []
+    for user_id in user_ids:
+        user_notification_read_list.append(UserNotificationRead(user_id, notification.NotificationIDa))
+    db.session.add_all(user_notification_read_list)
+    db.session.commit()
 
 
 def get_recommendation_system_info(user_id):
