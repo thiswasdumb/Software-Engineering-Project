@@ -23,26 +23,29 @@ export default async function StockTrends() {
   const stockTrends: any[] = await getStockTrends();
 
   return (
-    <div className='md:w-[70%]'>
-      <h2 className='text-lg'>Top rising stocks</h2>
-      {stockTrends.map((stock, index) => (
-        <Link key={index} href={`/company/${stock.company_id}`}>
-          <div className='mt-2 rounded-lg bg-slate-300 p-4 transition hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg'>
-            <p className='font-bold'>{stock.symbol}</p>
-            <p className='text-lg'>{stock.stock_price}</p>
-            <p>
-              Predicted stock price:&nbsp;
-              {stock.predicted_stock_price !== null
-                ? stock.predicted_stock_price
-                : 'N/A'}
-            </p>
-            <p>
-              Variance:&nbsp;
-              {stock.stock_variance !== null ? stock.stock_variance : 'N/A'}
-            </p>
-          </div>
-        </Link>
-      ))}
+    <div className='md:w-[40%]'>
+      <div className='rounded-lg bg-slate-300 p-4 mt-2'>
+        <h2 className='text-lg mb-2'>Top rising stocks</h2>
+        <div className='rounded-lg overflow-scroll max-h-[60vh]'>
+          {stockTrends.map((stock, index) => (
+            <Link key={index} href={`/company/${stock.company_id}`}>
+              <div className='mb-2 rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'>
+                <span className='flex flex-row items-center gap-2'>
+                  <p className='font-bold'>{stock.symbol}</p>
+                  |<p className='text-sm'>{stock.company_name}</p>
+                </span>
+                <p className='text-lg'>{stock.stock_price}</p>
+                <p>
+                  Predicted stock price:&nbsp;
+                  {stock.predicted_stock_price !== null
+                    ? stock.predicted_stock_price
+                    : 'N/A'}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
