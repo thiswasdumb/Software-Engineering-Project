@@ -127,7 +127,7 @@ class Company(db.Model):  # type: ignore [name-defined]
             "rank": self.get_company_stock_rank(),
         }
 
-    def select_company_by_id(self) -> dict | None:
+    def select_company_by_id(self) -> dict:
         """Selects a company by its ID."""
         try:
             company = (
@@ -141,9 +141,9 @@ class Company(db.Model):  # type: ignore [name-defined]
             )
         except SQLAlchemyError:
             logging.exception("Found an error while selecting the company by ID.")
-            return None
+            return {}
         else:
-            return company  # type: ignore [union-attr]
+            return company.to_dict()  # type: ignore [union-attr]
 
     def select_company_by_name(self) -> str | None:
         """Selects a company by its name."""
@@ -159,9 +159,9 @@ class Company(db.Model):  # type: ignore [name-defined]
             )
         except SQLAlchemyError:
             logging.exception("Found an error while selecting the company by name.")
-            return None
+            return {}
         else:
-            return company
+            return company.to_dict()  # type: ignore [union-attr]
 
     def get_company_stock_rank(self) -> int:
         """Gets the rank of a company based on its stock price."""

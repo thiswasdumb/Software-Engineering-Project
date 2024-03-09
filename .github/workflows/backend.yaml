@@ -59,4 +59,4 @@ jobs:
       - name: Run mypy type check
         run: |
           cd tradetalker/api
-          pipenv run mypy . --verbose
+          pipenv run mypy .
