@@ -41,7 +41,6 @@ from database.db_schema import (
     get_articles_by_company_name,
     get_company_article_sentiment_scores,
     get_company_data_for_linear_regression,
-    update_all_companies_daily,
 )
 from database.search_component import ArticleSearch
 from linear_regression.linear_regression import TTLinearRegression
@@ -636,7 +635,7 @@ def get_week_newsfeed() -> Response:
         db.session.execute(
             db.select(Article)
             .filter(
-                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+                Article.PublicationDate >= datetime.now(UTC) - timedelta(days=7),
             )
             .order_by(desc(Article.PublicationDate))
             .limit(3),
@@ -666,7 +665,7 @@ def get_week_newsfeed_full() -> Response:
         db.session.execute(
             db.select(Article)
             .filter(
-                Article.PublicationDate >= datetime.now() - timedelta(days=7),
+                Article.PublicationDate >= datetime.now(UTC) - timedelta(days=7),
             )
             .order_by(desc(Article.PublicationDate)),
         )
@@ -714,9 +713,36 @@ def get_stock_trends() -> Response:
     return jsonify(stock_trends_list)
 
 
-@app.route("/api/get_leaderboard", methods=["GET"])
-def get_leaderboard() -> Response:
-    """Returns the leaderboard."""
+@app.route("/api/get_most_positive_leaderboard", methods=["GET"])
+def get_most_positive_leaderboard() -> Response:
+    """Returns the leaderboard of the most positive companies by articles."""
+    # Get the leaderboard of companies sorted by descending average sentiment score of articles that mention them
+    companies = (
+        db.session.execute(
+            db.select(Company, db.func.avg(Article.PredictionScore).label("avg_score"))
+            .join(Article)
+            .group_by(Company.CompanyID)
+            .order_by(db.func.avg(Article.PredictionScore).desc()),
+        )
+        .scalars()
+        .all()
+    )
+    print(companies, flush=True)
+    leaderboard_list = [
+        {
+            "company_id": company.CompanyID,
+            "company_name": company.CompanyName,
+            "company_symbol": company.StockSymbol,
+            "stock_price": company.StockPrice,
+        }
+        for company in companies
+    ]
+    return jsonify(leaderboard_list)
+
+
+@app.route("/api/get_top_stocks_leaderboard", methods=["GET"])
+def get_top_stocks_leaderboard() -> Response:
+    """Returns the leaderboard of companies with the highest stock price."""
     # Get the leaderboard
     leaderboard = (
         db.session.execute(db.select(Company).order_by(Company.StockPrice.desc()))
@@ -1203,7 +1229,6 @@ def get_profile_data() -> Response:
         "username": current_user.Username,
         "email": current_user.Email,
         "is_verified": current_user.IsVerified,
-        "preferences": current_user.Preferences,
     }
     return jsonify(user)
 
@@ -1236,18 +1261,14 @@ def delete_user() -> Response:
     return redirect(url_for("home", success="Successfully deleted account."), code=301)
 
 
-def daily_company_update() -> bool:
-    """Calls once a day (?) to update price_related fields."""
-    return update_all_companies_daily()
-
-
 def predict_stock_price() -> None:
     """Predicts the stock price of each company."""
     companies = db.session.execute(db.select(Company)).scalars().all()
     for company in companies:
-        # get the sentiment scores of the articles in the last 7 days
-        article_sentiment_scores = []
-        company_articles = db.session.execute(
+        # Get the sentiment scores of the articles in the last 7 days
+        # Remove underscores if working with the actual data
+        _article_sentiment_scores = []
+        _company_articles = db.session.execute(
             db.select(Article).filter_by(CompanyID=company.CompanyID),
         )
 
