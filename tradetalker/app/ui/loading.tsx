@@ -1,7 +1,7 @@
 /**
  * Loading component.
  * @param message - The message to display
- * @returns 
+ * @returns
  */
 export default function Loading({ message }: { message: string }) {
   return (

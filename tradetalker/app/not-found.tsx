@@ -16,9 +16,8 @@ export default function NotFound() {
     <div className='m-8 rounded-lg bg-slate-200 p-8'>
       <div className='text-2xl'>404 Not Found</div>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='text-xl mb-2'>Could not find requested resource.</div>
-      <Button
-      >
+      <div className='mb-2 text-xl'>Could not find requested resource.</div>
+      <Button>
         <Link href='/home'>Return to home</Link>
       </Button>
     </div>

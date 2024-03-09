@@ -81,10 +81,11 @@ export default function FollowButton({
       <button
         type='button'
         onClick={handleFollowClick}
-        className={`ml-2 rounded-lg px-4 py-2 ${isFollowing
-          ? 'border-2 border-slate-500 text-slate-500 transition hover:bg-slate-300 hover:bg-opacity-40'
-          : 'border-2 border-blue-500 bg-blue-500 text-white transition hover:border-blue-600 hover:bg-blue-600 active:border-blue-700 active:bg-blue-700'
-          }`}
+        className={`ml-2 rounded-lg px-4 py-2 ${
+          isFollowing
+            ? 'border-2 border-slate-500 text-slate-500 transition hover:bg-slate-300 hover:bg-opacity-40'
+            : 'border-2 border-blue-500 bg-blue-500 text-white transition hover:border-blue-600 hover:bg-blue-600 active:border-blue-700 active:bg-blue-700'
+        }`}
       >
         {isFollowing ? 'Unfollow' : 'Follow'}
       </button>

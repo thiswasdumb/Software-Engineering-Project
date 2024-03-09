@@ -31,7 +31,7 @@ export default function NewsFeed() {
   const handleClick = async () => {
     setClicked(true);
     await fetchFullWeekArticles();
-  }
+  };
 
   // Fetch all articles from the past week
   const fetchFullWeekArticles = async () => {
@@ -42,13 +42,13 @@ export default function NewsFeed() {
     } catch (error) {
       console.error('Error fetching articles:', error);
     }
-  }
+  };
 
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
       <h2 className='text-xl'>News feed</h2>
       <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='flex flex-col max-h-[60vh] overflow-scroll rounded-lg'>
+      <div className='flex max-h-[60vh] flex-col overflow-scroll rounded-lg'>
         {articles.length === 0 && <p>No recent news.</p>}
         {articles.map((article, index) => (
           <Link
@@ -69,7 +69,7 @@ export default function NewsFeed() {
       {!clicked && (
         <button
           onClick={() => handleClick()}
-          className='w-full bg-slate-400 text-white rounded-lg p-2 mt-2 hover:bg-slate-500 transition active:bg-slate-600'
+          className='mt-2 w-full rounded-lg bg-slate-400 p-2 text-white transition hover:bg-slate-500 active:bg-slate-600'
         >
           Show all articles from the past week
         </button>

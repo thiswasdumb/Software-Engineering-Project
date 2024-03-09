@@ -123,9 +123,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                     href={`/article/${article.id}`}
                   >
                     <div className='flex flex-row flex-wrap justify-between'>
-                      <div>
-                        {article.title}
-                      </div>
+                      <div>{article.title}</div>
                       <span className='text-sm text-gray-600'>
                         {dayjs(article.date).format('D MMM YYYY')}
                       </span>

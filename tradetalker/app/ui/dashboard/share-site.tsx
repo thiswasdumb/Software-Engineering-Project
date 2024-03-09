@@ -1,5 +1,5 @@
 'use client';
-import { ShareIcon, ArrowDownTrayIcon } from '@heroicons/react/20/solid';
+import { ShareIcon } from '@heroicons/react/20/solid';
 import {
   EmailShareButton,
   RedditIcon,

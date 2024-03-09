@@ -6,9 +6,12 @@ import Link from 'next/link';
  * @returns Promise - Leaderboard data
  */
 async function getArticlesLeaderboard() {
-  const response = await fetch('http://localhost:8080/api/get_most_positive_leaderboard', {
-    cache: 'no-store',
-  });
+  const response = await fetch(
+    'http://localhost:8080/api/get_most_positive_leaderboard',
+    {
+      cache: 'no-store',
+    }
+  );
   if (!response.ok) {
     throw new Error('Error fetching leaderboard');
   }
@@ -25,8 +28,8 @@ export default async function PositiveArticleLeaderboard() {
   return (
     <div className='md:w-[30%]'>
       <div className='mt-2 rounded-lg bg-slate-300 p-4'>
-        <h2 className='text-lg mb-2'>Most positive companies</h2>
-        <div className='overflow-scroll rounded-lg max-h-[60vh]'>
+        <h2 className='mb-2 text-lg'>Most positive companies</h2>
+        <div className='max-h-[60vh] overflow-scroll rounded-lg'>
           {leaderboard.map((company, index) => (
             <Link key={index} href={`/company/${company.company_id}`}>
               <div className='mb-2 flex flex-row rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'>

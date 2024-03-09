@@ -6,7 +6,7 @@ import RecommendedArticles from './rec-articles';
 import RecommendedCompanies from './rec-companies';
 import NewsFeed from './news-feed';
 import FollowedCompanies from './followed-companies';
-import ShareSite from './share-site'
+import ShareSite from './share-site';
 import ReadParams from '../read-params';
 
 /**

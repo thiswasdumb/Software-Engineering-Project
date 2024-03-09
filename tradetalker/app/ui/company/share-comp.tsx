@@ -15,23 +15,33 @@ import {
 import React from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import { useRef } from 'react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 /**
  * Share company component.
  * @param id - Company ID
  * @returns JSX.Element - Share company component
  */
-export default function ShareCompany({ id, company, diff, change, stockLastDays }: { id: string; company: any; diff: number; change: number; stockLastDays: number[] }) {
-  var diffStr = ''
-  var changeStr = ''
-  var max = 0
-  var min = 0
-  var mean = 0
-  var median = 0
-  var sd = 0
+export default function ShareCompany({
+  id,
+  company,
+  diff,
+  change,
+  stockLastDays,
+}: {
+  id: string;
+  company: any;
+  diff: number;
+  change: number;
+  stockLastDays: number[];
+}) {
+  let diffStr = '';
+  let changeStr = '';
+  let max = 0;
+  let min = 0;
+  let mean = 0;
+  let median = 0;
+  let sd = 0;
 
   if (diff > 0) {
     diffStr = '+' + diff.toFixed(2);
@@ -52,22 +62,29 @@ export default function ShareCompany({ id, company, diff, change, stockLastDays 
   max = Math.max(...stockLastDays);
   min = Math.min(...stockLastDays);
   mean = stockLastDays.reduce((a, b) => a + b, 0) / stockLastDays.length;
-  median = stockLastDays.sort((a, b) => a - b)[Math.floor(stockLastDays.length / 2)];
-  sd = Math.sqrt(stockLastDays.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / stockLastDays.length);
+  median = stockLastDays.sort((a, b) => a - b)[
+    Math.floor(stockLastDays.length / 2)
+  ];
+  sd = Math.sqrt(
+    stockLastDays.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
+      stockLastDays.length
+  );
 
   function savePdf() {
-    var doc = new jsPDF('p', 'pt', 'a4');
-    var canvas = document.getElementById('myChart') as HTMLCanvasElement;
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const canvas = document.getElementById('myChart') as HTMLCanvasElement;
     canvas.width = 500;
     canvas.height = 250;
-    var img = canvas.toDataURL('image/png');
+    const img = canvas.toDataURL('image/png');
     console.log(img);
     doc.setFontSize(16);
     doc.text(`Company: ${company.name}`, 40, 60).setFontSize(16);
     doc.text(`Symbol: ${company.symbol}`, 40, 80).setFontSize(20);
     doc.text(`${company.stock_price}`, 40, 120).setFontSize(12);
     doc.text(`${diffStr} (${changeStr})`, 40, 140);
-    doc.text('Description: ' + company.description, 40, 180, { maxWidth: 500 }).setFontSize(16);
+    doc
+      .text('Description: ' + company.description, 40, 180, { maxWidth: 500 })
+      .setFontSize(16);
     doc.addImage(img, 'PNG', 40, 360, 500, 250);
     doc.text('Statistics:', 40, 640).setFontSize(12);
     doc.text(`Max: ${max}`, 40, 660).setFontSize(12);

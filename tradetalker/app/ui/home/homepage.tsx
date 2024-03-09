@@ -51,7 +51,7 @@ export default async function HomeComponent() {
             >
               <Link href={`/article/${article.id}`}>
                 <div className='flex flex-row flex-wrap items-center justify-between'>
-                  <h3 className='text-lg mr-2'>{article.title}</h3>
+                  <h3 className='mr-2 text-lg'>{article.title}</h3>
                   <span className='text-sm text-gray-600'>
                     {dayjs(article.date).fromNow()}
                   </span>

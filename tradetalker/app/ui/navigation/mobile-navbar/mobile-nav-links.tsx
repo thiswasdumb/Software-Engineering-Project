@@ -26,18 +26,18 @@ export default function MobileNavLinks(props: {
     { name: 'Support', href: '/support', onClick: props.toggle },
     ...(props.session
       ? [
-        {
-          name: `Notifications (${props.notifCount})`,
-          href: '/notifications',
-          onClick: props.toggle,
-        },
-        { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
-        { name: 'Profile', href: '/profile', onClick: props.toggle },
-      ]
+          {
+            name: `Notifications (${props.notifCount})`,
+            href: '/notifications',
+            onClick: props.toggle,
+          },
+          { name: 'Bookmarks', href: '/bookmarks', onClick: props.toggle },
+          { name: 'Profile', href: '/profile', onClick: props.toggle },
+        ]
       : [
-        { name: 'Login', href: '/login', onClick: props.toggle },
-        { name: 'Sign up', href: '/signup', onClick: props.toggle },
-      ]),
+          { name: 'Login', href: '/login', onClick: props.toggle },
+          { name: 'Sign up', href: '/signup', onClick: props.toggle },
+        ]),
   ];
   const pathname = usePathname();
 

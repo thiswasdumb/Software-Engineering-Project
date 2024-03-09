@@ -11,7 +11,7 @@ import { ClockIcon } from '@heroicons/react/24/outline';
 
 /**
  * Get article data from the server.
- * @param id - Article ID 
+ * @param id - Article ID
  * @returns Promise - Article data
  */
 async function getArticle(id: string) {
@@ -63,7 +63,7 @@ export default async function ArticlePage({
         </div>
 
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
-        <div className='flex flex-row justify-between items-start flex-wrap'>
+        <div className='flex flex-row flex-wrap items-start justify-between'>
           <div>
             <div>
               {articleData.prediction_score > 0.33 ? (
@@ -103,7 +103,7 @@ export default async function ArticlePage({
         </a>
         <hr className='border-1 my-2 rounded-lg border-slate-400' />
         <Comments articleId={id} isLoggedIn={isLoggedIn} />
-      </div >
+      </div>
     </>
   );
 }
