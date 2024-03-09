@@ -28,7 +28,8 @@ from sqlalchemy.orm import (  # type: ignore [attr-defined]
 )
 from werkzeug.security import generate_password_hash
 
-from linear_regression.linear_regression import TTLinearRegression
+from .linear_regression.linear_regression import TTLinearRegression
+from . import extract_news_script
 
 db = SQLAlchemy()
 
@@ -773,106 +774,15 @@ def add_data() -> None:
 def add_base_company_data() -> None:
     """Adds initial data of the FTSE100 companies to the database."""
     symbols = [
-        "III.L",
-        "ADM.L",
-        "AAF.L",
-        "AAL.L",
-        "ANTO.L",
-        "AHT.L",
-        "ABF.L",
-        "AZN.L",
-        "AUTO.L",
-        "AV.L",
-        "BME.L",
-        "BA.L",
-        "BARC.L",
-        "BDEV.L",
-        "BEZ.L",
-        "BKG.L",
-        "BP.L",
-        "BATS.L",
-        "BT-A.L",
-        "BNZL.L",
-        "BRBY.L",
-        "CNA.L",
-        "CCH.L",
-        "CPG.L",
-        "CTEC.L",
-        "CRDA.L",
-        "DCC.L",
-        "DGE.L",
-        "DPLM.L",
-        "EDV.L",
-        "ENT.L",
-        "EXPN.L",
-        "FCIT.L",
-        "FLTR.L",
-        "FRAS.L",
-        "FRES.L",
-        "GLEN.L",
-        "GSK.L",
-        "HLN.L",
-        "HLMA.L",
-        "HIK.L",
-        "HWDN.L",
-        "HSBA.L",
-        "IHG.L",
-        "IMI.L",
-        "IMB.L",
-        "INF.L",
-        "ICP.L",
-        "IAG.L",
-        "ITRK.L",
-        "JD.L",
-        "KGF.L",
-        "LAND.L",
-        "LGEN.L",
-        "LLOY.L",
-        "LSEG.L",
-        "MNG.L",
-        "MKS.L",
-        "MRO.L",
-        "MNDI.L",
-        "NG.L",
-        "NWG.L",
-        "NXT.L",
-        "OCDO.L",
-        "PSON.L",
-        "PSH.L",
-        "PSN.L",
-        "PHNX.L",
-        "PRU.L",
-        "RKT.L",
-        "REL.L",
-        "RTO.L",
-        "RMV.L",
-        "RIO.L",
-        "RR.L",
-        "RS1.L",
-        "SGE.L",
-        "SBRY.L",
-        "SDR.L",
-        "SMT.L",
-        "SGRO.L",
-        "SVT.L",
-        "SHEL.L",
-        "SMDS.L",
-        "SMIN.L",
-        "SN.L",
-        "SKG.L",
-        "SPX.L",
-        "SSE.L",
-        "STAN.L",
-        "STJ.L",
-        "TW.L",
-        "TSCO.L",
-        "ULVR.L",
-        "UU.L",
-        "UTG.L",
-        "VOD.L",
-        "WEIR.L",
-        "WTB.L",
-        "WPP.L",
+        "III.L", "ADM.L", "AAF.L", "AAL.L", "ANTO.L", "AHT.L", "ABF.L", "AZN.L", "AUTO.L", "AV.L", "BME.L", "BA.L", "BARC.L",
+        "BDEV.L", "BEZ.L", "BKG.L", "BP.L", "BATS.L", "BT-A.L", "BNZL.L", "BRBY.L", "CNA.L", "CCH.L", "CPG.L", "CTEC.L",
+        "CRDA.L", "DCC.L", "DGE.L", "DPLM.L", "EDV.L", "ENT.L", "EXPN.L", "FCIT.L", "FLTR.L", "FRAS.L", "FRES.L",
+        "GLEN.L", "GSK.L", "HLN.L", "HLMA.L", "HIK.L", "HWDN.L", "HSBA.L", "IHG.L", "IMI.L", "IMB.L", "INF.L", "ICP.L",
+        "IAG.L", "ITRK.L", "JD.L", "KGF.L", "LAND.L", "LGEN.L", "LLOY.L", "LSEG.L", "MNG.L", "MKS.L", "MRO.L", "MNDI.L",
+        "NG.L", "NWG.L", "NXT.L", "OCDO.L", "PSON.L", "PSH.L", "PSN.L", "PHNX.L", "PRU.L", "RKT.L", "REL.L", "RTO.L",
+        "RMV.L", "RIO.L", "RR.L", "RS1.L", "SGE.L", "SBRY.L", "SDR.L", "SMT.L", "SGRO.L", "SVT.L", "SHEL.L", "SMDS.L",
+        "SMIN.L", "SN.L", "SKG.L", "SPX.L", "SSE.L", "STAN.L", "STJ.L", "TW.L", "TSCO.L", "ULVR.L", "UU.L", "UTG.L",
+        "VOD.L", "WEIR.L", "WTB.L", "WPP.L",
     ]
     companies = []
     for symbol in symbols:
@@ -942,7 +852,7 @@ def company_daily_update(company: Company) -> None:
         db.session.commit()
         logging.info("Stock price updated for %s", company.StockSymbol)
     except IntegrityError:
-        # Handle any errors that occur during the update process
+        # errors
         logging.exception(
             "Error updating stock price for %s",
             company.StockSymbol,
@@ -957,13 +867,15 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
         .scalars()
         .all()
     )
-    print("#####")
+
     sentiment_scores = []
     for article in articles:
         print(article.Content)
         print(article.ArticleID)
         sentiment_scores.append(article.PredictionScore)
-    print("sentiment scores: ", sentiment_scores)
+
+    if not sentiment_scores:
+        sentiment_scores = [0, 0]
     return sentiment_scores
 
 
@@ -1093,7 +1005,8 @@ def set_all_companies_predicted_price() -> None:
                         company.StockPrice_D_4,
                         company.StockPrice_D_5,
                     ],
-                )
+                ).calculate_stock_price()
+                print("predicted stock price for ", company.CompanyName, " is: ", predicted_stock_price)
                 db.session.execute(
                     update(Company)
                     .where(Company.CompanyID == company.CompanyID)
@@ -1122,3 +1035,77 @@ def update_all_companies_daily() -> bool:
         db.session.rollback()  # Rollback changes in case of an error
         return False
     return True
+
+def get_articles_from_news_api() -> None:
+    """
+    Calls the News Api script with the names of the companies and retrieves articles
+    test with names
+    """
+    company_names = [
+        "3i", "Admiral Group", "Airtel Africa", "Anglo American", "Antofagasta", "Ashtead Group", "Associated British Foods",
+        "AstraZeneca", "Auto Trader Group", "Aviva plc", "B&M", "BAE Systems", "Barclays", "Barratt Developments",]
+    others = [
+        "Beazley", "Berkeley Group", "BP", "British American Tobacco", "BT Group", "Bunzl", "Burberry", "Centrica",
+        "Coca-Cola", "Compass Group", "Convatec", "Croda International", "DCC", "Diageo", "Diploma", "Endeavour Mining",
+        "Entain", "Experian", "F&C Investment”", "Flutter Entertainment", "Frasers Group", "Fresnillo", "Glencore", "GSK",
+        "Haleon", "Halma", "Hikma Pharmaceuticals", "Howdens Joinery", "HSBC", "InterContinental Hotels", "IMI",
+        "Imperial Brands", "Informa", "Intermediate Capital", "International Airlines Group", "Intertek", "JD Sports",
+        "Kingfisher", "Land Securities", "Legal & General", "Lloyds Banking Group", "London Stock Exchange",
+        "M&G plc", "Marks and Spencer", "Melrose Industries", "Mondi", "National Grid", "NatWest",
+        "Next plc", "Ocado Group", "Pearson", "Pershing Square Holdings", "Persimmon", "Phoenix Group", "Prudential", "Reckitt",
+        "RELX", "Rentokil Initial", "Rightmove", "Rio Tinto", "Rolls-Royce Holdings", "RS Group", "Sage Group", "Sainsbury",
+        "Schroders", "Scottish Mortgage", "Segro", "Severn Trent", "Shell", "DS Smith", "Smiths Group", "Smith & Nephew",
+        "Smurfit Kappa", "Spirax-Sarco Engineering", "SSE", "Standard Chartered", "St. James Place", "Taylor Wimpey",
+        "Tesco", "Unilever", "United Utilities", "Unite Group", "Vodafone Group", "Weir Group", "Whitbread", "WPP",
+    ]
+
+    get_news = extract_news_script.GetNewsClass(company_names)
+    articles_dict = get_news.fetch_all_articles()
+
+    for article in articles_dict:
+        get_article_from_news_script(article)
+
+
+def get_recommendation_system_info(user_id):
+    # Get the CompanyIDs the user is following
+    followed_companies = set(
+        db.session.execute(
+            db.select(Follow.CompanyID).filter(Follow.UserID == user_id),
+        )
+        .scalars()
+        .all()
+    )
+
+    # Get all companies
+    all_companies = db.session.execute(
+        db.select(Company)
+    ).scalars().all()
+
+    following_companies = []
+    non_following_companies = []
+    keywords = []
+
+    for company in all_companies:
+        company_dict = {
+            'CompanyID': company.CompanyID,
+            'CompanyName': company.CompanyName,
+            'Industry': company.Industry,
+
+        }
+
+        if company.CompanyID in followed_companies:
+            following_companies.append(company_dict)
+            # keywords for followed companies
+            company_keywords = db.session.execute(
+                db.select(Article.KeyWords)
+                .filter(Article.CompanyID == company.CompanyID)
+            ).scalars().all()
+            keywords.extend(company_keywords)  # Add keywords to the list
+        else:
+            non_following_companies.append(company_dict)
+
+    return {
+        'following': following_companies,
+        'non_following': non_following_companies,
+        'keywords': list(set(keywords))  # Remove duplicates and convert to list
+    }

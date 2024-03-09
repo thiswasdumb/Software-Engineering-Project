@@ -41,6 +41,9 @@ from database.db_schema import (
     get_articles_by_company_name,
     get_company_article_sentiment_scores,
     get_company_data_for_linear_regression,
+    get_articles_from_news_api,
+    get_recommendation_system_info,
+    set_all_companies_predicted_price,
 )
 from database.search_component import ArticleSearch
 from linear_regression.linear_regression import TTLinearRegression
@@ -124,6 +127,10 @@ if reset:
             comp_data["PriceHistoric"],
         ).calculate_stock_price()
         print(predicted_price)
+        get_articles_from_news_api()
+        set_all_companies_predicted_price()
+        #print(get_recommendation_system_info(1))
+
 
 
 MAX_EMAIL_LENGTH = 100
@@ -1264,18 +1271,6 @@ def delete_user() -> Response:
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for("home", success="Successfully deleted account."), code=301)
-
-
-def predict_stock_price() -> None:
-    """Predicts the stock price of each company."""
-    companies = db.session.execute(db.select(Company)).scalars().all()
-    for company in companies:
-        # Get the sentiment scores of the articles in the last 7 days
-        # Remove underscores if working with the actual data
-        _article_sentiment_scores: list = []
-        _company_articles = db.session.execute(
-            db.select(Article).filter_by(CompanyID=company.CompanyID),
-        )
 
 
 if __name__ == "__main__":

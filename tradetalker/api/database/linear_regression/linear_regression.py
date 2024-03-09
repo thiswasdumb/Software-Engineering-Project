@@ -20,9 +20,7 @@ end_date = datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 class TTLinearRegression:
-    """Uses linear regression to predict stock prices based on CAPM and sentiment
-    score.
-    """
+    """Uses linear regression to predict stock prices based on CAPM and sentiment score."""
 
     def __init__(
         self,
@@ -41,7 +39,8 @@ class TTLinearRegression:
         # Assign the provided company_data to the instance variable
         self.company_data = company_data
 
-    def get_data(self, url: str) -> np.ndarray | None:
+
+    def get_data(self, url: str) -> np.ndarray:
         """Fetches stock market data from the MarketStack API."""
         # Our MarketStack API
         api_key = "f22b6caa5edecd4bdcbc0b962fb54a71"
@@ -72,6 +71,7 @@ class TTLinearRegression:
         except RequestException as e:
             print("Error fetching data:", e)
             return None
+
 
     def calculate_capm(self) -> tuple[float, np.ndarray]:
         """Calculates the Capital Asset Pricing Model (CAPM) using historical data."""
@@ -123,6 +123,7 @@ class TTLinearRegression:
         # Printing the calculated CAPM value
         return capm, stock_data
 
+
     def create_dataframe(self, capm: float, stock_data: np.ndarray) -> tuple:
         """Creates a dataframe using CAPM and stock data."""
         # Access database and api to retrieve sentiment score and CAPM
@@ -131,8 +132,7 @@ class TTLinearRegression:
         if len(self.sentiment_score) == 0 or len(self.sentiment_score) == 1:
             sentiment = np.append(sentiment, [0, 0])
 
-        # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary
-        # rapid increase
+        # Calculate stock price with a scaling factor of 0.1 to not cause unnecessary rapid increase
         stock_price = stock_data[-1] * (capm + 1) * ((sentiment * 0.1) + 1)
 
         # Create the dataset
@@ -150,6 +150,7 @@ class TTLinearRegression:
         y = stocks_df["stock_price"]
 
         return x, y
+
 
     def create_test_data(self, x: tuple, y: tuple) -> tuple[list, list, list, list]:
         """Creates training and testing data for the model."""
@@ -176,6 +177,7 @@ class TTLinearRegression:
         print("Maximum stock price:", max_stock_price)
 
         return X_train, X_test, y_train, y_test
+
 
     def create_linear_model(
         self,
@@ -212,6 +214,7 @@ class TTLinearRegression:
         print(f"Mean Absolute Error: {mae}")
         return mae
 
+
     def calculate_stock_price(self) -> float:
         """Calculates the stock price using Linear Regression."""
         # Calculate CAPM and get historical stock data
@@ -233,13 +236,8 @@ class TTLinearRegression:
 
 
 if __name__ == "__main__":
-    comp_symbol = "UU.L"
-    sent_score: list = []
+    comp_symbol = 'UU.L'
+    sent_score = []
     comp_data = [175.55, 176.887, 174.987, 179.555, 180.454]
-    # Create an instance of the Linear_Regression class with provided parameters and
-    # calculate the stock price
-    pred_stock_price = TTLinearRegression(
-        comp_symbol,
-        sent_score,
-        comp_data,
-    ).calculate_stock_price()
+    # Create an instance of the Linear_Regression class with provided parameters and calculate the stock price
+    predicted_stock_price = TTLinearRegression(comp_symbol, sent_score, comp_data).calculate_stock_price()

@@ -9,10 +9,10 @@ p = PreprocessText(pos)
 #mock article data
 class Article:
     def __init__(self, id: int, header: str, content: str, labelled_sentiment: str):
-        self.id = id 
+        self.ArticleID = id 
         self.header = header 
-        self.content = content 
-        self.processed_content = p.preprocess_text(content)
+        self.Content = content 
+        self.ProcessedArticle = p.preprocess_text(content)
         self.sentiment = labelled_sentiment
 
 
@@ -36,7 +36,7 @@ Prime Minister Rishi Sunak said: "Foreign investment creates jobs and grows all 
 Chancellor Jeremy Hunt, who was at the World Economic Forum in Davos, Switzerland, added: "From business conducted online to advancements in healthcare, every growing economy relies on data centres.
 "Our country is no different and this major $1bn investment from Google is a huge vote of confidence in Britain as the largest tech economy in Europe."
 """
-article1 = Article(11, "Google has invested $1bn (£790m) to build its first UK data centre", content1, 'positive')
+article1 = Article(1, "Google has invested $1bn (£790m) to build its first UK data centre", content1, 'positive')
 
 
 content2 = """
@@ -55,7 +55,7 @@ Microsoft is among those cutting jobs, saying last month it would lay off around
 Microsoft has for several years pushed its subscription service, Game Pass, which is available on Xbox and PC but not on PlayStation. About 34mn people subscribe to Game Pass, which costs $17 a month for full access to the latest games on consoles and PC, or less for access to a limited catalogue and multiplayer features.
 """
 
-article2 = Article(22, "Microsoft looks beyond Xbox hardware for gaming growth", content2, 'positive')
+article2 = Article(2, "Microsoft looks beyond Xbox hardware for gaming growth", content2, 'positive')
 
 
 content3 = """
@@ -66,7 +66,7 @@ By the time of its death — Tuesday, when executives announced internally that 
 The car project’s demise was a testament to the way Apple has struggled to develop new products in the years since Steve Jobs’s death in 2011. The effort had four different leaders and conducted multiple rounds of layoffs. But it festered and ultimately fizzled in large part because developing the software and algorithms for a car with autonomous driving features proved too difficult.
 """
 
-article3 = Article(33,"Behind Apple’s Doomed Car Project: False Starts and Wrong Turns", content3,'negative' )
+article3 = Article(3,"Behind Apple’s Doomed Car Project: False Starts and Wrong Turns", content3,'negative' )
 
 content4 = """
 Alphabet’s Google was hit with a €2.1bn ($2.3bn) lawsuit by 32 media groups including Axel Springer and Schibsted on Wednesday, alleging that they had suffered losses due to the company’s practices in digital advertising.
@@ -77,8 +77,77 @@ Read moreThe move by the groups – which include publishers in Austria, Belgium
 “Without Google’s abuse of its dominant position, the media companies would have received significantly higher revenues from advertising and paid lower fees for ad tech services. Crucially, these funds could have been reinvested into strengthening the European media landscape,” the lawyers said.
 """
 
-article4 = Article(44,"Google sued for $2.3bn by European media groups over digital ad losses", content4, 'negative')
+article4 = Article(4,"Google sued for $2.3bn by European media groups over digital ad losses", content4, 'negative')
 
 
-articles = [article1, article2, article3, article4]
+content5 = """
+Shoppers are being urged to return a ready meal over fears it could pose a health risk to people with certain allergies.
+Scratch Meals Ltd has pulled its Chicken Pad Thai with Noodles & Veggies product as it contains peanuts which could cause potentially serious reactions to those who have a peanut allergy or intolerance. This ingredient is not listed on the label.
+For some people with peanut allergy, even tiny amounts of peanuts can cause a serious reaction that can even be life-threatening as it will cause anaphylaxis. Anaphylaxis symptoms can include swelling of the throat that makes it difficult to breathe and a severe drop in blood pressure due to shock - which would require emergency medical attention.
+The affected products have the pack size of 380g and the use by dates of January 25, January 26, January 27 and January 28 - all have the use by year 2024. The use by dates can be found on the top panel of the sleeve.
+The Scratch ready meal can be bought in both Tesco and Sainsbury's who have both issued their own product recalls. Customers who have bought the product and have a peanut allergy are being advised to return it to the store where it was bought from for a full refund - you will not need a receipt to do this. For further details on the recall, customers can contact the company over the phone on 01472 350197 or by email - hello@mealsfromscratch.co.uk.
+In its statement, Scratch Meals has confirmed that no other Scratch product has been affected and has apologised for the inconvenience it may cause.
+"""
+
+article5 = Article(5,"Ready meal sold in Tesco and Sainsbury's recalled over fears it could make people sick", content5, 'negative')
+
+
+
+content6 = """
+Rolls-Royce has entered a game-changing seven-year partnership with Azad Engineering, based in Hyderabad, to manufacture critical components for its defense aircraft engines. This strategic collaboration propels Azad Engineering into the global supply chain for Rolls-Royce’s advanced aero engines, marking a significant leap for India in defense manufacturing. Key figures express optimism, emphasizing the commitment to building a robust presence in India and contributing to the vision of an ‘Atma .. 
+Alex Zino, Executive Vice President of Rolls-Royce, expressed satisfaction with the collaboration, stating, “Strong collaboration has been at the heart of Rolls-Royce’s journey of success in India." Zino emphasized the partnership's role in strengthening the defense ecosystem and expanding the supply chain within India. Abhishek Singh, Senior Vice President of Rolls-Royce, echoed this sentiment, noting that the agreement with Azad Engineering is a significant step toward leveraging Indian compan .. 
+The strategic partnership aligns with Rolls-Royce's commitment to building a robust presence in India, as Abhishek Singh stated, "This reiterates our commitment to building our presence in India through local partnerships, furthering the vision of an ‘Atmanirbhar Bharat’." Sourcing complex components from India for aero engine programs is viewed as an advancement in enhancing India's capabilities in defense manufacturing. 
+"""
+
+article6 = Article(6,"Rolls-Royce inks seven-year deal with Azad Engineering for military aircraft engine components", content6, 'positive')
+
+
+
+content7 = """
+t's easy to match the overall market return by buying an index fund. Active investors aim to buy stocks that vastly outperform the market - but in the process, they risk under-performance. Unfortunately the JD Sports Fashion Plc (LON:JD.) share price slid 35% over twelve months. That's well below the market decline of 1.3%. Longer term shareholders haven't suffered as badly, since the stock is down a comparatively less painful 26% in three years. Shareholders have had an even rougher run lately, with the share price down 28% in the last 90 days.
+
+The recent uptick of 3.3% could be a positive sign of things to come, so let's take a look at historical fundamentals.
+
+To paraphrase Benjamin Graham: Over the short term the market is a voting machine, but over the long term it's a weighing machine. One imperfect but simple way to consider how the market perception of a company has shifted is to compare the change in the earnings per share (EPS) with the share price movement.
+
+Unfortunately JD Sports Fashion reported an EPS drop of 39% for the last year. This proportional reduction in earnings per share isn't far from the 35% decrease in the share price. Therefore one could posit that the market has not become more concerned about the company, despite the lower EPS. Rather, the share price is remains a similar multiple of the EPS, suggesting the outlook remains the same.
+We regret to report that JD Sports Fashion shareholders are down 34% for the year (even including dividends). Unfortunately, that's worse than the broader market decline of 1.3%. However, it could simply be that the share price has been impacted by broader market jitters. It might be worth keeping an eye on the fundamentals, in case there's a good opportunity. Longer term investors wouldn't be so upset, since they would have made 5%, each year, over five years. If the fundamental data continues to indicate long term sustainable growth, the current sell-off could be an opportunity worth considering. While it is well worth considering the different impacts that market conditions can have on the share price, there are other factors that are even more important. To that end, you should be aware of the 3 warning signs we've spotted with JD Sports Fashion .
+
+"""
+
+article7 = Article(7,"The past one-year earnings decline for JD Sports Fashion (LON:JD.) likely explains shareholders long-term losses", content7, 'negative')
+
+
+content8 = """
+March 6 (Reuters) - AstraZeneca (AZN.L), opens new tab plans to invest 650 million pounds ($826.80 million) in Britain to boost research, development and manufacturing of vaccines, the government announced on Wednesday as part of Finance Minister Jeremy Hunt's spring budget.
+AstraZeneca's planned investment includes 450 million pounds to research, develop and manufacture vaccines at its manufacturing site in Speke, Liverpool, and another 200 million pounds to expand its existing presence in Cambridge, where its global headquarters are located.
+"AstraZeneca’s planned investment would enhance the UK’s pandemic preparedness and demonstrates our ongoing confidence in UK life sciences," the drugmaker's chief Pascal Soriot said in a statement.
+The investment is a step change after Soriot shifted a planned new manufacturing plant to Ireland last year, saying that Britain's business climate had deterred biopharma firms from investing in the country.
+"AstraZeneca’s investment plans are a vote of confidence," Hunt said.
+Britain, in December 2020, was the first country to approve the coronavirus vaccine developed by AstraZeneca and Oxford University.
+"""
+
+article8 = Article(8, "AstraZeneca to invest 650 million pounds in UK to boost 'pandemic preparedness'", content8, 'positive')
+
+content9 = """
+Shell has refused to comment on a report that it has suspended shipments through the Red Sea amid attacks on freight by Iran-linked Houthi rebels.
+
+The oil and gas major was said, by the Wall Street Journal (WSJ), to have taken the decision last week to avoid the short route to Europe via the Suez Canal indefinitely.
+
+The paper, citing a number of sources, said there was concern within the company that US and UK strikes on Houthi targets in Yemen could be met with further escalation, placing crews and vessels at a greater risk.
+
+The WSJ also reported worries that a successful attack could trigger a massive spill in the region.
+Sky News reported last Friday how the cost of a container had leapt by more than 300% since November as prices took account of longer transit times and additional, crew, fuel and insurance costs.
+"""
+
+article9 = Article(9, "Shell 'pauses Red Sea shipments indefinitely due to safety risk", content9, 'negative')
+
+
+content10 = """
+Shares of Prudential PLC PRU, -0.28% rallied 2.90% to £7.81 Thursday, on what proved to be an all-around positive trading session for the stock market, with the FTSE 100 Index UKX, -0.43% rising 0.17% to 7,692.46.
+Prudential PLC closed £5.15 below its 52-week high (£12.96), which the company achieved on March 9.
+Trading volume (6.0 M) remained 2.1 million below its 50-day average volume of 8.1 M.
+"""
+article10 = Article(10, 'Prudential rises Thursday, outperforms market', content10, 'positive')
+articles = [article1, article2, article3, article4, article5, article6, article7, article8, article9, article10]
 
