@@ -700,7 +700,7 @@ def add_data() -> None:
             "New article: The headline of Article 1",
         ),
         Notification(
-            2,
+            1,
             "New article: The headline of Article 2",
         ),
     ]
@@ -933,8 +933,6 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
 
     sentiment_scores = []
     for article in articles:
-        print(article.Content)
-        print(article.ArticleID)
         sentiment_scores.append(article.PredictionScore)
 
     if not sentiment_scores:
@@ -1238,7 +1236,8 @@ def get_articles_from_news_api() -> None:
                 .first()
             )
             company_id = company.CompanyID
-            notification_content = "New notification for " + company_name
+            notification_content = "Great news for " if article["PredictionScore"] > HIGHLY_POSITIVE_SCORE else "Terrible news for "
+            notification_content += company_name
             new_notification = Notification(article_id, notification_content)
             db.session.add(new_notification)
             db.session.commit()
