@@ -127,8 +127,8 @@ if reset:
             comp_data["PriceHistoric"],
         ).calculate_stock_price()
         print(predicted_price)
-        #set_all_companies_predicted_price()
         get_articles_from_news_api()
+        set_all_companies_predicted_price()
         #print(get_recommendation_system_info(1))
 
 
@@ -1240,22 +1240,6 @@ def delete_user() -> Response:
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for("home", success="Successfully deleted account."), code=301)
-
-
-def daily_company_update() -> bool:
-    """Calls once a day (?) to update price_related fields."""
-    return update_all_companies_daily()
-
-
-def predict_stock_price() -> None:
-    """Predicts the stock price of each company."""
-    companies = db.session.execute(db.select(Company)).scalars().all()
-    for company in companies:
-        # get the sentiment scores of the articles in the last 7 days
-        article_sentiment_scores = []
-        company_articles = db.session.execute(
-            db.select(Article).filter_by(CompanyID=company.CompanyID),
-        )
 
 
 if __name__ == "__main__":
