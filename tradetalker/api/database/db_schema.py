@@ -128,15 +128,16 @@ class Company(db.Model):  # type: ignore [name-defined]
         """Selects a company by its ID."""
         try:
             company = (
-                db.session.query(Company)
+                db.session.execute(db.select(Company)
                 .filter(Company.CompanyID == self.CompanyID)
                 .first()
+                ).scalars().all()
             )
         except SQLAlchemyError:
             logging.exception("Found an error while selecting the company by ID.")
             return None
         else:
-            return company.to_dict()
+            return company  # type: ignore [union-attr]
 
     def select_company_by_name(self) -> str | None:
         """Selects a company by its name."""
