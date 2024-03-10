@@ -53,13 +53,18 @@ export default function DashboardComponent({
             <div className='flex w-full flex-col md:w-[69%]'>
               <RecommendedArticles />
               <RecommendedCompanies isLoggedIn={isLoggedIn} />
+              <div className='hidden md:block'>
+                <ShareSite />
+              </div>
             </div>
             <div className='flex w-full flex-col md:w-[30%]'>
               <NewsFeed />
               <FollowedCompanies isLoggedIn={isLoggedIn} />
             </div>
           </div>
-          <ShareSite />
+          <div className='block md:hidden'>
+            <ShareSite />
+          </div>
         </div>
       </>
     )
