@@ -47,7 +47,6 @@ class ArticleSearch:
         self.articles_id = {}
         for i, article in enumerate(self.articles):
             self.articles_id[i] = article.ArticleID
-        print(self.articles_id)
 
     def search(self, search_term: str, relevance_score: float = 0.2) -> list:
         """Searches for articles based on the user query. Returns a list of articles with their similarity scores."""
