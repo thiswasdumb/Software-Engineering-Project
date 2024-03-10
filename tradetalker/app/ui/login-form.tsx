@@ -46,8 +46,7 @@ export default function LoginForm({ isLoggedIn }: { isLoggedIn: boolean }) {
         }, 6000);
       }
       if (message.success) {
-        router.push('/dashboard');
-        toast.success(message.success);
+        router.push(`/dashboard?success=${message.success}`);
         router.refresh();
       }
     } catch (error) {
