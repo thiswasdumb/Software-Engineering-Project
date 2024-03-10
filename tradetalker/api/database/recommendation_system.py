@@ -1,3 +1,5 @@
+"""Recommends companies to follow based on the user's followed companies and keywords from articles."""
+
 import random
 import re
 
@@ -13,7 +15,8 @@ class RecommendationSystem:
 
     # data is a dict, first two keys' value are a list of dicts (records), last key is a list of strings, each string being 20 words separated by commas
     # keys: following, non_following, keywords
-    def __init__(self, data):
+    def __init__(self, data: dict) -> None:
+        """Initializes the RecommendationSystem class with the provided parameters."""
         self.industry_groups = {
             "Finance and Banking": [
                 "Insurance - Property & Casualty",
@@ -91,7 +94,7 @@ class RecommendationSystem:
                 "Other Precious Metals & Mining",
             ],
         }
-        self.rec = set({})
+        self.rec: set = set({})
         self.followed = pd.DataFrame.from_dict(data["following"])
         self.not_followed = pd.DataFrame.from_dict(data["non_following"])
 
@@ -100,8 +103,8 @@ class RecommendationSystem:
             [] if len(data["keywords"]) == 0 else ",".join(data["keywords"]).split(",")
         )
 
-    # Output function
-    def recommend(self):
+    def recommend(self) -> set:
+        """Returns the recommended companies."""
         if self.not_followed.empty:
             return set({})
         self.article_recs()
@@ -110,8 +113,8 @@ class RecommendationSystem:
         self.leftover_recs()
         return self.rec
 
-    # function gets n non-followed companies from database from a specified industry group
-    def get_companies(self, num, grp):
+    def get_companies(self, num: int, grp: str) -> list:
+        """Gets n companies from a specified industry group."""
         results = []
         # get all companies of the selected industry and shuffles
         industry_filtered = self.not_followed[
@@ -126,8 +129,8 @@ class RecommendationSystem:
             results.append(industry_filtered[i])
         return results
 
-    def article_recs(self):
-        # adds companies appearing in key words to recommendations
+    def article_recs(self) -> None:
+        """Adds companies appearing in key words to recommendations."""
         # certain words appear in company names but do not imply any specific company, so should be blacklisted
         blacklist = set(
             (
@@ -159,7 +162,8 @@ class RecommendationSystem:
             if out[0]:
                 self.rec.add(out[1].iloc[0])
 
-    def industry_recs(self):
+    def industry_recs(self) -> None:
+        """Adds companies from the same industry as followed to recommendations."""
         # get followed companies, their industry and dividend yield
         total_count = len(self.followed)
         # get proportion of followed covered by each industry
@@ -181,7 +185,8 @@ class RecommendationSystem:
                 for comp in companies:
                     self.rec.add(comp)
 
-    def leftover_recs(self):
+    def leftover_recs(self) -> None:
+        """Adds random companies to recommendations."""
         # if not many companies are recommended, adds some at random
         if len(self.rec) < 10:
             leftovers = self.not_followed["CompanyID"].to_list()
@@ -194,7 +199,8 @@ class RecommendationSystem:
                 self.rec.add(x)
 
     # check key word is in a not_followed CompanyName
-    def isCompany(self, wrd):
+    def isCompany(self, wrd: str) -> tuple:
+        """Checks if a word is a company. If it is, returns the company id."""
         pattern = r"\b" + re.escape(wrd) + r"\b"
         x = self.not_followed.loc[
             self.not_followed.apply(
