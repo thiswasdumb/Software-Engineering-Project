@@ -33,7 +33,7 @@ export default function RecommendedArticles() {
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
       <h2 className='text-xl'>New articles about companies you follow</h2>
-      {articles.length === 0 && <p>No new articles.</p>}
+      {articles.length === 0 && <p>No new articles. Start following some companies!</p>}
       {articles.map((article, index) => (
         <div
           className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
