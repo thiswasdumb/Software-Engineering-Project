@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/api')
 
 from database.search_component import ArticleSearch
-from database.tf_idf import TF_IDF 
+from database.tf_idf import TFIDF 
 from database.preprocessing import GetPOSClass, PreprocessText
 from database.vader import SentimentAnalyser
 from testing_articles import articles # Testing data,  article objects 
@@ -22,7 +22,7 @@ class TestTF_IDF(unittest.TestCase):
             new_dict['ArticleID'] = a.ArticleID
             converted.append(new_dict)
 
-        self.tf_idf = TF_IDF(converted)
+        self.tf_idf = TFIDF(converted) #match input of tf-idf class, which are the article dictionary objects 
         get_pos_class = GetPOSClass() 
         self.preprocess_text = PreprocessText(get_pos_class)
         self.s = SentimentAnalyser()

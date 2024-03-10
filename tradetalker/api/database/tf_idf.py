@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import (
 )
 
 
+
 class TFIDF:
     """Calculates the TF-IDF scores for each article and returns the top n words for each article."""
 
@@ -78,10 +79,10 @@ class TFIDF:
             columns=[f"Article {matrix_id}"],
         )
         # retrieving only the feature columns (tf_idf score)
-        return top_terms[[f"Article {matrix_id}"]].to_numpy.tolist()  # type: ignore [attr-defined]
+        return top_terms[[f"Article {matrix_id}"]].to_numpy().tolist()  # type: ignore [attr-defined]
 
 
 # Example use case
 
-# tf_idf_object = TFIDF(processed_articles)
+# tf_idf_object = TFIDF(article_object_lists)
 # tf_idf_object.get_top_n_terms(10)
