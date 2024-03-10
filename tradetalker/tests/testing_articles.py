@@ -3,10 +3,11 @@ import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker')
 
 from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
+
 pos = GetPOSClass()
 p = PreprocessText(pos)
 
-#mock article data
+# Mock article data
 class Article:
     def __init__(self, id: int, header: str, content: str, labelled_sentiment: str):
         self.ArticleID = id 
@@ -16,11 +17,12 @@ class Article:
         self.sentiment = labelled_sentiment
 
 
-content1 = """Google has invested $1bn (£790m) to build its first UK data centre.
+content1 = """
+Google has invested $1bn (£790m) to build its first UK data centre.
 The tech giant said construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025.
 Google stressed it was too early to say how many jobs would be created but it would need engineers, project managers, data centre technicians, electricians, catering and security personnel.
 The prime minister said it showed the UK had "huge potential for growth".
-The project marked the latest investment by a major US tech firm in Britain, after Microsoft announced it would invest £2.5bn to expand data centres for artificial intelligence (AI) across the UK. Prime Minister Rishi Sunak hailed the investment as proof the UK has "huge potential" as a technology hub
+The project marked the latest investment by a major US tech firm in Britain, after Microsoft announced it would invest £2.5bn to expand data centres for artificial intelligence (AI) across the UK. Prime Minister Rishi Sunak hailed the investment as proof the UK has "huge potential" as a technology hub.
 The new Hertfordshire facility would add to Google's 27 data centres worldwide, with sites across 11 countries and 13 in the US.
 It said the site would help power popular digital services, such as Google Cloud, Gmail, Docs, Sheets, search and maps.
 It would also "play a critical role in supporting the company's AI innovations and will provide the UK with much-needed compute capacity".
@@ -103,16 +105,13 @@ article6 = Article(6,"Rolls-Royce inks seven-year deal with Azad Engineering for
 
 
 
+
 content7 = """
 t's easy to match the overall market return by buying an index fund. Active investors aim to buy stocks that vastly outperform the market - but in the process, they risk under-performance. Unfortunately the JD Sports Fashion Plc (LON:JD.) share price slid 35% over twelve months. That's well below the market decline of 1.3%. Longer term shareholders haven't suffered as badly, since the stock is down a comparatively less painful 26% in three years. Shareholders have had an even rougher run lately, with the share price down 28% in the last 90 days.
-
 The recent uptick of 3.3% could be a positive sign of things to come, so let's take a look at historical fundamentals.
-
 To paraphrase Benjamin Graham: Over the short term the market is a voting machine, but over the long term it's a weighing machine. One imperfect but simple way to consider how the market perception of a company has shifted is to compare the change in the earnings per share (EPS) with the share price movement.
-
 Unfortunately JD Sports Fashion reported an EPS drop of 39% for the last year. This proportional reduction in earnings per share isn't far from the 35% decrease in the share price. Therefore one could posit that the market has not become more concerned about the company, despite the lower EPS. Rather, the share price is remains a similar multiple of the EPS, suggesting the outlook remains the same.
 We regret to report that JD Sports Fashion shareholders are down 34% for the year (even including dividends). Unfortunately, that's worse than the broader market decline of 1.3%. However, it could simply be that the share price has been impacted by broader market jitters. It might be worth keeping an eye on the fundamentals, in case there's a good opportunity. Longer term investors wouldn't be so upset, since they would have made 5%, each year, over five years. If the fundamental data continues to indicate long term sustainable growth, the current sell-off could be an opportunity worth considering. While it is well worth considering the different impacts that market conditions can have on the share price, there are other factors that are even more important. To that end, you should be aware of the 3 warning signs we've spotted with JD Sports Fashion .
-
 """
 
 article7 = Article(7,"The past one-year earnings decline for JD Sports Fashion (LON:JD.) likely explains shareholders long-term losses", content7, 'negative')
@@ -131,11 +130,8 @@ article8 = Article(8, "AstraZeneca to invest 650 million pounds in UK to boost '
 
 content9 = """
 Shell has refused to comment on a report that it has suspended shipments through the Red Sea amid attacks on freight by Iran-linked Houthi rebels.
-
 The oil and gas major was said, by the Wall Street Journal (WSJ), to have taken the decision last week to avoid the short route to Europe via the Suez Canal indefinitely.
-
 The paper, citing a number of sources, said there was concern within the company that US and UK strikes on Houthi targets in Yemen could be met with further escalation, placing crews and vessels at a greater risk.
-
 The WSJ also reported worries that a successful attack could trigger a massive spill in the region.
 Sky News reported last Friday how the cost of a container had leapt by more than 300% since November as prices took account of longer transit times and additional, crew, fuel and insurance costs.
 """
@@ -149,5 +145,6 @@ Prudential PLC closed £5.15 below its 52-week high (£12.96), which the company
 Trading volume (6.0 M) remained 2.1 million below its 50-day average volume of 8.1 M.
 """
 article10 = Article(10, 'Prudential rises Thursday, outperforms market', content10, 'positive')
+
 articles = [article1, article2, article3, article4, article5, article6, article7, article8, article9, article10]
 

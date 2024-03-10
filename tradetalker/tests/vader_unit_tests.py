@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 
+#code below allows mac users to run tests from this directory, allows PATH to know where the dependencies are 
 import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/api')
 

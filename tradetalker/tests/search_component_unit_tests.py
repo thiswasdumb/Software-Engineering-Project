@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 
+#code below allows mac users to run tests from this directory, allows PATH to know where the dependencies are 
 import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/api')
 
@@ -111,7 +112,7 @@ class TestSearchComponent(unittest.TestCase):
         self.assertEqual(test_result, article.sentiment, msg=f"FAILED FOR: {article.header} where compound score was {compound_score}")
 
 
-
+    #single test using subtest context
     # def test_keywords(self):
     #     for article_index, article in enumerate(self.sample_tests):
     #         with self.subTest(article=article):
