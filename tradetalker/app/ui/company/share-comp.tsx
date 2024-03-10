@@ -28,12 +28,14 @@ export default function ShareCompany({
   diff,
   change,
   stockLastDays,
+  articles,
 }: {
   id: string;
   company: any;
   diff: number;
   change: number;
   stockLastDays: number[];
+  articles: any[];
 }) {
   let diffStr = '';
   let changeStr = '';
@@ -42,6 +44,8 @@ export default function ShareCompany({
   let mean = 0;
   let median = 0;
   let sd = 0;
+
+  const articleTitles = articles.map((article) => `${article.title}`);
 
   if (diff > 0) {
     diffStr = '+' + diff.toFixed(2);
@@ -95,7 +99,11 @@ export default function ShareCompany({
     doc.text(`Min: ${min}`, 40, 700).setFontSize(12);
     doc.text(`Mean: ${mean}`, 40, 720).setFontSize(12);
     doc.text(`Median: ${median}`, 40, 740).setFontSize(12);
-    doc.text(`Standard deviation: ${sd}`, 40, 760).setFontSize(12);
+    doc.text(`Standard deviation: ${sd}`, 40, 760).setFontSize(16);
+    doc.text('Articles:', 300, 660).setFontSize(10);
+    doc
+      .text(articleTitles.join('\n\n'), 300, 680, { maxWidth: 250 })
+      .setFontSize(12);
     doc.save(`${company.symbol}-summary.pdf`);
   }
 

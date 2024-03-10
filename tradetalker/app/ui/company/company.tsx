@@ -4,8 +4,17 @@ import LineChart from '@/app/ui/company/linechart';
 import FollowButton from '@/app/ui/company/follow-button';
 import ScrollUp from '../scroll-up';
 import Description from './description';
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  ArrowUpCircleIcon,
+  ArrowDownCircleIcon,
+  MinusCircleIcon,
+} from '@heroicons/react/24/solid';
 import ShareCompany from '../company/share-comp';
+import dayjs from 'dayjs';
+import RelativeTime from 'dayjs/plugin/relativeTime';
+import Link from 'next/link';
 
 /**
  *
@@ -18,6 +27,19 @@ async function getCompanyData(id: string) {
   });
   if (!response.ok) {
     throw new Error('Error fetching company');
+  }
+  return response.json();
+}
+
+async function getArticleData(id: string) {
+  const response = await fetch(
+    `http:/localhost:8080/api/get_company_articles/${id}`,
+    {
+      cache: 'no-store',
+    }
+  );
+  if (!response.ok) {
+    throw new Error('Error fetching articles');
   }
   return response.json();
 }
@@ -52,6 +74,9 @@ export default async function CompanyPage({
   // Calculate the difference and percentage change in stock price
   const diff = companyData.stock_price - companyData.stock_d7;
   const perc_change = (diff / companyData.stock_d7) * 100;
+
+  const articleData: any[] = await getArticleData(id);
+  dayjs.extend(RelativeTime);
 
   return (
     <>
@@ -106,19 +131,65 @@ export default async function CompanyPage({
               </div>
             </div>
             <LineChart stockLastDays={stockLastDays} />
-            <ShareCompany
-              id={id}
-              company={companyData}
-              diff={diff}
-              change={perc_change}
-              stockLastDays={stockLastDays}
-            />
           </div>
           <div className='mt-2 flex w-full flex-col lg:w-[40%] lg:rounded-lg lg:bg-slate-300 lg:p-4'>
             <h2 className='text-xl'>Description</h2>
             <hr className='border-1 my-2 rounded-lg border-slate-400' />
             <Description description={companyData.description} />
           </div>
+        </div>
+        <div className='flex flex-col items-start justify-between'>
+          <div className='mt-4 rounded-lg bg-slate-300 p-4'>
+            {articleData.length === 0 ? (
+              <p>No articles mentioning this company.</p>
+            ) : (
+              <h2 className='text-xl'>Recent articles</h2>
+            )}
+            {articleData.map((article, index) => (
+              <div
+                className='my-2 rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
+                key={index}
+              >
+                <Link href={`/article/${article.id}`}>
+                  <div className='flex flex-row flex-wrap items-center justify-between'>
+                    <h3 className='mr-2 text-lg'>{article.title}</h3>
+                    <span className='text-sm text-gray-600'>
+                      {dayjs(article.date).fromNow()}
+                    </span>
+                  </div>
+                  <hr className='border-1 my-2 rounded-lg border-slate-300' />
+                  <p>{article.summary}</p>
+                  <hr className='border-1 my-2 rounded-lg border-slate-300' />
+                  <div className='flex flex-row items-center justify-between'>
+                    {article.score > 0.33 ? (
+                      <div className='flex flex-row items-center'>
+                        <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
+                        <p className='pl-2 text-green-600'>Positive</p>
+                      </div>
+                    ) : article.score < -0.33 ? (
+                      <div className='flex flex-row items-center'>
+                        <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
+                        <p className='pl-2 text-red-600'>Negative</p>
+                      </div>
+                    ) : (
+                      <div className='flex flex-row items-center'>
+                        <MinusCircleIcon className='h-10 w-10 text-slate-400' />
+                        <p className='pl-2 text-slate-500'>Neutral</p>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+          <ShareCompany
+            id={id}
+            company={companyData}
+            diff={diff}
+            change={perc_change}
+            stockLastDays={stockLastDays}
+            articles={articleData}
+          />
         </div>
       </div>
     </>
