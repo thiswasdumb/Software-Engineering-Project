@@ -934,23 +934,31 @@ def company_daily_update(company: Company) -> None:
 
 def get_company_article_sentiment_scores(company_id: int) -> list:
     """Returns all the sentiment scores of the articles related to a company within the last n days."""
+
+    # Fetch articles related to the specified company from the database
     articles = (
         db.session.execute(db.select(Article).filter_by(CompanyID=company_id))
         .scalars()
         .all()
     )
 
-    sentiment_scores = []
+    sentiment_scores = []  # List to store sentiment scores
+
+    # Extract sentiment scores from each article
     for article in articles:
         sentiment_scores.append(article.PredictionScore)
 
+    # If no sentiment scores found, default to [0, 0]
     if not sentiment_scores:
         sentiment_scores = [0, 0]
-    return sentiment_scores
+
+    return sentiment_scores  # Return the sentiment scores
 
 
 def get_articles_by_company_name(company_name: str) -> list:
     """Returns all articles related to a company, for keyword analysis."""
+
+    # Fetch company details from the database based on the provided company name
     company = (
         db.session.execute(
             db.select(Company).filter(Company.CompanyName.like(f"%{company_name}%")),
@@ -958,18 +966,24 @@ def get_articles_by_company_name(company_name: str) -> list:
         .scalars()
         .first()
     )
+
+    # If no company found, print a message and return an empty list
     if not company:
         print("No result found for company named: ", company_name)
         return []
 
+    # Fetch articles related to the company
     articles = (
         db.session.execute(db.select(Article).filter_by(CompanyID=company.CompanyID))
         .scalars()
         .all()
     )
+
+    # If no articles found, print a message
     if not articles:
         print("No articles found for the company ", company_name)
-    return articles
+
+    return articles  # Return the articles related to the company
 
 
 def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
@@ -985,25 +999,28 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
         Any errors encountered during the execution will be propagated.
 
     """
+
+    # Iterate through each article-keywords pair
     for article_keywords_pair in article_keywords_pairs:
         try:
-            # Fixing the syntax errors
+            # Update the keywords for the corresponding article ID
             db.session.execute(
                 update(Article)
                 .where(Article.ArticleID == article_keywords_pair.keys())
                 .values(KeyWords=article_keywords_pair.values()),
             )
-            db.session.commit()
+            db.session.commit()  # Commit the changes to the database
         except IntegrityError as e:
-            # Handle exceptions appropriately
+            # Handle exceptions
             print(
                 f"An error occurred in the member at article id {article_keywords_pair.keys()}: {e}",
             )
 
 
 def get_article_from_news_script(article: dict) -> int | None:
-    """Inserts the article recieved from the news script into the database."""
-    # need the company_id first
+    """Inserts the article received from the news script into the database."""
+
+    # Retrieve company details from the database based on the provided company name
     company = (
         db.session.execute(
             db.select(Company).filter(
@@ -1013,10 +1030,13 @@ def get_article_from_news_script(article: dict) -> int | None:
         .scalars()
         .first()
     )
+
+    # If company not found, print a message and return None
     if not company:
         print("Couldn't find the company name in the table for ", article["Company"])
         return None
 
+    # Create a new Article object with the provided article details
     new_article = Article(
         company_id=company.CompanyID,
         title=article["Title"],
@@ -1027,21 +1047,33 @@ def get_article_from_news_script(article: dict) -> int | None:
         content=article["Content"],
         processed_article=article["ProcessedArticle"],
     )
+
+    # Add the new article to the database session and commit changes
     db.session.add(new_article)
     db.session.commit()
-    return new_article.ArticleID
+
+    return new_article.ArticleID  # Return the ID of the newly inserted article
 
 
 def get_all_company_names() -> list:
-    """Returns the name of all articles."""
+    """Returns the name of all companies."""
+
+    # Retrieve all companies from the database
     companies = db.session.execute(db.select(Company)).scalars().all()
+
+    # Extract company names from the retrieved companies
     company_names = [company.CompanyName for company in companies]
-    return company_names
+
+    return company_names  # Return the list of company names
 
 
 def get_company_data_for_linear_regression(company: Company) -> dict:
     """Returns the data needed for our linear regression model in the form of a dict."""
+
+    # Initialize a dictionary to store company data
     company_data = {"StockSymbol": company.StockSymbol}
+
+    # Prepare historic stock prices data
     price_historic = [
         company.StockPrice_D_1,
         company.StockPrice_D_2,
@@ -1050,10 +1082,13 @@ def get_company_data_for_linear_regression(company: Company) -> dict:
         company.StockPrice_D_5,
     ]
     company_data["PriceHistoric"] = price_historic
+
+    # Retrieve sentiment scores of articles related to the company
     company_data["SentimentScores"] = get_company_article_sentiment_scores(
         company.CompanyID,
     )
-    return company_data
+
+    return company_data  # Return the dictionary containing company data
 
 
 def set_all_companies_predicted_price() -> None:
@@ -1061,9 +1096,13 @@ def set_all_companies_predicted_price() -> None:
     to be called after the articles have been fetched.
     """
     try:
+        # Retrieve all companies from the database
         companies = db.session.execute(db.select(Company)).scalars().all()
+
+        # Iterate through each company
         for company in companies:
             try:
+                # Calculate the predicted stock price using linear regression model
                 predicted_stock_price = TTLinearRegression(
                     company.StockSymbol,
                     get_company_article_sentiment_scores(company.CompanyID),
@@ -1075,12 +1114,14 @@ def set_all_companies_predicted_price() -> None:
                         company.StockPrice_D_5,
                     ],
                 ).calculate_stock_price()
+
+                # Update the predicted stock price in the database
                 db.session.execute(
                     update(Company)
                     .where(Company.CompanyID == company.CompanyID)
                     .values(PredictedStockPrice=predicted_stock_price),
                 )
-                db.session.commit()
+                db.session.commit()  # Commit the changes
             except SQLAlchemyError as e:
                 # Handle exceptions appropriately
                 print(
@@ -1089,7 +1130,6 @@ def set_all_companies_predicted_price() -> None:
     except SQLAlchemyError as ex:
         # Handle exceptions appropriately
         print(f"An error occurred while retrieving companies: {ex}")
-
 
 def update_all_companies_daily() -> bool:
     """Updates daily stock prices for all companies."""
@@ -1106,9 +1146,11 @@ def update_all_companies_daily() -> bool:
 
 
 def get_articles_from_news_api() -> None:
-    """Calls the News Api script with the names of the companies and retrieves articles
+    """Calls the News API script with the names of the companies and retrieves articles
     test with names.
     """
+
+    # List of company names
     company_names = [
         "3i",
         "Admiral Group",
@@ -1144,7 +1186,7 @@ def get_articles_from_news_api() -> None:
     others = [
         "Entain",
         "Experian",
-        "F&C Investment”",
+        "F&C Investment",
         "Flutter Entertainment",
         "Frasers Group",
         "Fresnillo",
@@ -1214,18 +1256,23 @@ def get_articles_from_news_api() -> None:
         "WPP",
     ]
 
+    # Initialize News API class with company names
     get_news = extract_news_script.GetNewsClass(company_names)
+
+    # Fetch all articles from the News API
     articles_dict = get_news.fetch_all_articles()
 
+    # Iterate through fetched articles
     for article in articles_dict:
+        # Insert the article into the database
         article_id = get_article_from_news_script(article)
-        """
-        if the article is notification-worthy, we create and broadcast the notification
-        """
+
+        # Check if the article is notification-worthy
         if (
-            article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
-            or article["PredictionScore"] < HIGHLY_NEGATIVE_SCORE
+                article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
+                or article["PredictionScore"] < HIGHLY_NEGATIVE_SCORE
         ):
+            # Retrieve company details from the database
             company_name = article["Company"]
             company = (
                 db.session.execute(
@@ -1237,17 +1284,26 @@ def get_articles_from_news_api() -> None:
                 .first()
             )
             company_id = company.CompanyID
-            notification_content = "Great news for " if article["PredictionScore"] > HIGHLY_POSITIVE_SCORE else "Terrible news for "
+
+            # Create notification content based on prediction score
+            notification_content = "Great news for " if article[
+                                                            "PredictionScore"] > HIGHLY_POSITIVE_SCORE else "Terrible news for "
             notification_content += company_name
+
+            # Create and insert new notification into the database
             new_notification = Notification(article_id, notification_content)
             db.session.add(new_notification)
             db.session.commit()
+
+            # Insert user notification read objects
             insert_user_notification_read_objects(new_notification, company_id)
 
 
 def get_company_followers(company_id: int) -> list:
     """Given a company_id, returns all the user_id of users following that company."""
-    return (
+
+    # Execute a database query to fetch user IDs following the specified company
+    followers = (
         db.session.execute(
             db.select(Follow.UserID).filter(Follow.CompanyID == company_id),
         )
@@ -1255,25 +1311,34 @@ def get_company_followers(company_id: int) -> list:
         .all()
     )
 
+    return followers  # Return the list of user IDs following the company
+
 
 def insert_user_notification_read_objects(
-    notification: Notification,
-    company_id: int,
+        notification: Notification,
+        company_id: int,
 ) -> None:
     """Given a new notification and the related company_id, creates individual UNR
     objects for users following that company.
     """
+
+    # Retrieve user IDs following the specified company
     user_ids = get_company_followers(company_id)
+
+    # Create a list of UserNotificationRead objects
     user_notification_read_list = [
-        UserNotificationRead(user_id, notification.NotificationIDa)
+        UserNotificationRead(user_id, notification.NotificationID)
         for user_id in user_ids
     ]
+
+    # Add all UserNotificationRead objects to the session and commit changes
     db.session.add_all(user_notification_read_list)
     db.session.commit()
 
 
 def get_recommendation_system_info(user_id: int) -> dict:
     """Returns the information needed for the recommendation system."""
+
     # Get the CompanyIDs the user is following
     followed_companies = set(
         db.session.execute(
@@ -1290,6 +1355,7 @@ def get_recommendation_system_info(user_id: int) -> dict:
     non_following_companies = []
     keywords = []
 
+    # Iterate through all companies
     for company in all_companies:
         company_dict = {
             "CompanyID": company.CompanyID,
@@ -1297,9 +1363,10 @@ def get_recommendation_system_info(user_id: int) -> dict:
             "Industry": company.Industry,
         }
 
+        # Check if the user is following the company
         if company.CompanyID in followed_companies:
             following_companies.append(company_dict)
-            # keywords for followed companies
+            # Retrieve keywords for followed companies
             company_keywords = (
                 db.session.execute(
                     db.select(Article.KeyWords).filter(
