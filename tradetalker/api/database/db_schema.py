@@ -145,7 +145,7 @@ class Company(db.Model):  # type: ignore [name-defined]
         else:
             return company.to_dict()  # type: ignore [union-attr]
 
-    def select_company_by_name(self) -> str | None:
+    def select_company_by_name(self) -> dict:
         """Selects a company by its name."""
         try:
             company = (
@@ -355,6 +355,7 @@ class Article(db.Model):  # type: ignore [name-defined]
         self.PredictionScore = prediction_score
         self.ProcessedArticle = processed_article
 
+
 """
 @db.event.listens_for(Article, "after_insert")
 def receive_after_insert(mapper, connection, target) -> None:
@@ -387,6 +388,7 @@ def receive_after_insert(mapper, connection, target) -> None:
         logging.exception(e)
         connection.rollback()
 """
+
 
 class Follow(db.Model):  # type: ignore [name-defined]
     """Contains the details of the companies that the users follow."""
@@ -934,7 +936,6 @@ def company_daily_update(company: Company) -> None:
 
 def get_company_article_sentiment_scores(company_id: int) -> list:
     """Returns all the sentiment scores of the articles related to a company within the last n days."""
-
     # Fetch articles related to the specified company from the database
     articles = (
         db.session.execute(db.select(Article).filter_by(CompanyID=company_id))
@@ -942,11 +943,7 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
         .all()
     )
 
-    sentiment_scores = []  # List to store sentiment scores
-
-    # Extract sentiment scores from each article
-    for article in articles:
-        sentiment_scores.append(article.PredictionScore)
+    sentiment_scores = [article.PredictionScore for article in articles]
 
     # If no sentiment scores found, default to [0, 0]
     if not sentiment_scores:
@@ -957,7 +954,6 @@ def get_company_article_sentiment_scores(company_id: int) -> list:
 
 def get_articles_by_company_name(company_name: str) -> list:
     """Returns all articles related to a company, for keyword analysis."""
-
     # Fetch company details from the database based on the provided company name
     company = (
         db.session.execute(
@@ -999,7 +995,6 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
         Any errors encountered during the execution will be propagated.
 
     """
-
     # Iterate through each article-keywords pair
     for article_keywords_pair in article_keywords_pairs:
         try:
@@ -1019,7 +1014,6 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
 
 def get_article_from_news_script(article: dict) -> int | None:
     """Inserts the article received from the news script into the database."""
-
     # Retrieve company details from the database based on the provided company name
     company = (
         db.session.execute(
@@ -1057,19 +1051,13 @@ def get_article_from_news_script(article: dict) -> int | None:
 
 def get_all_company_names() -> list:
     """Returns the name of all companies."""
-
     # Retrieve all companies from the database
     companies = db.session.execute(db.select(Company)).scalars().all()
-
-    # Extract company names from the retrieved companies
-    company_names = [company.CompanyName for company in companies]
-
-    return company_names  # Return the list of company names
+    return [company.CompanyName for company in companies]
 
 
 def get_company_data_for_linear_regression(company: Company) -> dict:
     """Returns the data needed for our linear regression model in the form of a dict."""
-
     # Initialize a dictionary to store company data
     company_data = {"StockSymbol": company.StockSymbol}
 
@@ -1131,6 +1119,7 @@ def set_all_companies_predicted_price() -> None:
         # Handle exceptions appropriately
         print(f"An error occurred while retrieving companies: {ex}")
 
+
 def update_all_companies_daily() -> bool:
     """Updates daily stock prices for all companies."""
     try:
@@ -1149,7 +1138,6 @@ def get_articles_from_news_api() -> None:
     """Calls the News API script with the names of the companies and retrieves articles
     test with names.
     """
-
     # List of company names
     company_names = [
         "3i",
@@ -1269,8 +1257,8 @@ def get_articles_from_news_api() -> None:
 
         # Check if the article is notification-worthy
         if (
-                article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
-                or article["PredictionScore"] < HIGHLY_NEGATIVE_SCORE
+            article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
+            or article["PredictionScore"] < HIGHLY_NEGATIVE_SCORE
         ):
             # Retrieve company details from the database
             company_name = article["Company"]
@@ -1284,10 +1272,11 @@ def get_articles_from_news_api() -> None:
                 .first()
             )
             company_id = company.CompanyID
-
-            # Create notification content based on prediction score
-            notification_content = "Great news for " if article[
-                                                            "PredictionScore"] > HIGHLY_POSITIVE_SCORE else "Terrible news for "
+            notification_content = (
+                "Great news for "
+                if article["PredictionScore"] > HIGHLY_POSITIVE_SCORE
+                else "Terrible news for "
+            )
             notification_content += company_name
 
             # Create and insert new notification into the database
@@ -1301,9 +1290,9 @@ def get_articles_from_news_api() -> None:
 
 def get_company_followers(company_id: int) -> list:
     """Given a company_id, returns all the user_id of users following that company."""
-
     # Execute a database query to fetch user IDs following the specified company
-    followers = (
+    # Return the list of user IDs following the company
+    return (
         db.session.execute(
             db.select(Follow.UserID).filter(Follow.CompanyID == company_id),
         )
@@ -1311,17 +1300,14 @@ def get_company_followers(company_id: int) -> list:
         .all()
     )
 
-    return followers  # Return the list of user IDs following the company
-
 
 def insert_user_notification_read_objects(
-        notification: Notification,
-        company_id: int,
+    notification: Notification,
+    company_id: int,
 ) -> None:
     """Given a new notification and the related company_id, creates individual UNR
     objects for users following that company.
     """
-
     # Retrieve user IDs following the specified company
     user_ids = get_company_followers(company_id)
 
@@ -1338,7 +1324,6 @@ def insert_user_notification_read_objects(
 
 def get_recommendation_system_info(user_id: int) -> dict:
     """Returns the information needed for the recommendation system."""
-
     # Get the CompanyIDs the user is following
     followed_companies = set(
         db.session.execute(

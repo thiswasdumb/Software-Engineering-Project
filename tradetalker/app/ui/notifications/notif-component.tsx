@@ -62,10 +62,10 @@ export default function NotifClientComponent({
         <h1 className='text-2xl'>Notifications</h1>
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {notifs.length === 0 && <p>No notifications.</p>}
-        {notifs.length > 0 && (
+        {notifs.length > 0 &&
           notifs.map((notif, index) => (
-            <div className='rounded-lg bg-slate-300 p-2 my-2' key={index}>
-              <div className='flex flex-row justify-between items-center'>
+            <div className='my-2 rounded-lg bg-slate-300 p-2' key={index}>
+              <div className='flex flex-row items-center justify-between'>
                 {notif.article_id ? (
                   <Link
                     href={`/article/${notif.article_id}`}
@@ -96,7 +96,8 @@ export default function NotifClientComponent({
                 </button>
               </div>
             </div>
-          )))}
+          ))}
       </div>
-    ));
+    )
+  );
 }

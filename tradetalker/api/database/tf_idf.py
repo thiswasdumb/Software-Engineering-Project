@@ -6,7 +6,6 @@ from sklearn.feature_extraction.text import (
 )
 
 
-
 class TFIDF:
     """Calculates the TF-IDF scores for each article and returns the top n words for each article."""
 

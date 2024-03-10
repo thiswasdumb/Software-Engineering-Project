@@ -2,7 +2,7 @@
 
 import sys
 
-from preprocessing import GetPOSClass, PreprocessText
+from database.preprocessing import GetPOSClass, PreprocessText
 
 sys.path.insert(0, "/Users/mac/Documents/GitHub/SoftEngProject/tradetalker")
 

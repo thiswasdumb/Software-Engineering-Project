@@ -78,6 +78,10 @@ ignore_missing_imports = true # No typing support for newsapi
 module = 'newspaper'
 ignore_missing_imports = true # No typing support for newspaper
 
+[[tool.mypy.overrides]]
+module = 'flask_apscheduler'
+ignore_missing_imports = true # No typing support for flask_apscheduler
+
 
 [tool.ruff]
 target-version = 'py311'
