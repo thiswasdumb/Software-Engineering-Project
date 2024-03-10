@@ -22,6 +22,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug import security
 from werkzeug.wrappers import Response
 
+from api.recommendation_system import RecommendationSystem
 from database.db_schema import (
     Article,
     ArticleComment,
@@ -43,7 +44,6 @@ from database.db_schema import (
     set_all_companies_predicted_price,
 )
 from database.search_component import ArticleSearch
-from api.recommendation_system import RecommendationSystem
 
 app = Flask(__name__)
 app.config.from_object(__name__)
