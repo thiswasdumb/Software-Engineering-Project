@@ -39,9 +39,11 @@ from database.db_schema import (
     db,
     get_all_company_names,
     get_articles_from_news_api,
+    get_recommendation_system_info,
     set_all_companies_predicted_price,
 )
 from database.search_component import ArticleSearch
+from api.recommendation_system import RecommendationSystem
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -578,33 +580,24 @@ def get_recommended_articles() -> Response:
 def get_recommended_companies() -> Response:
     """Returns the user's recommended companies."""
     # Right now this only selects 3 random companies that the user is not following
-    followed_companies = (
+    rec_company_ids = RecommendationSystem(
+        get_recommendation_system_info(current_user.id),
+    ).recommend()
+    rec_companies = [
         db.session.execute(
-            db.select(Follow.CompanyID).filter(Follow.UserID == current_user.id),
-        )
-        .scalars()
-        .all()
-    )
-    followed_company_ids = list(followed_companies)
-    recommended_companies = (
-        db.session.execute(
-            db.select(Company)
-            .filter(~Company.CompanyID.in_(followed_company_ids))
-            .order_by(db.func.rand())
-            .limit(3),
-        )
-        .scalars()
-        .all()
-    )
-    recommended_companies_list = [
+            db.select(Company).filter(Company.CompanyID == company_id),
+        ).scalar()
+        for company_id in rec_company_ids
+    ]
+    rec_companies_list = [
         {
             "id": company.CompanyID,
             "name": company.CompanyName,
             "symbol": company.StockSymbol,
         }
-        for company in recommended_companies
+        for company in rec_companies
     ]
-    return jsonify(recommended_companies_list)
+    return jsonify(rec_companies_list)
 
 
 @app.route("/api/get_newsfeed", methods=["GET"])

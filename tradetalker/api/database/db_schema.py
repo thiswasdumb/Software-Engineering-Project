@@ -306,7 +306,7 @@ class Article(db.Model):  # type: ignore [name-defined]
     URL = mapped_column(String(300, "utf8mb4_general_ci"), nullable=False)
     Summary = mapped_column(Text(collation="utf8mb4_general_ci"), nullable=False)
     PredictionScore = mapped_column(Float, nullable=False)
-    KeyWords = mapped_column(String(100, "utf8mb4_general_ci"), nullable=True)
+    KeyWords = mapped_column(String(300, "utf8mb4_general_ci"), nullable=True)
     ProcessedArticle = mapped_column(
         Text(collation="utf8mb4_general_ci"),
         nullable=True,
@@ -344,6 +344,7 @@ class Article(db.Model):  # type: ignore [name-defined]
         summary: str,
         prediction_score: float,
         processed_article: str | None,
+        keywords: str | None,
     ) -> None:
         """Initializes the article object."""
         self.CompanyID = company_id
@@ -354,6 +355,7 @@ class Article(db.Model):  # type: ignore [name-defined]
         self.Summary = summary
         self.PredictionScore = prediction_score
         self.ProcessedArticle = processed_article
+        self.KeyWords = keywords
 
 
 """
@@ -685,6 +687,7 @@ def add_data() -> None:
             "Google has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
             0.8,
             "google invest uk data centre construction job thousands site waltham cross hertfordshire 2025 first thousands",
+            "",
         ),
     ]
     faq_list = [
@@ -982,7 +985,7 @@ def get_articles_by_company_name(company_name: str) -> list:
     return articles  # Return the articles related to the company
 
 
-def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
+def set_article_keywords(article_id: int, keywords: str) -> None:
     """Updates the keywords of articles in the database based on the provided pairs of article IDs and corresponding keywords.
 
     Parameters
@@ -996,20 +999,19 @@ def set_article_keywords(article_keywords_pairs: list[dict]) -> None:
 
     """
     # Iterate through each article-keywords pair
-    for article_keywords_pair in article_keywords_pairs:
-        try:
-            # Update the keywords for the corresponding article ID
-            db.session.execute(
-                update(Article)
-                .where(Article.ArticleID == article_keywords_pair.keys())
-                .values(KeyWords=article_keywords_pair.values()),
-            )
-            db.session.commit()  # Commit the changes to the database
-        except IntegrityError as e:
-            # Handle exceptions
-            print(
-                f"An error occurred in the member at article id {article_keywords_pair.keys()}: {e}",
-            )
+    try:
+        # Update the keywords for the corresponding article ID
+        db.session.execute(
+            update(Article)
+            .where(Article.ArticleID == article_id)
+            .values(KeyWords=keywords),
+        )
+        db.session.commit()  # Commit the changes to the database
+    except IntegrityError as e:
+        # Handle exceptions
+        print(
+            f"An error occurred in the member at article id {article_id}: {e}",
+        )
 
 
 def get_article_from_news_script(article: dict) -> int | None:
@@ -1040,8 +1042,8 @@ def get_article_from_news_script(article: dict) -> int | None:
         prediction_score=article["PredictionScore"],
         content=article["Content"],
         processed_article=article["ProcessedArticle"],
+        keywords=article["KeyWords"],
     )
-
     # Add the new article to the database session and commit changes
     db.session.add(new_article)
     db.session.commit()
@@ -1146,6 +1148,8 @@ def get_articles_from_news_api() -> None:
         "Anglo American",
         "Antofagasta",
         "Ashtead Group",
+    ]
+    others = [
         "Associated British Foods",
         "AstraZeneca",
         "Auto Trader Group",
@@ -1170,8 +1174,6 @@ def get_articles_from_news_api() -> None:
         "Diageo",
         "Diploma",
         "Endeavour Mining",
-    ]
-    others = [
         "Entain",
         "Experian",
         "F&C Investment",
@@ -1364,7 +1366,6 @@ def get_recommendation_system_info(user_id: int) -> dict:
             keywords.extend(company_keywords)  # Add keywords to the list
         else:
             non_following_companies.append(company_dict)
-
     return {
         "following": following_companies,
         "non_following": non_following_companies,

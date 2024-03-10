@@ -33,6 +33,8 @@ class GetNewsClass:
 
         """
         self.api_keys = [
+            "6948843a4d3b4c2f951df0279868613d",
+            "51bdd78bd260400b864a9152e38d3a5f",
             "9256e34369fb4a259418bb28cb0e9843",
             "Fb9cdea752a44045b9235bc4c5d69e12",
             "8968c158e1a44a5388312c35d8193541",
@@ -78,7 +80,7 @@ class GetNewsClass:
 
     def alternate_api(self) -> None:
         """Switches to the next API key."""
-        self.api_num = (self.api_num + 1) % 8
+        self.api_num = (self.api_num + 1) % 10
 
     def fetch_all_articles(self) -> list[dict]:
         """Main function.
