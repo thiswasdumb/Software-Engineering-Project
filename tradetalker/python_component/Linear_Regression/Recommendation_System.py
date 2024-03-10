@@ -88,16 +88,18 @@ class Recommendation_System:
 				"Other Precious Metals & Mining",
 			]
 		}
-		self.rand = random.Random
 		self.rec = set({})
 		self.followed = pd.DataFrame.from_dict(data['following'])
 		self.not_followed = pd.DataFrame.from_dict(data['non_following'])
 
-		#joins list
-		self.article_words = set(','.join(data['keywords']).split(','))
+		#flattens
+		self.article_words = ','.join(data['keywords']).split(',')
 
-	#what will be called by
+	#Output function
 	def recommend(self):
+		if (self.not_followed.empty):
+			return set({})
+		
 		self.rec = set({})
 		self.article_recs()
 		self.industry_recs()
@@ -108,22 +110,25 @@ class Recommendation_System:
 	def get_companies(self, num, grp):
 		results = []
 		#get all companies of the selected industry and shuffles
-		industry_filtered = self.not_followed[self.not_followed.Industry.isin(self.industry_groups[grp])]['CompanyID'].to_list()
+		industry_filtered = self.not_followed[self.not_followed['Industry'].isin(self.industry_groups[grp])]['CompanyID'].to_list()
 		random.shuffle(industry_filtered)
 
 		#adds up to n companies
 		if (num > len(industry_filtered)):
 			num = len(industry_filtered)
 		for i in range(num):
-			results.append(industry_filtered[num])
+			results.append(industry_filtered[i])
 		return results
 
 	def article_recs(self):
 		#adds companies appearing in key words to recommendations
 		#certain words appear in company names but do not imply any specific company, so should be blacklisted
 		blacklist = set(("group", "plc", "ord", "mining", "systems", "banking", "value", "retail", "european", "engineering", "industries", "investment", "trust", "american", "international"))
-		words = list(map((lambda x: x.lower()), words))
-		words = set(words).difference(blacklist)
+		
+		#put all words in lowercase and remove blacklisted and repeated words
+		words = set(map((lambda x: x.lower()), self.article_words))
+		words = words.difference(blacklist)
+
 		#check if each word is a company, check if it is an already followed company so it doesn't waste time querying the db
 		for wrd in words:
 			out = self.isCompany(wrd)
@@ -134,40 +139,38 @@ class Recommendation_System:
 		#get followed companies, their industry and dividend yield
 		total_count = len(self.followed)
 
-		industries = (self.followed['industry'].value_counts() / total_count).to_dict() #technically works, but fringe cases are iffy
+		#get proportion of followed covered by each industry
+		industries = (self.followed['Industry'].value_counts() / total_count).to_dict()
+		#calculate proportions of followed covered by each industry group
 		group_sums = {}
 		for key, values in self.industry_groups.items():
-			total = sum((industries[value] for value in values))
+			total = 0
+			for value in values:
+				if (value in industries.keys()):
+					total += industries[value]
 			group_sums[key] = total
+
 		#add companies sharing industry with followed to rec
 		for key in group_sums:
 			n = int(group_sums[key] * 10)
 			if (n >= 1):
-				self.rec.update(self.get_companies(self, n, key))
+				companies = self.get_companies(n, key)
+				self.rec.update(companies)
 
 	def leftover_recs(self):
-		#if not many companies are recommended, adds soem at random
+		#if not many companies are recommended, adds some at random
 		if (len(self.rec)<10):
 			leftovers = random.shuffle(self.not_followed['CompanyID'].to_list())
 			count = 0
 			while (len(self.rec)<10):
 				if (leftovers == []):
 					break
-				x = self.not_followed[count] #maybe get an order by stock price or summatCompanyI
+				x = self.not_followed[count]
 				self.rec.add(x)
 				count += 1
 
 	#check key word is in a not_followed CompanyName
 	def isCompany(self, wrd):
-		x = self.not_followed[self.not_followed.CompanyName.str.contains(wrd)]['CompanyID']
-		return (x is not None), x #isCompany, companyId tuple
-		"""
-		if (wrd == "d" or wrd == "q"):
-			return True
-		else:
-			return False
-		"""
-
-"""
-
-"""
+		x = self.not_followed[self.not_followed['CompanyName'].str.contains(wrd)]['CompanyID']
+		print(len(x))
+		return (x is not None), x #isCompany, companyId
