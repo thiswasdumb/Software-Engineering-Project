@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
+from flask_apscheduler import APScheduler
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_cors import CORS
 from flask_login import (
@@ -44,6 +45,9 @@ from database.search_component import ArticleSearch
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 IMAGE_FOLDER = "../public/"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
@@ -263,9 +267,7 @@ def send_verify_email(user: User) -> Response:
 def verify(token: str) -> Response:
     """Verifies the user's email."""
     if current_user.IsVerified:
-        print("You are already verified.", flush=True)
         return redirect(url_for("dashboard", error="You are already verified."))
-    print("You are not verified.", flush=True)
     if current_user.id == User.verify_reset_token(token):
         try:
             current_user.IsVerified = 1  # User is now confirmed
@@ -738,7 +740,6 @@ def get_most_positive_leaderboard() -> Response:
         .scalars()
         .all()
     )
-    print(companies, flush=True)
     leaderboard_list = [
         {
             "company_id": company.CompanyID,
@@ -1149,6 +1150,20 @@ def delete_notification(notification_id: str) -> Response:
     except IntegrityError:
         return jsonify({"error": "Could not delete notification."})
     return jsonify({"success": "Successfully deleted notification."})
+
+
+@scheduler.task("cron", id="add_daily_notif", hour=22, minute=28)
+def add_daily_notif() -> None:
+    """Adds a daily notification for the user."""
+    with app.app_context():
+        new_notif = Notification(None, "The company details have been updated. Check it out!")
+        db.session.add(new_notif)
+        db.session.commit()
+        users = db.session.execute(db.select(User)).scalars().all()
+        for user in users:
+            new_user_notif = UserNotificationRead(user.id, new_notif.NotificationID)
+            db.session.add(new_user_notif)
+            db.session.commit()
 
 
 # ----------------- Bookmark routes -----------------
