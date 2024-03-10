@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from Recommendation_System import Recommendation_System
+from tradetalker.api.Recommendation_System import Recommendation_System
 """file is in api folder, but these were tests used"""
 
 #test data
@@ -28,7 +28,6 @@ class TestRecommendationSystem(unittest.TestCase):
         industry_groups = recSys.industry_groups
         recs = recSys.recommend()
         companies = pd.DataFrame.from_dict(industry_check['non_following'])
-        print(recs)
         industries = []
         for id in recs:
             industries.append(companies[companies['CompanyID'] == id]['Industry'].iloc[0])
@@ -61,3 +60,6 @@ class TestRecommendationSystem(unittest.TestCase):
         """Check that an empty set is returned if all companies are followed"""
         recs = Recommendation_System(all_followed).recommend()
         self.assertTrue(len(recs) == 0)
+
+if __name__ == '__main__':
+    unittest.main(testRunner=unittest.TextTestRunner(verbosity=2))
