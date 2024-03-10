@@ -32,7 +32,7 @@ export default function RecommendedCompanies({
   return (
     <div className='my-2 rounded-lg bg-slate-300 p-4'>
       <h2 className='text-xl'>Companies we think you&apos;ll like</h2>
-      <div className='mt-2 flex flex-col gap-2 md:justify-between lg:flex-row'>
+      <div className='mt-2 flex max-h-[40vh] flex-col gap-2 overflow-scroll rounded-lg md:justify-between lg:flex-row'>
         {companies.length === 0 && <p>No recommended companies.</p>}
         {companies.map((company, index) => (
           <div
