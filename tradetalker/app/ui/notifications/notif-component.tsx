@@ -63,18 +63,30 @@ export default function NotifClientComponent({
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         {notifs.length === 0 && <p>No notifications.</p>}
         {notifs.length > 0 && (
-          <div className='rounded-lg bg-slate-300 p-2'>
-            {notifs.map((notif, index) => (
-              <div className='flex flex-row justify-between' key={index}>
-                <Link
-                  href={`/article/${notif.article_id}`}
-                  className='grow transition hover:drop-shadow-lg'
-                >
-                  <p className='text-sm'>
-                    {dayjs(notif.time).format('D MMM YYYY LT')}
-                  </p>
-                  <p className='text-lg'>{notif.content}</p>
-                </Link>
+          notifs.map((notif, index) => (
+            <div className='rounded-lg bg-slate-300 p-2 my-2' key={index}>
+              <div className='flex flex-row justify-between items-center'>
+                {notif.article_id ? (
+                  <Link
+                    href={`/article/${notif.article_id}`}
+                    className='grow transition hover:drop-shadow-lg'
+                  >
+                    <p className='text-sm'>
+                      {dayjs(notif.time).format('D MMM YYYY LT')}
+                    </p>
+                    <p className='text-lg'>{notif.content}</p>
+                  </Link>
+                ) : (
+                  <Link
+                    href='/stocks'
+                    className='grow transition hover:drop-shadow-lg'
+                  >
+                    <p className='text-sm'>
+                      {dayjs(notif.time).format('D MMM YYYY LT')}
+                    </p>
+                    <p className='text-lg'>{notif.content}</p>
+                  </Link>
+                )}
                 <button
                   type='button'
                   className='float-right m-2 rounded-lg bg-red-500 p-2 text-sm text-white transition hover:bg-red-600 hover:shadow-lg active:bg-red-700'
@@ -83,10 +95,8 @@ export default function NotifClientComponent({
                   Delete
                 </button>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          )))}
       </div>
-    )
-  );
+    ));
 }

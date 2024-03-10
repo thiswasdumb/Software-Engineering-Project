@@ -6,8 +6,8 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
-from flask_apscheduler import APScheduler
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from flask_login import (
     LoginManager,
@@ -45,9 +45,11 @@ from database.search_component import ArticleSearch
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
+
+if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
 
 IMAGE_FOLDER = "../public/"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
@@ -1096,10 +1098,10 @@ def get_notifications() -> Response:
         notification.IsRead = 1
     db.session.commit()
     # Get the user's notifications by newest first
-    notifications = (
+    user_notifications = (
         db.session.execute(
-            db.select(Notification)
-            .join(UserNotificationRead)
+            db.select(UserNotificationRead)
+            .join(Notification, UserNotificationRead.NotificationID == Notification.NotificationID)
             .filter(UserNotificationRead.UserID == current_user.id)
             .order_by(desc(Notification.Time)),
         )
@@ -1108,12 +1110,19 @@ def get_notifications() -> Response:
     )
     notification_data = [
         {
-            "id": notification.NotificationID,
-            "article_id": notification.ArticleID,
-            "content": notification.Content,
-            "time": notification.Time,
+            "id": user_notification.UserNotificationReadID,
+            "content": db.session.execute(
+                db.select(Notification.Content).filter_by(
+                    NotificationID=user_notification.NotificationID,
+                ),
+            ).scalar(),
+            "time": db.session.execute(
+                db.select(Notification.Time).filter_by(
+                    NotificationID=user_notification.NotificationID,
+                ),
+            ).scalar(),
         }
-        for notification in notifications
+        for user_notification in user_notifications
     ]
     return jsonify(notification_data)
 
@@ -1152,11 +1161,14 @@ def delete_notification(notification_id: str) -> Response:
     return jsonify({"success": "Successfully deleted notification."})
 
 
-@scheduler.task("cron", id="add_daily_notif", hour=22, minute=28)
+@scheduler.task("cron", id="add_daily_notif", hour=8, minute=0)
 def add_daily_notif() -> None:
     """Adds a daily notification for the user."""
-    with app.app_context():
-        new_notif = Notification(None, "The company details have been updated. Check it out!")
+    with scheduler.app.app_context():
+        new_notif = Notification(
+            None,
+            "The company details have been updated. Check it out!",
+        )
         db.session.add(new_notif)
         db.session.commit()
         users = db.session.execute(db.select(User)).scalars().all()
