@@ -14,14 +14,19 @@ function LineChart(stockLastDays) {
     var ctx = document.getElementById('myChart').getContext('2d');
     /* eslint-disable @typescript-eslint/no-unused-vars */
     var labels = [];
+    var weekdays = 0;
     // Calculate the dates of the last 7 days, excluding weekends
-    for (var i = 9; i >= 0; i--) {
+    for (var i = 11; i >= 0; i--) {
+      if (weekdays === 8) {
+        break;
+      }
       var date = dayjs().subtract(i, 'day');
       if (
         date.subtract(8, 'hour').day() !== 0 &&
         date.subtract(8, 'hour').day() !== 6
       ) {
         labels.push(date.subtract(8, 'hour').format('DD/MM'));
+        weekdays++;
       }
     }
     var data = stockLastDays.stockLastDays;
