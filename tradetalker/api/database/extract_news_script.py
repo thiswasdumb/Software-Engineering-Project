@@ -50,9 +50,8 @@ class GetNewsClass:
         self.t = TextSummariser(num_sentences=2)
         self.all_articles: dict = {}
         # blacklisted websites (they require a paywall)
-        self.black_listed = ["thefly.com"]
+        self.black_listed = ["thefly.com", "tmonews.com"]
         self.fetch_articles_from_api(list_of_companies)
-        print(self.api_keys[self.api_num])
 
     def check_if_blacklisted(self, url_to_check: str) -> bool:
         """Checks if a URL is blacklisted."""
@@ -174,7 +173,6 @@ class GetNewsClass:
                 ),
                 "KeyWords": None,  # Will be calculated later
             }
-            print(article_object["PublicationDate"])
 
             GetNewsClass.article_id += 1
             list_of_article_dictionaries.append(article_object)
