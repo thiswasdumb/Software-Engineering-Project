@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 import random
 
 class Recommendation_System:
@@ -93,16 +94,15 @@ class Recommendation_System:
 		self.not_followed = pd.DataFrame.from_dict(data['non_following'])
 
 		#flattens
-		self.article_words = ','.join(data['keywords']).split(',')
+		self.article_words = [] if len(data['keywords']) == 0 else ','.join(data['keywords']).split(',')
 
 	#Output function
 	def recommend(self):
 		if (self.not_followed.empty):
 			return set({})
-		
-		self.rec = set({})
 		self.article_recs()
-		self.industry_recs()
+		if (not self.followed.empty):
+			self.industry_recs()
 		self.leftover_recs()
 		return self.rec
 
@@ -133,12 +133,11 @@ class Recommendation_System:
 		for wrd in words:
 			out = self.isCompany(wrd)
 			if (out[0]):
-				self.rec.add(out[1][0])
+				self.rec.add(out[1].iloc[0])
 
 	def industry_recs(self):
 		#get followed companies, their industry and dividend yield
 		total_count = len(self.followed)
-
 		#get proportion of followed covered by each industry
 		industries = (self.followed['Industry'].value_counts() / total_count).to_dict()
 		#calculate proportions of followed covered by each industry group
@@ -155,22 +154,23 @@ class Recommendation_System:
 			n = int(group_sums[key] * 10)
 			if (n >= 1):
 				companies = self.get_companies(n, key)
-				self.rec.update(companies)
+				for comp in companies:
+					self.rec.add(comp)
 
 	def leftover_recs(self):
 		#if not many companies are recommended, adds some at random
 		if (len(self.rec)<10):
-			leftovers = random.shuffle(self.not_followed['CompanyID'].to_list())
-			count = 0
+			leftovers = self.not_followed['CompanyID'].to_list()
+			random.shuffle(leftovers)
 			while (len(self.rec)<10):
-				if (leftovers == []):
+				if (len(leftovers) == 0):
 					break
-				x = self.not_followed[count]
+				x = leftovers[0]
+				leftovers = leftovers[1::]
 				self.rec.add(x)
-				count += 1
 
 	#check key word is in a not_followed CompanyName
 	def isCompany(self, wrd):
-		x = self.not_followed[self.not_followed['CompanyName'].str.contains(wrd)]['CompanyID']
-		print(len(x))
-		return (x is not None), x #isCompany, companyId
+		pattern = r'\b' + re.escape(wrd) + r'\b'
+		x = self.not_followed.loc[self.not_followed.apply((lambda row: row.astype(str).str.contains(pattern, case=False).any()), axis=1)]
+		return ((not x.empty), x['CompanyID']) #isCompany, companyId
