@@ -11,7 +11,7 @@ from nltk.tokenize import word_tokenize
 
 
 class GetPOSClass:
-    """Class to get the part of speech of a word."""
+    """Class to get the part of speech of a word. This is used by WordNet's WordNetLemmatizer for more accurate lemmatization"""
 
     def get_part_of_speech(self, word: str) -> str:
         """Gets the part of speech of the word."""
@@ -26,7 +26,7 @@ class GetPOSClass:
     def _count_pos(self, probable_part_of_speech: list) -> Counter:
         """Counts the part of speech of the word."""
         pos_counts: Counter = Counter()
-        # The most common pos of the words sysnet is taken as the most probable
+        # The most common POS of the words sysnet is taken as the most probable
         for pos in ["n", "v", "a", "r"]:
             pos_counts[pos] = len(
                 [item for item in probable_part_of_speech if item.pos() == pos],
