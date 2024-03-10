@@ -46,7 +46,7 @@ from database.search_component import ArticleSearch
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     scheduler = APScheduler()
     scheduler.init_app(app)
     scheduler.start()
@@ -1101,7 +1101,10 @@ def get_notifications() -> Response:
     user_notifications = (
         db.session.execute(
             db.select(UserNotificationRead)
-            .join(Notification, UserNotificationRead.NotificationID == Notification.NotificationID)
+            .join(
+                Notification,
+                UserNotificationRead.NotificationID == Notification.NotificationID,
+            )
             .filter(UserNotificationRead.UserID == current_user.id)
             .order_by(desc(Notification.Time)),
         )
