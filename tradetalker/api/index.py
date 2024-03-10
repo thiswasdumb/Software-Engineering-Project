@@ -22,7 +22,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug import security
 from werkzeug.wrappers import Response
 
-from api.recommendation_system import RecommendationSystem
+from database.recommendation_system import RecommendationSystem
 from database.db_schema import (
     Article,
     ArticleComment,
@@ -603,15 +603,15 @@ def get_recommended_companies() -> Response:
 @app.route("/api/get_newsfeed", methods=["GET"])
 @login_required
 def get_newsfeed() -> Response:
-    """Returns the 3 most recent articles from the followed companies."""
-    # Get the 3 most recent articles from the followed companies
+    """Returns the 5 most recent articles from the followed companies."""
+    # Get the 5 most recent articles from the followed companies
     newsfeed = (
         db.session.execute(
             db.select(Article)
             .join(Follow, Article.CompanyID == Follow.CompanyID)
             .filter(Follow.UserID == current_user.id)
             .order_by(desc(Article.PublicationDate))
-            .limit(3),
+            .limit(5),
         )
         .scalars()
         .all()
@@ -1034,6 +1034,28 @@ def unfollow_company(company_id: str) -> Response:
     except IntegrityError:
         return jsonify({"error": "Could not unfollow company."})
     return jsonify({"success": "Successfully unfollowed company."})
+
+
+@app.route("/api/get_company_articles/<string:company_id>", methods=["GET"])
+def get_company_articles(company_id: str) -> Response:
+    """Returns the company's articles."""
+    # Get the company's articles with the given company ID
+    articles = (
+        db.session.execute(db.select(Article).filter_by(CompanyID=company_id).order_by(desc(Article.PublicationDate)).limit(3))
+        .scalars()
+        .all()
+    )
+    articles_list = [
+        {
+            "id": article.ArticleID,
+            "title": article.Title,
+            "date": article.PublicationDate,
+            "summary": article.Summary,
+            "score": article.PredictionScore,
+        }
+        for article in articles
+    ]
+    return jsonify(articles_list)
 
 
 # ----------------- FAQ routes -----------------
