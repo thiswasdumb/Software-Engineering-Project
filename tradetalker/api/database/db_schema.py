@@ -3,7 +3,7 @@
 import logging
 from datetime import UTC, datetime
 from typing import Optional
-
+import random
 import yfinance as yf
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -732,7 +732,7 @@ def add_base_company_data() -> None:
                 past_8_days_price[0],  # StockPrice
                 company.info.get("industry", "N/A"),  # Industry
                 company.info.get("longBusinessSummary", "N/A"),  # CompanyDescription
-                None,  # PredictedStockPrice
+                random.randint(1,1000),  # PredictedStockPrice
                 None,  # StockVariance
                 past_8_days_price[1],  # StockPrice_D_1
                 past_8_days_price[2],  # StockPrice_D_2
@@ -743,6 +743,8 @@ def add_base_company_data() -> None:
                 past_8_days_price[7],  # StockPrice_D_7
             ),
         )
+
+        
 
         db.session.add_all(companies)
         db.session.commit()
