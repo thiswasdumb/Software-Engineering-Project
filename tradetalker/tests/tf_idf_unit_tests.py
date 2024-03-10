@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 
+#code below allows mac users to run tests from this directory, allows PATH to know where the dependencies are 
 import sys
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/api')
 
@@ -73,7 +74,7 @@ class TestTF_IDF(unittest.TestCase):
     def test_article_9(self):
         self.perform_article_test(9)
 
-
+    #single test using subtest context
     # def test_keywords(self):
     #     article_id = 0
     #     for article in articles:
