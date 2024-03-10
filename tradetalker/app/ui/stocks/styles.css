@@ -1,0 +1,29 @@
+.stocktrend-margin {
+    margin-left: 30%;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.underline-s {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-s::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    height: 5px;
+    /* Adjust as needed */
+    width: 100%;
+    background-color: #4C4B9B;
+    /* Color of the underline */
+    transition: width 0.3s ease-in-out;
+    /* Transition effect */
+    transform-origin: bottom left;
+    /* Set origin to bottom right */
+    transform: scaleX(1);
+    /* Initially set to zero width */
+}

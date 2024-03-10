@@ -23,7 +23,7 @@ export default function NavLinks(props: { session: boolean }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              'text-lg text-white text-bold px-4 py-2 md:flex-none md:justify-start relative transition-colors duration-300',
+              'text-lg text-white text-bold px-4 py-2 ml-32 relative transition-colors duration-300',
               {
                 'border-b-4 border-white': pathname === link.href,
               }

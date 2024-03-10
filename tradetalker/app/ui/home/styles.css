@@ -4,7 +4,7 @@
 
 /* styles.css */
 .animation-container {
-    margin-top: -25%;
+    margin-top: -30%;
     flex-wrap: wrap;
     gap: 10em;
 }
@@ -73,8 +73,8 @@ body {
     position: relative;
     height: 20px;
     width: 100%;
-    transform: translate(0%, -3408%);
-    background-color: #4C4B9B;
+    transform: translate(0%, -5260%);
+    background-color: #292768;
 }
 
 .custom-underline {
