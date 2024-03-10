@@ -355,29 +355,38 @@ class Article(db.Model):  # type: ignore [name-defined]
         self.PredictionScore = prediction_score
         self.ProcessedArticle = processed_article
 
-
-"""Not working at the moment.
-@event.listens_for(Article, "after_insert")
+"""
+@db.event.listens_for(Article, "after_insert")
 def receive_after_insert(mapper, connection, target) -> None:
-    ""Sends a notification to the users when a new article linked to a company that they follow is posted.""
+    ""Sends a notification to the users when a new article linked to a company that
+    they follow is posted.""
     try:
+        notif_table = Notification.__table__
+        user_notif_read_table = UserNotificationRead.__table__
         print("New article added", flush=True)
         company_id = target.CompanyID
         user_ids = connection.execute(
-            db.select(Follow.UserID).where(Follow.CompanyID == company_id)
+            db.select(Follow.UserID).filter(Follow.CompanyID == company_id)
         )
-        notification = Notification(target.ArticleID, f"New article: {target.Title}")
-        connection.add(notification)
-        connection.commit()
+        connection.execute(notif_table.insert().values(target.ArticleID, f"New article: {target.Title}"))
+        # Fetch the latest notification
+        latest_notification = (
+            db.session.execute(
+                db.select(Notification)
+                .filter(Notification.ArticleID == target.ArticleID)
+                .order_by(Notification.NotificationID.desc())
+                .first()
+            )
+            .scalars()
+            .first()
+        )
         for user_id in user_ids:
-            usernotificationread = UserNotificationRead(user_id, notification.NotificationID)
-            connection.add(usernotificationread)
+            connection.execute(user_notif_read_table.insert().values(user_id, latest_notification.NotificationID))
             connection.commit()
     except SQLAlchemyError as e:
         logging.exception(e)
         connection.rollback()
 """
-
 
 class Follow(db.Model):  # type: ignore [name-defined]
     """Contains the details of the companies that the users follow."""
@@ -1007,7 +1016,6 @@ def get_article_from_news_script(article: dict) -> int | None:
     if not company:
         print("Couldn't find the company name in the table for ", article["Company"])
         return None
-    print(company.CompanyID)
 
     new_article = Article(
         company_id=company.CompanyID,
@@ -1028,7 +1036,6 @@ def get_all_company_names() -> list:
     """Returns the name of all articles."""
     companies = db.session.execute(db.select(Company)).scalars().all()
     company_names = [company.CompanyName for company in companies]
-    print(company_names)
     return company_names
 
 
@@ -1068,12 +1075,6 @@ def set_all_companies_predicted_price() -> None:
                         company.StockPrice_D_5,
                     ],
                 ).calculate_stock_price()
-                print(
-                    "predicted stock price for ",
-                    company.CompanyName,
-                    " is: ",
-                    predicted_stock_price,
-                )
                 db.session.execute(
                     update(Company)
                     .where(Company.CompanyID == company.CompanyID)
