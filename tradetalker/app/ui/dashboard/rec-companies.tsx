@@ -36,7 +36,7 @@ export default function RecommendedCompanies({
         {companies.length === 0 && <p>No recommended companies.</p>}
         {companies.map((company, index) => (
           <div
-            className='flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2'
+            className='flex min-w-[32%] flex-grow flex-row items-center justify-between rounded-lg bg-slate-100 p-2'
             key={index}
           >
             <Link
