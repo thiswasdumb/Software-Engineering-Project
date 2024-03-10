@@ -10,7 +10,7 @@ class SentimentAnalyser:
     def __init__(self) -> None:
         """Initializes an instance of SentimentAnalyser."""
         try:
-            nltk.data.find("sentiment/vader_lexicon")
+            nltk.data.find("sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt")
         except LookupError:
             nltk.download("vader_lexicon")
         self.sent_int_analyzer = SentimentIntensityAnalyzer()
