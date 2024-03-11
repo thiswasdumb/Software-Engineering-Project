@@ -5,6 +5,13 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
+import { Poppins } from 'next/font/google';
+import './style.css'
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
+const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
+
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const [articles, setArticles] = useState<any[]>([]);
@@ -38,6 +45,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
 
   return (
     <>
+      <div className='odark'></div>
       <div>
         <div className='relative'>
           <label htmlFor='search' className='sr-only'>
@@ -62,77 +70,84 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
         </div>
         {searchParams.get('query') == null && (
           <div className='flex justify-center pt-20 text-center text-xl text-black '>
-            Start typing to search for news articles or companies.
+            <span className={pop500.className}>
+              Start typing to search for news articles or companies.
+            </span>
           </div>
         )}
         {searchParams.get('query') !== null && (
           <div className='flex flex-col md:flex-row md:items-start'>
             <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Articles</div>
-              <hr className='my-2 rounded-lg border-2 border-slate-400' />
-              {articles.length === 0 && (
-                <div className='text-gray-600'>No matching articles found.</div>
-              )}
-              <div className='flex flex-col justify-between'>
-                {articles.map((article, index) => (
-                  <Link
-                    key={index}
-                    className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
-                    href={`/article/${article.id}`}
-                  >
-                    <div className='flex flex-row flex-wrap justify-between'>
-                      <div>
-                        {getHighlightedText(
-                          article.title,
-                          searchParams.get('query')
-                        )}
-                      </div>
-                      <div className='text-sm text-gray-600'>
-                        {article.date}
-                      </div>
-                    </div>
-                    <div>{article.summary}</div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'>Companies</div>
-              <hr className='my-2 rounded-lg border-2 border-slate-400' />
-              <div className='md:max-[80%]'>
-                {companies.length === 0 && (
-                  <div className='text-gray-600'>
-                    No matching companies found.
-                  </div>
+              <div className='text-2xl'><span className={pop.className}>Articles</span></div>
+              <hr className='my-2 rounded-lg border-2' style={{ borderColor: '#4c4b9b' }} />
+              <span className={pop400.className}>
+                {articles.length === 0 && (
+                  <div className='text-gray-600'>No matching articles found.</div>
                 )}
                 <div className='flex flex-col justify-between'>
-                  {companies.map((company, index) => (
+                  {articles.map((article, index) => (
                     <Link
                       key={index}
                       className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
-                      href={`/company/${company.id}`}
+                      href={`/article/${article.id}`}
                     >
-                      <div>
-                        {getHighlightedText(
-                          company.symbol,
-                          searchParams.get('query')
-                        )}
-                        &nbsp;|&nbsp;
-                        {getHighlightedText(
-                          company.name,
-                          searchParams.get('query')
-                        )}
+                      <div className='flex flex-row flex-wrap justify-between'>
+                        <div>
+                          {getHighlightedText(
+                            article.title,
+                            searchParams.get('query')
+                          )}
+                        </div>
+                        <div className='text-sm text-gray-600'>
+                          {article.date}
+                        </div>
                       </div>
-                      <div className='text-base'>{company.stock_price}</div>
-                      <div className='text-sm'>{company.industry}</div>
+                      <div>{article.summary}</div>
                     </Link>
                   ))}
                 </div>
+              </span>
+            </div>
+            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
+              <div className='text-2xl'><span className={pop.className}>Companies</span></div>
+              <hr className='my-2 rounded-lg border-2' style={{ borderColor: '#4c4b9b' }} />
+              <div className='md:max-[80%]'>
+                <span className={pop400.className}>
+                  {companies.length === 0 && (
+                    <div className='text-gray-600'>
+                      No matching companies found.
+                    </div>
+                  )}
+                  <div className='flex flex-col justify-between'>
+                    {companies.map((company, index) => (
+                      <Link
+                        key={index}
+                        className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
+                        href={`/company/${company.id}`}
+                      >
+                        <div>
+                          <span className={pop.className}>
+                            {getHighlightedText(
+                              company.symbol,
+                              searchParams.get('query')
+                            )}</span>
+                          &nbsp;|&nbsp;  <span className={pop500.className}>
+                            {getHighlightedText(
+                              company.name,
+                              searchParams.get('query')
+                            )}</span>
+                        </div>
+                        <div className='text-base'>{company.stock_price}</div>
+                        <div className='text-sm'>{<span className={pop500.className}>company.industry</span>}</div>
+                      </Link>
+                    ))}
+                  </div>
+                </span>
               </div>
             </div>
           </div>
         )}
-      </div>
+      </div >
     </>
   );
 }

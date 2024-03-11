@@ -1,6 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Poppins } from 'next/font/google'
+
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] })
 
 export default function QuestionForm() {
   const [question, setQuestion] = useState('');
@@ -38,7 +41,7 @@ export default function QuestionForm() {
           Question
         </label>
         <textarea
-          className='w-full resize-none rounded p-2 hover:drop-shadow-lg md:w-[50%]'
+          className={`w-full resize-none rounded p-2 hover:drop-shadow-lg md:w-[70%] ${pop400.className}`}
           placeholder='Enter a question...'
           rows={4}
           cols={4}
@@ -51,7 +54,7 @@ export default function QuestionForm() {
         />
         <button
           type='submit'
-          className='mt-2 rounded-lg bg-blue-500 p-2 text-white hover:bg-blue-600 hover:drop-shadow-lg focus:bg-blue-700'
+          className={`mt-2 rounded-lg bg-[#5f5eb5] p-2 text-white hover:bg-[#4c4b9b] hover:drop-shadow-lg focus:bg-blue-700 ${pop400.className}`}
         >
           Submit
         </button>

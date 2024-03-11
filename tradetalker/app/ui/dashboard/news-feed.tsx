@@ -1,6 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import FollowButton from '../company/follow-button';
+import { Poppins } from 'next/font/google';
+import './style.css'
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
+const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
 
 export default function NewsFeed() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -18,10 +25,9 @@ export default function NewsFeed() {
   }, [setArticles]);
 
   return (
-    <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <div className='text-xl'>News feed</div>
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='flex flex-col'>
+    <div className='my-2 rounded-lg p-4' style={{ backgroundColor: '#7977d1' }}>
+      <div className='text-white underline-white'><div className={pop.className} style={{ fontSize: '1.2rem', marginBottom: '1%' }}>News Feed</div></div>
+      <div className='flex flex-col text-white' style={{ marginTop: '2%' }}><div className={pop400.className}>
         {articles.length === 0 && <p>No recent news.</p>}
         {articles.map((article, index) => (
           <Link
@@ -34,6 +40,7 @@ export default function NewsFeed() {
             <div>{article.summary}</div>
           </Link>
         ))}
+      </div>
       </div>
     </div>
   );

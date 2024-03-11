@@ -1,0 +1,115 @@
+.cursor-containerz {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 57%;
+    pointer-events: none;
+}
+
+.circlez {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(58, 57, 123, 0.8);
+    pointer-events: none;
+    filter: blur(2px);
+}
+
+.dark-olay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 59.7%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark-rectle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: -10%;
+    margin-left: 25%;
+    color: white;
+}
+
+.big-header {
+    margin-top: 30%;
+}
+
+.margin-all-around {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.article-item {
+    transition: filter 0.3s ease;
+    position: relative;
+}
+
+.article-item:hover {
+    filter: brightness(90%);
+}
+
+.article-item::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    border-radius: 7px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+
+.underline-smpl {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-smpl::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    height: 5px;
+    width: 100%;
+    background-color: #4C4B9B;
+    animation: extendUnderline 1.5s ease-out forwards;
+    transform-origin: bottom left;
+}
+
+.underline-white {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-white::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    height: 3px;
+    width: 100%;
+    background-color: rgb(251, 251, 251);
+    animation: extendUnderline 1.5s ease-out forwards;
+    transform-origin: bottom left;
+}
+
+@keyframes extendUnderline {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}

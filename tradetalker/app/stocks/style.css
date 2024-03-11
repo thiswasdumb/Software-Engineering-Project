@@ -53,124 +53,80 @@
     left: 0;
     bottom: -0.1em;
     height: 5px;
-    /* Adjust as needed */
     width: 100%;
     background-color: #4C4B9B;
-    /* Color of the underline */
     transition: width 0.3s ease-in-out;
-    /* Transition effect */
     transform-origin: bottom left;
-    /* Set origin to bottom right */
 }
 
 @keyframes extendUnderline {
     0% {
         width: 0;
-        /* Start with zero width */
     }
 
     100% {
         width: 100%;
-        /* Extend to full width */
     }
 }
 
 .underline-s::after {
     animation: extendUnderline 1.5s ease-out forwards;
-    /* Start the animation */
 }
 
 .stock-item {
     transition: filter 0.3s ease;
     position: relative;
-    /* Add transition effect for smooth hover */
 }
 
 .stock-item:hover {
     filter: brightness(90%);
-    /* Reduce brightness on hover */
 }
 
 .stock-item::before {
     content: "";
-    /* Add content to pseudo-element */
     position: absolute;
-    /* Position the pseudo-element */
-    content: "";
-    /* Add content to pseudo-element */
-    position: absolute;
-    /* Position the pseudo-element */
     top: 5px;
-    /* Adjust top position */
     left: 5px;
-    /* Adjust left position */
     width: calc(100% - 10px);
-    /* Adjust width */
     height: calc(100% - 10px);
-    /* Adjust height */
     border-radius: 7px;
-    /* Set border radius to create rounded corners */
     border: 2px solid rgba(255, 255, 255, 0.9);
-    /* Set border to create transparent rectangle */
     pointer-events: none;
-    /* Make pseudo-element non-interactive */
     transition: opacity 0.3s ease;
-    /* Add transition effect for smooth hover */
     opacity: 0;
-    /* Initially hide the pseudo-element */
 }
 
 .stock-item:hover::before {
     opacity: 1;
-    /* Show the pseudo-element on hover */
 }
 
 .leaderboard-item:hover::before {
     opacity: 1;
-    /* Show the pseudo-element on hover */
 }
 
 .leaderboard-item {
     transition: filter 0.3s ease;
     position: relative;
-    /* Add transition effect for smooth hover */
 }
 
 .leaderboard-item:hover {
     filter: brightness(97%);
-    /* Reduce brightness on hover */
 }
 
 .leaderboard-item::before {
     content: "";
-    /* Add content to pseudo-element */
     position: absolute;
-    /* Position the pseudo-element */
-    content: "";
-    /* Add content to pseudo-element */
-    position: absolute;
-    /* Position the pseudo-element */
     top: 3px;
-    /* Adjust top position */
     left: 3px;
-    /* Adjust left position */
     width: calc(100% - 6px);
-    /* Adjust width */
     height: calc(100% - 6px);
-    /* Adjust height */
     border-radius: 7px;
-    /* Set border radius to create rounded corners */
     border: 2px solid rgba(93, 91, 176, 0.9);
-    /* Set border to create transparent rectangle */
     pointer-events: none;
-    /* Make pseudo-element non-interactive */
     transition: opacity 0.3s ease;
-    /* Add transition effect for smooth hover */
     opacity: 0;
-    /* Initially hide the pseudo-element */
 }
 
 .leaderboard-item:hover::before {
     opacity: 1;
-    /* Show the pseudo-element on hover */
 }

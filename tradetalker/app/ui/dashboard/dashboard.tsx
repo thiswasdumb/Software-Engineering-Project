@@ -7,6 +7,11 @@ import RecommendedCompanies from './rec-companies';
 import NewsFeed from './news-feed';
 import FollowedCompanies from './followed-companies';
 import Share from './share';
+import CursorAnimation from './CursorAnimations'
+import { Poppins } from 'next/font/google'
+import './style.css'
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] })
 
 export default function DashboardComponent({
   isLoggedIn,
@@ -35,22 +40,29 @@ export default function DashboardComponent({
 
   return (
     isLoggedIn && (
-      <div className='m-8 rounded-lg bg-slate-200 p-8'>
-        <div className='text-2xl'>Dashboard</div>
-        <hr className='my-2 rounded-lg border-2 border-slate-400' />
-        <div className='text-lg'>{data}.</div>
-        <div className='flex flex-col justify-between md:flex-row'>
-          <div className='flex w-full flex-col md:w-[69%]'>
-            <RecommendedArticles />
-            <RecommendedCompanies isLoggedIn={isLoggedIn} />
+      <div className=''>
+        <div className='dark-olay'></div>
+        <CursorAnimation />
+        <div className='big-header'>
+          <div className='dark-rectle'>
+            <div className={pop.className}><span className="text-white" style={{ fontSize: '7rem' }}>Dashboard</span></div></div>
+          <hr className='mb-4 mt-3' style={{ backgroundColor: '#4C4B9B', height: '10px', marginTop: '-3%' }} />
+          <div className='margin-all-around'>
+            <div className={pop.className}><span style={{ fontSize: '3rem' }}>{data}.</span></div>
+            <div className='flex flex-col justify-between md:flex-row'>
+              <div className='flex w-full flex-col md:w-[69%]'>
+                <RecommendedArticles />
+                <RecommendedCompanies isLoggedIn={isLoggedIn} />
+              </div>
+              <div className='flex w-full flex-col md:w-[30%]'>
+                <NewsFeed />
+                <FollowedCompanies isLoggedIn={isLoggedIn} />
+              </div>
+            </div>
           </div>
-          <div className='flex w-full flex-col md:w-[30%]'>
-            <NewsFeed />
-            <FollowedCompanies isLoggedIn={isLoggedIn} />
-          </div>
+          <Share />
         </div>
-        <Share />
-      </div>
+      </div >
     )
   );
 }
