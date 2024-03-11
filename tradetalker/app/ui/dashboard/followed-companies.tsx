@@ -48,27 +48,29 @@ export default function FollowedCompanies({
       </div>
       <div className='flex flex-col text-white' style={{ marginTop: '2%' }}>
         <div className={pop400.className}>
-          {companies.length === 0 && <p>No followed companies.</p>}
-          {companies.map((company, index) => (
-            <div
-              key={index}
-              className='my-2 flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
-            >
-              <Link
-                href={`/company/${company.id}`}
-                className='grow hover:drop-shadow-lg'
+          <div className='text-black'>
+            {companies.length === 0 && <p>No followed companies.</p>}
+            {companies.map((company, index) => (
+              <div
+                key={index}
+                className='my-2 flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
               >
-                <button
-                  type='button'
-                  className='flex flex-col items-start text-start'
+                <Link
+                  href={`/company/${company.id}`}
+                  className='grow hover:drop-shadow-lg'
                 >
-                  <p className='font-bold'>{company.symbol}</p>
-                  <p className='text-sm'>{company.name}</p>
-                </button>
-              </Link>
-              <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />
-            </div>
-          ))}
+                  <button
+                    type='button'
+                    className='flex flex-col items-start text-start'
+                  >
+                    <p className='font-bold'>{company.symbol}</p>
+                    <p className='text-sm'>{company.name}</p>
+                  </button>
+                </Link>
+                <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

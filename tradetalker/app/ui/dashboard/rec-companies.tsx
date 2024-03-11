@@ -45,7 +45,7 @@ export default function RecommendedCompanies({
           Companies we think you&apos;ll like
         </div>
       </div>
-      <div className='mt-2 flex flex-col gap-2 md:justify-between lg:flex-row'>
+      <div className='mt-2 flex flex-col gap-2 md:justify-between lg:flex-row overflow-scroll rounded-lg max-h-[40vh]'>
         {companies.length === 0 && <p>No recommended companies.</p>}
         {companies.map((company, index) => (
           <div

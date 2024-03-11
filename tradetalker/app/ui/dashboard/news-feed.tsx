@@ -63,22 +63,24 @@ export default function NewsFeed() {
       </div>
       <div className='flex flex-col text-white' style={{ marginTop: '2%' }}>
         <div className={pop400.className}>
-          {articles.length === 0 && <p>No recent news.</p>}
-          {articles.map((article, index) => (
-            <Link
-              href={`/article/${article.id}`}
-              key={index}
-              className='opacity:30 my-2 w-full rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
-            >
-              <div className='flex flex-row flex-wrap items-center justify-between'>
-                <span className='mr-2'>{article.title}</span>
-                <span className='text-sm text-gray-500'>
-                  {dayjs(article.date).fromNow()}
-                </span>
-              </div>
-              <p className='text-sm'>{article.summary}</p>
-            </Link>
-          ))}
+          <div className='flex flex-col text-black rounded-lg max-h-[40vh] overflow-scroll'>
+            {articles.length === 0 && <p>No recent news.</p>}
+            {articles.map((article, index) => (
+              <Link
+                href={`/article/${article.id}`}
+                key={index}
+                className='opacity:30 my-2 w-full rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
+              >
+                <div className='flex flex-row flex-wrap items-center justify-between'>
+                  <span className='mr-2'>{article.title}</span>
+                  <span className='text-sm text-gray-500'>
+                    {dayjs(article.date).fromNow()}
+                  </span>
+                </div>
+                <p className='text-sm'>{article.summary}</p>
+              </Link>
+            ))}
+          </div>
         </div>
         {!clicked && (
           <button

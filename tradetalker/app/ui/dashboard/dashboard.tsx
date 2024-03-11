@@ -80,10 +80,10 @@ export default function DashboardComponent({
               <div className='flex w-full flex-col md:w-[30%]'>
                 <NewsFeed />
                 <FollowedCompanies isLoggedIn={isLoggedIn} />
+                <Share />
               </div>
             </div>
           </div>
-          <Share />
         </div>
       </div>
     )

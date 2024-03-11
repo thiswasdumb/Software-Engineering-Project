@@ -61,10 +61,6 @@ export default async function StockTrends() {
                     ? stock.predicted_stock_price
                     : 'N/A'}
                 </div>
-                <div>
-                  Variance:&nbsp;
-                  {stock.stock_variance !== null ? stock.stock_variance : 'N/A'}
-                </div>
               </div>
               <div style={{ marginTop: '0.7rem' }}> </div>
             </Link>
