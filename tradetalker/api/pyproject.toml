@@ -111,6 +111,9 @@ max-args = 9
     'ERA001', # Commented out code
     'T201', # Use of print statement
     'F841', # Local variable is assigned to but never used
+    'D417', # Missing argument descriptions
+    'ARG001', # Unused argument
+    'ANN001', # Missing type annotation for variable
 ]
 "database/mock_article_objects.py" = [
     'E501', # Line too long
