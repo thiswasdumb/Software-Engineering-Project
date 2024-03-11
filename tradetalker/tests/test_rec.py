@@ -1,7 +1,6 @@
 import unittest
 import pandas as pd
-from tradetalker.api.Recommendation_System import Recommendation_System
-"""file is in api folder, but these were tests used"""
+from tradetalker.api.database.recommendation_system import Recommendation_System
 
 #test data
 no_following = {'following': [], 'non_following': [{'CompanyID': 1, 'CompanyName': '3i Group plc', 'Industry': 'Asset Management'}, {'CompanyID': 2, 'CompanyName': 'Admiral Group plc', 'Industry': 'Insurance - Property & Casualty'}, {'CompanyID': 3, 'CompanyName': 'Airtel Africa Plc', 'Industry': 'Telecom Services'}, {'CompanyID': 4, 'CompanyName': 'Anglo American plc', 'Industry': 'Other Industrial Metals & Mining'}, {'CompanyID': 5, 'CompanyName': 'Antofagasta plc', 'Industry': 'Copper'}, {'CompanyID': 6, 'CompanyName': 'Ashtead Group plc', 'Industry': 'Rental & Leasing Services'}, {'CompanyID': 7, 'CompanyName': 'Associated British Foods plc', 'Industry': 'Packaged Foods'}, {'CompanyID': 8, 'CompanyName': 'AstraZeneca PLC', 'Industry': 'Drug Manufacturers - General'}, {'CompanyID': 9, 'CompanyName': 'Auto Trader Group plc', 'Industry': 'Internet Content & Information'}, {'CompanyID': 10, 'CompanyName': 'Aviva plc', 'Industry': 'Insurance - Diversified'}, {'CompanyID': 11, 'CompanyName': 'B&M European Value Retail S.A.', 'Industry': 'Discount Stores'}, {'CompanyID': 12, 'CompanyName': 'BAE Systems plc', 'Industry': 'Aerospace & Defense'}], 'keywords': []}
