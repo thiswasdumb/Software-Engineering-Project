@@ -598,42 +598,13 @@ def get_recommended_companies() -> Response:
     return jsonify(rec_companies_list)
 
 
-@app.route("/api/get_newsfeed", methods=["GET"])
-@login_required
-def get_newsfeed() -> Response:
-    """Returns the 5 most recent articles from the followed companies."""
-    # Get the 5 most recent articles from the followed companies
-    newsfeed = (
-        db.session.execute(
-            db.select(Article)
-            .join(Follow, Article.CompanyID == Follow.CompanyID)
-            .filter(Follow.UserID == current_user.id)
-            .order_by(desc(Article.PublicationDate))
-            .limit(5),
-        )
-        .scalars()
-        .all()
-    )
-    newsfeed_list = [
-        {
-            "id": article.ArticleID,
-            "title": article.Title,
-            "date": article.PublicationDate,
-            "summary": article.Summary,
-            "score": article.PredictionScore,
-        }
-        for article in newsfeed
-    ]
-    return jsonify(newsfeed_list)
-
-
 @app.route("/api/get_week_newsfeed", methods=["GET"])
 @login_required
 def get_week_newsfeed() -> Response:
-    """Returns the 3 most recent articles from the followed companies in the last
+    """Returns the 5 most recent articles from the followed companies in the last
     week.
     """
-    # Get the 3 most recent articles from the followed companies in the last week
+    # Get the 5 most recent articles from the followed companies in the last week
     newsfeed = (
         db.session.execute(
             db.select(Article)
@@ -641,7 +612,7 @@ def get_week_newsfeed() -> Response:
                 Article.PublicationDate >= datetime.now(UTC) - timedelta(days=7),
             )
             .order_by(desc(Article.PublicationDate))
-            .limit(3),
+            .limit(5),
         )
         .scalars()
         .all()
