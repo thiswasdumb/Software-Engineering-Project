@@ -65,12 +65,12 @@ export default async function ArticlePage({
         <hr className='my-2 rounded-lg border-2 border-slate-400' />
         <div className='flex flex-row flex-wrap items-start justify-between'>
           <div>
-            <div>
-              {articleData.prediction_score > 0.33 ? (
+            <div title='Sentiment score'>
+              {articleData.prediction_score > 0.5 ? (
                 <p className='text-green-600'>
                   Positive ({articleData.prediction_score.toFixed(2)})
                 </p>
-              ) : articleData.prediction_score < -0.33 ? (
+              ) : articleData.prediction_score < -0.5 ? (
                 <p className='text-red-600'>
                   Negative ({articleData.prediction_score.toFixed(2)})
                 </p>

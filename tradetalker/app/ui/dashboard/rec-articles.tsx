@@ -52,12 +52,12 @@ export default function RecommendedArticles() {
             <p>{article.summary}</p>
             <hr className='border-1 my-2 rounded-lg border-slate-300' />
             <div className='flex flex-row items-center justify-between'>
-              {article.score > 0.33 ? (
+              {article.score > 0.5 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
                   <p className='pl-2 text-green-600'>Positive</p>
                 </div>
-              ) : article.score < -0.33 ? (
+              ) : article.score < -0.5 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
                   <p className='pl-2 text-red-600'>Negative</p>
