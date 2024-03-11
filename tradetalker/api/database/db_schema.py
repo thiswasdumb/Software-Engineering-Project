@@ -358,38 +358,44 @@ class Article(db.Model):  # type: ignore [name-defined]
         self.KeyWords = keywords
 
 
-"""
 @db.event.listens_for(Article, "after_insert")
 def receive_after_insert(mapper, connection, target) -> None:
-    ""Sends a notification to the users when a new article linked to a company that
-    they follow is posted.""
+    """Sends a notification to the users when a new article linked to a company that
+    they follow is posted.
+    """
     try:
         notif_table = Notification.__table__
         user_notif_read_table = UserNotificationRead.__table__
-        print("New article added", flush=True)
         company_id = target.CompanyID
+        all_users = connection.execute(db.select(Follow.UserID)).fetchall()
         user_ids = connection.execute(
-            db.select(Follow.UserID).filter(Follow.CompanyID == company_id)
+            db.select(Follow.UserID).filter(Follow.CompanyID == company_id),
+        ).fetchall()
+        user_ids = [user_id[0] for user_id in user_ids]
+        connection.execute(
+            notif_table.insert(),
+            {
+                "ArticleID": target.ArticleID,
+                "Content": f"New article: {target.Title}",
+                "Time": datetime.now(UTC),
+            },
         )
-        connection.execute(notif_table.insert().values(target.ArticleID, f"New article: {target.Title}"))
         # Fetch the latest notification
-        latest_notification = (
-            db.session.execute(
-                db.select(Notification)
-                .filter(Notification.ArticleID == target.ArticleID)
-                .order_by(Notification.NotificationID.desc())
-                .first()
-            )
-            .scalars()
-            .first()
-        )
+        latest_notification = connection.execute(
+            db.select(Notification)
+            .filter(Notification.ArticleID == target.ArticleID)
+            .order_by(Notification.NotificationID.desc()),
+        ).first()
         for user_id in user_ids:
-            connection.execute(user_notif_read_table.insert().values(user_id, latest_notification.NotificationID))
-            connection.commit()
-    except SQLAlchemyError as e:
-        logging.exception(e)
-        connection.rollback()
-"""
+            connection.execute(
+                user_notif_read_table.insert(),
+                {
+                    "UserID": user_id,
+                    "NotificationID": latest_notification.NotificationID,
+                },
+            )
+    except SQLAlchemyError:
+        logging.exception("Found an error while sending the notification.")
 
 
 class Follow(db.Model):  # type: ignore [name-defined]
@@ -676,18 +682,24 @@ def add_data() -> None:
             "user2@gmail.com",
         ),
     ]
+    follow_list = [
+        Follow(1, 1),
+        Follow(1, 2),
+        Follow(1, 3),
+        Follow(1, 4),
+    ]
     article_list = [
         # This article should not show up in the weekly feed
         Article(
             1,
-            "Google investing $1bn in UK data centre",
-            "Google has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
+            "3i group invests in new technology",
+            "3i has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
             datetime.now(UTC) - timedelta(days=8),
             "https://www.bbc.co.uk/",
-            "Google has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
+            "3i has invested $1bn (£790m) to build its first UK data centre. The construction had started at a 33-acre site in Waltham Cross, Hertfordshire, and hoped it would be completed by 2025. Google stressed it was too early to say how many jobs would be created, but said it would be in the thousands.",
             0.8,
-            "google invest uk data centre construction job thousands site waltham cross hertfordshire 2025 first thousands",
-            "",
+            "3i group invest uk data centre construction job thousands site waltham cross hertfordshire 2025 first thousands",
+            "3i has invested one billion dollars to build its first uk data centre",
         ),
     ]
     faq_list = [
@@ -708,51 +720,25 @@ def add_data() -> None:
             "You will receive notifications about the companies you follow when new articles are posted about them. You can also receive notifications about your questions being answered.",
         ),
     ]
-    notification_list = [
-        Notification(
-            1,
-            "New article: The headline of Article 1",
-        ),
-        Notification(
-            1,
-            "New article: The headline of Article 2",
-        ),
-    ]
-    user_notification_read_list = [
-        UserNotificationRead(
-            1,
-            1,
-        ),
-        UserNotificationRead(
-            2,
-            2,
-        ),
-    ]
     article_comment_list = [
         ArticleComment(
             1,
             1,
-            "This is a great comment.",
+            "Cool!",
             None,
         ),
         ArticleComment(
-            2,
-            1,
-            "This is another great comment.",
-            1,
-        ),
-        ArticleComment(
             1,
             1,
-            "This is a comment.",
+            "This is amazing news.",
             None,
         ),
     ]
     db.session.add_all(user_list)
+    db.session.add_all(follow_list)
+    db.session.commit()
     db.session.add_all(article_list)
     db.session.add_all(faq_list)
-    db.session.add_all(notification_list)
-    db.session.add_all(user_notification_read_list)
     db.session.add_all(article_comment_list)
     db.session.commit()
 
@@ -986,7 +972,8 @@ def get_articles_by_company_name(company_name: str) -> list:
 
 
 def set_article_keywords(article_id: int, keywords: str) -> None:
-    """Updates the keywords of articles in the database based on the provided pairs of article IDs and corresponding keywords.
+    """Updates the keywords of articles in the database based on the provided pairs of
+    article IDs and corresponding keywords.
 
     Parameters
     ----------
