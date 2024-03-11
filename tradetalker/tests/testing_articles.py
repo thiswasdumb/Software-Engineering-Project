@@ -2,7 +2,7 @@ import sys
 
 sys.path.insert(0, '/Users/mac/Documents/GitHub/SoftEngProject/tradetalker')
 
-from python_component.nltk_component.preprocessing import GetPOSClass, PreprocessText
+from api.database.preprocessing import GetPOSClass, PreprocessText
 
 pos = GetPOSClass()
 p = PreprocessText(pos)
