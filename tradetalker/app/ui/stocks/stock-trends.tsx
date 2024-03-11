@@ -1,5 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
+import { Poppins } from 'next/font/google';
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
+const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
 
 /**
  * Get stock trends
@@ -23,28 +28,30 @@ export default async function StockTrends() {
   const stockTrends: any[] = await getStockTrends();
 
   return (
-    <div className='md:w-[40%]'>
-      <div className='mt-2 rounded-lg bg-slate-300 p-4'>
-        <h2 className='mb-2 text-lg'>Top 25 predicted rising stocks</h2>
-        <div className='max-h-[60vh] overflow-scroll rounded-lg'>
+    <div className='md:w-[62%] mx-auto'>
+      <div className={pop.className} style={{ fontSize: '2rem', marginLeft: '1rem' }}>
+        <div className='underline-s'>Top Rising Stocks</div>
+      </div>
+      <br />
+      <div className="grid gap-4">
+        <div className={pop400.className} style={{ marginLeft: '0.8rem', marginTop: '1rem' }}>
           {stockTrends.map((stock, index) => (
             <Link key={index} href={`/company/${stock.company_id}`}>
-              <div className='mb-2 flex flex-row gap-2 rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'>
-                <span className='text-lg font-bold'>{index + 1}</span>
+              <div className={`stock-item rounded-lg p-4 transition text-white hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg`} style={{ backgroundColor: getBackgroundColor(stock.predicted_stock_price, index, 25) }}>
+                <div className={pop.className}>{stock.symbol}</div>
+                <div className='text-lg'>{stock.stock_price}</div>
                 <div>
-                  <span className='flex flex-row items-center gap-2'>
-                    <p className='font-bold'>{stock.symbol}</p>|
-                    <p className='text-sm'>{stock.company_name}</p>
-                  </span>
-                  <p className='text-lg'>{stock.stock_price}</p>
-                  <p>
-                    Predicted stock price in 7 days:&nbsp;
-                    {stock.predicted_stock_price !== null
-                      ? stock.predicted_stock_price
-                      : 'N/A'}
-                  </p>
+                  Predicted stock price:&nbsp;
+                  {stock.predicted_stock_price !== null
+                    ? stock.predicted_stock_price
+                    : 'N/A'}
+                </div>
+                <div>
+                  Variance:&nbsp;
+                  {stock.stock_variance !== null ? stock.stock_variance : 'N/A'}
                 </div>
               </div>
+              <div style={{ marginTop: '0.7rem' }}> </div>
             </Link>
           ))}
         </div>
@@ -52,3 +59,23 @@ export default async function StockTrends() {
     </div>
   );
 }
+
+function getBackgroundColor(predictedStockPrice, index, totalStocks) {
+  // Base color
+  const baseColor = [76, 75, 155];
+
+  // Maximum brightness adjustment (brighter colors) for higher predicted prices
+  const maxBrightness = 250;
+
+  // Calculate brightness adjustment based on predicted stock price
+  const brightness = (1 - predictedStockPrice / 1000) * maxBrightness;
+
+  // Generate the new color with adjusted brightness
+  const newColor = baseColor.map(component => Math.min(255, Math.max(0, component + brightness)));
+
+  // Convert the color components to CSS format
+  return `rgb(${newColor.join(', ')})`;
+}
+
+
+

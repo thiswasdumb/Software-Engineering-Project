@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { usePathname } from 'next/navigation';
+import { Poppins } from 'next/font/google';
+
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
+
 
 /**
  * Follow button component.
@@ -81,13 +85,17 @@ export default function FollowButton({
       <button
         type='button'
         onClick={handleFollowClick}
-        className={`ml-2 rounded-lg px-4 py-2 ${
-          isFollowing
-            ? 'border-2 border-slate-500 text-slate-500 transition hover:bg-slate-300 hover:bg-opacity-40'
-            : 'border-2 border-blue-500 bg-blue-500 text-white transition hover:border-blue-600 hover:bg-blue-600 active:border-blue-700 active:bg-blue-700'
-        }`}
-      >
-        {isFollowing ? 'Unfollow' : 'Follow'}
+        className={`rounded-lg px-4 py-2 ${isFollowing
+          ? 'border-2 text-slate-500 transition hover:bg-slate-300 hover:bg-opacity-40'
+          : 'border-2 bg-blue-500 text-white transition hover:border-[#434191] hover:bg-blue-600'
+          }`}
+        style={{
+          backgroundColor: isFollowing ? '#4c4b9b' : '#6261ba',
+          borderColor: isFollowing ? '#4c4b9b' : '#blue-500',
+        }}
+      > <span className={pop400.className}>
+          {isFollowing ? 'Unfollow' : 'Follow'}
+        </span>
       </button>
     )
   );

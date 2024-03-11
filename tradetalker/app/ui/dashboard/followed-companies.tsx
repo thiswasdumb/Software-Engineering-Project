@@ -2,6 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import FollowButton from '../company/follow-button';
+import { Poppins } from 'next/font/google';
+import './style.css'
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
+const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
 
 /**
  * Followed companies component.
@@ -31,10 +37,9 @@ export default function FollowedCompanies({
   }, [setCompanies]);
 
   return (
-    <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <div className='text-xl'>Followed companies ({companies.length})</div>
-      <hr className='my-2 rounded-lg border-2 border-slate-400' />
-      <div className='flex flex-col'>
+    <div className='my-2 rounded-lg p-4' style={{ backgroundColor: '#7977d1' }}>
+      <div className='text-white underline-white'><div className={pop.className} style={{ fontSize: '1.2rem', marginBottom: '1%' }}>Followed companies</div></div>
+      <div className='flex flex-col text-white' style={{ marginTop: '2%' }}><div className={pop400.className}>
         {companies.length === 0 && <p>No followed companies.</p>}
         {companies.map((company, index) => (
           <div
@@ -56,6 +61,7 @@ export default function FollowedCompanies({
             <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

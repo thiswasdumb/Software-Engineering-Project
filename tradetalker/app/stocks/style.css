@@ -1,0 +1,132 @@
+.growing-rectangle {
+    background-color: #4C4B9B;
+    transition: height 2s ease, transform 2s ease;
+    border-radius: 5px;
+    bottom: 0;
+    margin-left: 0.7%;
+    position: absolute;
+    margin-bottom: -0.5%;
+}
+
+.dark-filter {
+    filter: blur(2px);
+}
+
+.dark-o {
+    top: 0;
+    width: 100%;
+    height: 59.7%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark-r {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: -8%;
+    margin-left: 17%;
+    color: white;
+}
+
+.move-up {
+    margin-bottom: -20%;
+}
+
+.text-margin {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.underline-s {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-s::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    height: 5px;
+    width: 100%;
+    background-color: #4C4B9B;
+    transition: width 0.3s ease-in-out;
+    transform-origin: bottom left;
+}
+
+@keyframes extendUnderline {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.underline-s::after {
+    animation: extendUnderline 1.5s ease-out forwards;
+}
+
+.stock-item {
+    transition: filter 0.3s ease;
+    position: relative;
+}
+
+.stock-item:hover {
+    filter: brightness(90%);
+}
+
+.stock-item::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    border-radius: 7px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.stock-item:hover::before {
+    opacity: 1;
+}
+
+.leaderboard-item:hover::before {
+    opacity: 1;
+}
+
+.leaderboard-item {
+    transition: filter 0.3s ease;
+    position: relative;
+}
+
+.leaderboard-item:hover {
+    filter: brightness(97%);
+}
+
+.leaderboard-item::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 7px;
+    border: 2px solid rgba(93, 91, 176, 0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.leaderboard-item:hover::before {
+    opacity: 1;
+}

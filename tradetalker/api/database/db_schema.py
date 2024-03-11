@@ -858,7 +858,7 @@ def add_base_company_data() -> None:
                 past_8_days_price[7],  # StockPrice
                 company.info.get("industry", "N/A"),  # Industry
                 company.info.get("longBusinessSummary", "N/A"),  # CompanyDescription
-                None,  # PredictedStockPrice
+                random.randint(1,1000),  # PredictedStockPrice
                 None,  # StockVariance
                 past_8_days_price[6],  # StockPrice_D_1
                 past_8_days_price[5],  # StockPrice_D_2
@@ -869,6 +869,8 @@ def add_base_company_data() -> None:
                 past_8_days_price[0],  # StockPrice_D_7
             ),
         )
+
+        
 
         db.session.add_all(companies)
         db.session.commit()

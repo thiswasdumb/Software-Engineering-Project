@@ -1,0 +1,77 @@
+.stocktrend-margin {
+    margin-left: 30%;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.underline-s {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-s::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    height: 5px;
+    width: 100%;
+    background-color: #4C4B9B;
+    transform-origin: bottom left;
+    transform: scaleX(1);
+}
+
+.stock-item {
+    transition: filter 0.3s ease;
+    position: relative;
+}
+
+.stock-item:hover {
+    filter: brightness(90%);
+}
+
+.stock-item::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    border-radius: 7px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.leaderboard-item:hover::before {
+    opacity: 1;
+}
+
+.leaderboard-item {
+    transition: filter 0.3s ease;
+    position: relative;
+}
+
+.leaderboard-item:hover {
+    filter: brightness(97%);
+}
+
+.leaderboard-item::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 7px;
+    border: 2px solid rgba(93, 91, 176, 0.9);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.leaderboard-item:hover::before {
+    opacity: 1;
+}

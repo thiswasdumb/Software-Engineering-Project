@@ -1,0 +1,123 @@
+.hr-divider {
+    margin-bottom: -24%;
+}
+
+.animation-container {
+    margin-top: -30%;
+    flex-wrap: wrap;
+    gap: 10em;
+}
+
+.my-custom-gap {
+    margin-top: -50.5%;
+}
+
+.dark-filter {
+    filter: blur(2px);
+}
+
+.dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark-rectangle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 0%;
+    margin-left: 25%;
+    color: white;
+}
+
+.reduce-gap {
+    margin-top: -8%;
+}
+
+.moving-rectangles {
+    transform: translateY(-27%);
+}
+
+.company-info {
+    position: relative;
+    margin-bottom: 0%;
+    margin-top: 25%;
+    left: 0;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 10px;
+    color: rgb(46, 46, 46);
+}
+
+.text-margin {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.separator {
+    position: relative;
+    height: 20px;
+    width: 100%;
+    transform: translate(0%, -5260%);
+    background-color: #292768;
+}
+
+.custom-underline {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-underline::after {
+    content: "";
+    position: absolute;
+}
+
+.custom-underline::after {
+    top: 90%;
+    height: 5px;
+    width: 0%;
+    left: 2.5%;
+    background-color: #4C4B9B;
+    transition: 5s ease all 7s;
+}
+
+.custom-underline::after {
+    width: 100%;
+    transition: 7s ease all;
+}
+
+.underline-simple {
+    position: relative;
+    display: inline-block;
+}
+
+.underline-simple::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.2em;
+    height: 2px;
+    /* Adjust as needed */
+    width: 100%;
+    background-color: #4C4B9B;
+    /* Color of the underline */
+    transition: width 0.3s ease-in-out;
+    /* Transition effect */
+    transform-origin: bottom left;
+    /* Set origin to bottom right */
+    transform: scaleX(1);
+    /* Initially set to zero width */
+}

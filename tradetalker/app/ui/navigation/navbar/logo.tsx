@@ -21,7 +21,7 @@ export default function Logo(props: { isOpen: boolean; toggle: () => void }) {
           <Image
             src={logo}
             alt='TradeTalk Logo'
-            width={100}
+            width={220}
             className='relative'
             priority={true}
           />

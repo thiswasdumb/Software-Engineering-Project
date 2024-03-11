@@ -1,7 +1,9 @@
-'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { Poppins } from 'next/font/google';
+
+const pop700 = Poppins({ weight: '500', subsets: ['latin'] });
 
 /**
  * Navigation links.
@@ -26,18 +28,34 @@ export default function NavLinks(props: { session: boolean }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              'border-b-4 border-transparent bg-blue-600 p-2 text-base font-medium transition duration-150 hover:border-slate-300 focus:border-white md:flex-none md:justify-start',
+              'text-lg text-white text-bold px-4 py-2 ml-2 relative transition-colors duration-300',
               {
                 'border-b-4 border-white': pathname === link.href,
               }
             )}
           >
-            <button type='button'>
-              <p className='hidden md:block'>{link.name}</p>
-            </button>
+            <p className={pop700.className + ' hidden md:block'}>
+              {link.name}
+              <span className="underline-animation"></span>
+            </p>
           </Link>
         );
       })}
+      <style jsx>{`
+        .underline-animation {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 3px;
+          width: 0%;
+          background-color: #4C4B9B;
+          transition: width 0.3s ease-in-out;
+        }
+
+        p:hover .underline-animation {
+          width: 100%;
+        }
+      `}</style>
     </>
   );
 }

@@ -9,6 +9,12 @@ import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import CommentsButton from '@/app/ui/comments-button';
+import { Poppins } from 'next/font/google';
+import './style.css'
+
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
+const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
 
 /**
  * Recommended articles component
@@ -31,48 +37,49 @@ export default function RecommendedArticles() {
   }, [setArticles]);
 
   return (
-    <div className='my-2 rounded-lg bg-slate-300 p-4'>
-      <h2 className='text-xl'>New articles about companies you follow</h2>
+    <div className='my-2'>
+      <div className={pop500.className} style={{ fontSize: '2rem' }}><div className='underline-smpl'>Your suggested articles</div></div>
       {articles.length === 0 && (
         <p>No new articles. Start following some companies!</p>
       )}
       {articles.map((article, index) => (
         <div
-          className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-blue-100 hover:drop-shadow-lg'
+          className='my-2 overflow-scroll rounded-lg bg-slate-100 p-2 transition hover:bg-slate-200 hover:drop-shadow-lg hover:border-2 hover:border-[#706fbf] border-2 border-[#c5c5ed]'
           key={index}
         >
           <Link href={`/article/${article.id}`}>
             <div className='flex flex-row flex-wrap items-center justify-between'>
-              <h3 className='mr-2 text-lg'>{article.title}</h3>
+              <div className={pop500.className} style={{ fontSize: '1.2rem' }}>{article.title}</div>
               <p className='text-sm text-gray-600'>
                 {dayjs(article.date).fromNow()}
               </p>
             </div>
-            <hr className='border-1 my-2 rounded-lg border-slate-300' />
-            <p>{article.summary}</p>
-            <hr className='border-1 my-2 rounded-lg border-slate-300' />
+            <hr className='border-2 my-2 rounded-lg border-[#706fbf]' />
+            <div className={pop400.className}>{article.summary}</div>
+            <hr className='border-2 my-2 rounded-lg border-[#706fbf]' />
             <div className='flex flex-row items-center justify-between'>
               {article.score > 0.5 ? (
                 <div className='flex flex-row items-center'>
                   <ArrowUpCircleIcon className='h-10 w-10 text-green-500' />
-                  <p className='pl-2 text-green-600'>Positive</p>
+                  <div className={pop500.className} style={{ color: '#4b4b9b' }}>Positive</div>
                 </div>
               ) : article.score < -0.5 ? (
                 <div className='flex flex-row items-center'>
-                  <ArrowDownCircleIcon className='h-10 w-10 text-red-600 ' />
-                  <p className='pl-2 text-red-600'>Negative</p>
+                  <ArrowDownCircleIcon className='h-12 w-12 text-red-500 ' />
+                  <div className={pop500.className} style={{ color: '#4b4b9b' }}>Negative</div>
                 </div>
               ) : (
                 <div className='flex flex-row items-center'>
-                  <MinusCircleIcon className='h-10 w-10 text-slate-400' />
-                  <p className='pl-2 text-slate-500'>Neutral</p>
+                  <MinusCircleIcon className='h-12 w-12 text-slate-400' />
+                  <div className={pop500.className} style={{ color: '#4b4b9b' }}>Neutral</div>
                 </div>
-              )}
+              )
+              }
               <CommentsButton id={article.id} comments={article.comments} />
-            </div>
-          </Link>
-        </div>
+            </div >
+          </Link >
+        </div >
       ))}
-    </div>
+    </div >
   );
 }
