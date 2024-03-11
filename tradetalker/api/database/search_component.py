@@ -1,16 +1,9 @@
 """Search component for articles. Uses TF-IDF to calculate similarity between user query and articles."""
 
-import sys
-
 from sklearn.metrics.pairwise import polynomial_kernel
 
 from database.preprocessing import GetPOSClass, PreprocessText
 from database.tf_idf import TFIDF
-
-sys.path.insert(
-    0,
-    "/Users/mac/Documents/GitHub/SoftEngProject/tradetalker/python_component/nltk_component",
-)
 
 # from database.mock_article_objects import article_object_lists
 
@@ -35,12 +28,9 @@ class ArticleSearch:
             new_dict["ArticleID"] = a.ArticleID
             converted.append(new_dict)
 
-        # print(converted, flush=True)
-
         self.tf_idf_object = TFIDF(converted)
 
         self.articles = article_objects_list
-        # print(self.articles, flush=True)
 
         # dictionary to map article ID with their index in the self.articles list
         # used later to associate the calculated tf_idf scores with the article id and header
@@ -54,14 +44,12 @@ class ArticleSearch:
         user_query = preprocess_text.preprocess_text(search_term)
         # Calculate User query tf_idf vector
         user_query_tfidf = self.tf_idf_object.vectorizer.transform([user_query])
-        # print("User query matrix:", user_query_tfidf)
 
         # Calculate similarity between user query vector and the td_idf scores vector
         similarities = polynomial_kernel(
             user_query_tfidf,
             self.tf_idf_object.tfidf_scores,
         ).flatten()
-        # print("Similarity:", similarities)
         # sort articles based on similarity - idx 1 in the similarities[]. Highest score is more relevant
         article_ranking = sorted(
             enumerate(similarities),

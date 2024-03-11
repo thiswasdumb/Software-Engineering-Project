@@ -11,7 +11,9 @@ from nltk.tokenize import word_tokenize
 
 
 class GetPOSClass:
-    """Class to get the part of speech of a word. This is used by WordNet's WordNetLemmatizer for more accurate lemmatization"""
+    """Class to get the part of speech of a word. This is used by WordNet's
+    WordNetLemmatizer for more accurate lemmatization.
+    """
 
     def get_part_of_speech(self, word: str) -> str:
         """Gets the part of speech of the word."""
