@@ -37,17 +37,10 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
     }
   }, [notifs, props.isLoggedIn]);
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
-    const isVisible = prevScrollPos > currentScrollPos || currentScrollPos === 0;
+    const isVisible =
+      prevScrollPos > currentScrollPos || currentScrollPos === 0;
 
     // Hide/show navbar based on scroll direction or if at the top of the page
     setIsNavVisible(isVisible);
@@ -56,9 +49,19 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
     setPrevScrollPos(currentScrollPos);
   };
 
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
+
   return (
     <div>
-      <div className={`fixed top-0 z-10 h-20 w-full bg-bg-[#4C4B9B] transition-all duration-300 ${isNavVisible ? '' : '-translate-y-full'}`}>
+      <div
+        className={`bg-bg-[#4C4B9B] fixed top-0 z-10 h-20 w-full transition-all duration-300 ${isNavVisible ? '' : '-translate-y-full'}`}
+      >
         <div className='h-full px-4'>
           <div className='flex h-full items-center justify-between'>
             <div className='flex h-full items-center justify-between gap-x-8'>
@@ -93,7 +96,7 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
               className='fixed h-full w-full bg-black opacity-30'
               onClick={toggleMenu}
             />
-            <Sidebar
+            <MobileNavbar
               isOpen={menuToggled}
               toggle={toggleMenu}
               session={props.isLoggedIn}
@@ -105,8 +108,6 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
     </div>
   );
 }
-
-
 
 /*
 import React, { useState, useEffect } from 'react';

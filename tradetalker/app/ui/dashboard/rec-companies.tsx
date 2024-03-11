@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import FollowButton from '../company/follow-button';
 import { Poppins } from 'next/font/google';
-import './style.css'
+import './style.css';
 
 const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
 const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
@@ -37,7 +37,14 @@ export default function RecommendedCompanies({
 
   return (
     <div className='my-2 rounded-lg p-4' style={{ backgroundColor: '#5252a3' }}>
-      <div className={pop500.className} style={{ fontSize: '1.5rem', color: 'white' }}><div className='underline-white'>Companies we think you&apos;ll like</div></div>
+      <div
+        className={pop500.className}
+        style={{ fontSize: '1.5rem', color: 'white' }}
+      >
+        <div className='underline-white'>
+          Companies we think you&apos;ll like
+        </div>
+      </div>
       <div className='mt-2 flex flex-col gap-2 md:justify-between lg:flex-row'>
         {companies.length === 0 && <p>No recommended companies.</p>}
         {companies.map((company, index) => (

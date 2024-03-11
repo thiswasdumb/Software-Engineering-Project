@@ -28,7 +28,7 @@ export default function NavLinks(props: { session: boolean }) {
             key={link.name}
             href={link.href}
             className={clsx(
-              'text-lg text-white text-bold px-4 py-2 ml-2 relative transition-colors duration-300',
+              'text-bold relative ml-2 px-4 py-2 text-lg text-white transition-colors duration-300',
               {
                 'border-b-4 border-white': pathname === link.href,
               }
@@ -36,7 +36,7 @@ export default function NavLinks(props: { session: boolean }) {
           >
             <p className={pop700.className + ' hidden md:block'}>
               {link.name}
-              <span className="underline-animation"></span>
+              <span className='underline-animation'></span>
             </p>
           </Link>
         );
@@ -48,7 +48,7 @@ export default function NavLinks(props: { session: boolean }) {
           left: 0;
           height: 3px;
           width: 0%;
-          background-color: #4C4B9B;
+          background-color: #4c4b9b;
           transition: width 0.3s ease-in-out;
         }
 

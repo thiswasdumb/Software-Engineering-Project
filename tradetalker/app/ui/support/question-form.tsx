@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Poppins } from 'next/font/google'
+import { Poppins } from 'next/font/google';
 
-const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] })
+const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
 
 /**
  * Question form component.

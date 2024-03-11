@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import FollowButton from '../company/follow-button';
 import { Poppins } from 'next/font/google';
-import './style.css'
+import './style.css';
 
 const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
 const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
@@ -38,30 +38,38 @@ export default function FollowedCompanies({
 
   return (
     <div className='my-2 rounded-lg p-4' style={{ backgroundColor: '#7977d1' }}>
-      <div className='text-white underline-white'><div className={pop.className} style={{ fontSize: '1.2rem', marginBottom: '1%' }}>Followed companies</div></div>
-      <div className='flex flex-col text-white' style={{ marginTop: '2%' }}><div className={pop400.className}>
-        {companies.length === 0 && <p>No followed companies.</p>}
-        {companies.map((company, index) => (
-          <div
-            key={index}
-            className='my-2 flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
-          >
-            <Link
-              href={`/company/${company.id}`}
-              className='grow hover:drop-shadow-lg'
-            >
-              <button
-                type='button'
-                className='flex flex-col items-start text-start'
-              >
-                <p className='font-bold'>{company.symbol}</p>
-                <p className='text-sm'>{company.name}</p>
-              </button>
-            </Link>
-            <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />
-          </div>
-        ))}
+      <div className='underline-white text-white'>
+        <div
+          className={pop.className}
+          style={{ fontSize: '1.2rem', marginBottom: '1%' }}
+        >
+          Followed companies
+        </div>
       </div>
+      <div className='flex flex-col text-white' style={{ marginTop: '2%' }}>
+        <div className={pop400.className}>
+          {companies.length === 0 && <p>No followed companies.</p>}
+          {companies.map((company, index) => (
+            <div
+              key={index}
+              className='my-2 flex flex-1 flex-row items-center justify-between rounded-lg bg-slate-100 p-2 md:flex-col lg:flex-row'
+            >
+              <Link
+                href={`/company/${company.id}`}
+                className='grow hover:drop-shadow-lg'
+              >
+                <button
+                  type='button'
+                  className='flex flex-col items-start text-start'
+                >
+                  <p className='font-bold'>{company.symbol}</p>
+                  <p className='text-sm'>{company.name}</p>
+                </button>
+              </Link>
+              <FollowButton companyId={company.id} isLoggedIn={isLoggedIn} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

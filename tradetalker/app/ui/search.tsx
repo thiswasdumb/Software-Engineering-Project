@@ -7,12 +7,11 @@ import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import { Poppins } from 'next/font/google';
-import './style.css'
+import './style.css';
 
 const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
 const pop500 = Poppins({ weight: ['500'], subsets: ['latin'] });
 const pop400 = Poppins({ weight: ['400'], subsets: ['latin'] });
-
 
 /**
  * Search bar component.
@@ -142,42 +141,13 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
               </div>
             </div>
             <div className='m-4 rounded-lg bg-slate-200 p-8 md:w-[33%]'>
-              <h1 className='text-2xl'>Companies</h1>
-              <hr className='my-2 rounded-lg border-2 border-slate-400' />
-              <div className='md:max-[80%]'>
-                {companies.length === 0 && (
-                  <span className='text-gray-600'>
-                    No matching companies found.
-                  </span>
-                )}
-                <div className='flex flex-col justify-between'>
-                  {articles.map((article, index) => (
-                    <Link
-                      key={index}
-                      className='opacity:30 my-2 w-full rounded-lg bg-slate-300 p-2 transition hover:bg-slate-400 hover:bg-opacity-60'
-                      href={`/article/${article.id}`}
-                    >
-                      <div className='flex flex-row flex-wrap justify-between'>
-                        <div>
-                          {getHighlightedText(
-                            article.title,
-                            searchParams.get('query')
-                          )}
-                        </div>
-                        <div className='text-sm text-gray-600'>
-                          {article.date}
-                        </div>
-                      </div>
-                      <p className='text-base'>{company.stock_price}</p>
-                      <p className='text-sm'>{company.industry}</p>
-                    </Link>
-                  ))}
-                </div>
-              </span>
-            </div>
-            <div className='m-8 rounded-lg bg-slate-200 p-8 md:w-[50%]'>
-              <div className='text-2xl'><span className={pop.className}>Companies</span></div>
-              <hr className='my-2 rounded-lg border-2' style={{ borderColor: '#4c4b9b' }} />
+              <div className='text-2xl'>
+                <span className={pop.className}>Companies</span>
+              </div>
+              <hr
+                className='my-2 rounded-lg border-2'
+                style={{ borderColor: '#4c4b9b' }}
+              />
               <div className='md:max-[80%]'>
                 <span className={pop400.className}>
                   {companies.length === 0 && (
@@ -197,15 +167,24 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
                             {getHighlightedText(
                               company.symbol,
                               searchParams.get('query')
-                            )}</span>
-                          &nbsp;|&nbsp;  <span className={pop500.className}>
+                            )}
+                          </span>
+                          &nbsp;|&nbsp;{' '}
+                          <span className={pop500.className}>
                             {getHighlightedText(
                               company.name,
                               searchParams.get('query')
-                            )}</span>
+                            )}
+                          </span>
                         </div>
                         <div className='text-base'>{company.stock_price}</div>
-                        <div className='text-sm'>{<span className={pop500.className}>company.industry</span>}</div>
+                        <div className='text-sm'>
+                          {
+                            <span className={pop500.className}>
+                              company.industry
+                            </span>
+                          }
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -214,7 +193,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
             </div>
           </div>
         )}
-      </div >
+      </div>
     </>
   );
 }

@@ -8,12 +8,12 @@ import NewsFeed from './news-feed';
 import FollowedCompanies from './followed-companies';
 import ShareSite from './share-site';
 import ReadParams from '../read-params';
-import Share from './share-site'
-import CursorAnimation from './CursorAnimations'
-import { Poppins } from 'next/font/google'
-import './style.css'
+import Share from './share-site';
+import CursorAnimation from './CursorAnimations';
+import { Poppins } from 'next/font/google';
+import './style.css';
 
-const pop = Poppins({ weight: ['600'], subsets: ['latin'] })
+const pop = Poppins({ weight: ['600'], subsets: ['latin'] });
 
 /**
  * Dashboard component
@@ -54,10 +54,24 @@ export default function DashboardComponent({
         <CursorAnimation />
         <div className='big-header'>
           <div className='dark-rectle'>
-            <div className={pop.className}><span className="text-white" style={{ fontSize: '7rem' }}>Dashboard</span></div></div>
-          <hr className='mb-4 mt-3' style={{ backgroundColor: '#4C4B9B', height: '10px', marginTop: '-3%' }} />
+            <div className={pop.className}>
+              <span className='text-white' style={{ fontSize: '7rem' }}>
+                Dashboard
+              </span>
+            </div>
+          </div>
+          <hr
+            className='mb-4 mt-3'
+            style={{
+              backgroundColor: '#4C4B9B',
+              height: '10px',
+              marginTop: '-3%',
+            }}
+          />
           <div className='margin-all-around'>
-            <div className={pop.className}><span style={{ fontSize: '3rem' }}>{data}.</span></div>
+            <div className={pop.className}>
+              <span style={{ fontSize: '3rem' }}>{data}.</span>
+            </div>
             <div className='flex flex-col justify-between md:flex-row'>
               <div className='flex w-full flex-col md:w-[69%]'>
                 <RecommendedArticles />

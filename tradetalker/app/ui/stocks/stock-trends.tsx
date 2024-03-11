@@ -28,16 +28,31 @@ export default async function StockTrends() {
   const stockTrends: any[] = await getStockTrends();
 
   return (
-    <div className='md:w-[62%] mx-auto'>
-      <div className={pop.className} style={{ fontSize: '2rem', marginLeft: '1rem' }}>
+    <div className='mx-auto md:w-[62%]'>
+      <div
+        className={pop.className}
+        style={{ fontSize: '2rem', marginLeft: '1rem' }}
+      >
         <div className='underline-s'>Top Rising Stocks</div>
       </div>
       <br />
-      <div className="grid gap-4">
-        <div className={pop400.className} style={{ marginLeft: '0.8rem', marginTop: '1rem' }}>
+      <div className='grid gap-4'>
+        <div
+          className={pop400.className}
+          style={{ marginLeft: '0.8rem', marginTop: '1rem' }}
+        >
           {stockTrends.map((stock, index) => (
             <Link key={index} href={`/company/${stock.company_id}`}>
-              <div className={`stock-item rounded-lg p-4 transition text-white hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg`} style={{ backgroundColor: getBackgroundColor(stock.predicted_stock_price, index, 25) }}>
+              <div
+                className={`stock-item rounded-lg p-4 text-white transition hover:bg-slate-400 hover:bg-opacity-40 hover:drop-shadow-lg`}
+                style={{
+                  backgroundColor: getBackgroundColor(
+                    stock.predicted_stock_price,
+                    index,
+                    25
+                  ),
+                }}
+              >
                 <div className={pop.className}>{stock.symbol}</div>
                 <div className='text-lg'>{stock.stock_price}</div>
                 <div>
@@ -71,11 +86,10 @@ function getBackgroundColor(predictedStockPrice, index, totalStocks) {
   const brightness = (1 - predictedStockPrice / 1000) * maxBrightness;
 
   // Generate the new color with adjusted brightness
-  const newColor = baseColor.map(component => Math.min(255, Math.max(0, component + brightness)));
+  const newColor = baseColor.map((component) =>
+    Math.min(255, Math.max(0, component + brightness))
+  );
 
   // Convert the color components to CSS format
   return `rgb(${newColor.join(', ')})`;
 }
-
-
-

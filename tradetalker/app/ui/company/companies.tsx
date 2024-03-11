@@ -40,7 +40,7 @@ export default async function CompaniesComponent() {
   };
 
   return (
-    <div className="">
+    <div className=''>
       <SlidingRoundedRectangle />
       <SlidingRoundedRectangle />
       <SlidingRoundedRectangle />
@@ -48,29 +48,35 @@ export default async function CompaniesComponent() {
       <SlidingRoundedRectangle />
       <SlidingRoundedRectangle />
       <SlidingRoundedRectangle />
-      <div className="overdark"></div>
-      <div className="recdark">
+      <div className='overdark'></div>
+      <div className='recdark'>
         <div className={pop.className} style={{ fontSize: '7rem' }}>
           Companies
         </div>
       </div>
       <hr
-        className="mb-4 mt-3"
-        style={{ backgroundColor: '#4C4B9B', height: '10px', marginTop: '-0.17%' }}
+        className='mb-4 mt-3'
+        style={{
+          backgroundColor: '#4C4B9B',
+          height: '10px',
+          marginTop: '-0.17%',
+        }}
       />
-      <div className="flex justify-center">
-        <div className="flex flex-row flex-wrap justify-center">
+      <div className='flex justify-center'>
+        <div className='flex flex-row flex-wrap justify-center'>
           {companies.map((company, index) => (
             <Link
               href={`/company/${company.id}`}
               key={index}
-              className="linkcontainer max-w-4 opacity:30 my-2 w-full rounded-lg p-2 transition hover:bg-opacity-40 hover:drop-shadow-lg md:m-2 md:w-[30%]"
+              className='linkcontainer max-w-4 opacity:30 my-2 w-full rounded-lg p-2 transition hover:bg-opacity-40 hover:drop-shadow-lg md:m-2 md:w-[30%]'
               style={{
                 backgroundColor: `rgba(113, 112, 196, ${calculateBrightness(company.stock_price)})`,
               }}
             >
               <div>
-                <span className={pop.className}>{company.symbol}&nbsp;|&nbsp;</span>
+                <span className={pop.className}>
+                  {company.symbol}&nbsp;|&nbsp;
+                </span>
                 <span className={pop500.className}>{company.name}</span>
               </div>
               <span className={pop400.className}>{company.stock_price}</span>
