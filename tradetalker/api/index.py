@@ -22,7 +22,6 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug import security
 from werkzeug.wrappers import Response
 
-from database.recommendation_system import RecommendationSystem
 from database.db_schema import (
     Article,
     ArticleComment,
@@ -38,11 +37,11 @@ from database.db_schema import (
     add_base_company_data,
     add_data,
     db,
-    get_all_company_names,
     get_articles_from_news_api,
     get_recommendation_system_info,
     set_all_companies_predicted_price,
 )
+from database.recommendation_system import RecommendationSystem
 from database.search_component import ArticleSearch
 
 app = Flask(__name__)
@@ -94,7 +93,6 @@ if reset:
         db.create_all()
         add_base_company_data()
         add_data()
-        get_all_company_names()
         get_articles_from_news_api()
         set_all_companies_predicted_price()
 
@@ -1041,7 +1039,12 @@ def get_company_articles(company_id: str) -> Response:
     """Returns the company's articles."""
     # Get the company's articles with the given company ID
     articles = (
-        db.session.execute(db.select(Article).filter_by(CompanyID=company_id).order_by(desc(Article.PublicationDate)).limit(3))
+        db.session.execute(
+            db.select(Article)
+            .filter_by(CompanyID=company_id)
+            .order_by(desc(Article.PublicationDate))
+            .limit(3),
+        )
         .scalars()
         .all()
     )
@@ -1129,6 +1132,11 @@ def get_notifications() -> Response:
     notification_data = [
         {
             "id": user_notification.UserNotificationReadID,
+            "article_id": db.session.execute(
+                db.select(Notification.ArticleID).filter_by(
+                    NotificationID=user_notification.NotificationID,
+                ),
+            ).scalar(),
             "content": db.session.execute(
                 db.select(Notification.Content).filter_by(
                     NotificationID=user_notification.NotificationID,
