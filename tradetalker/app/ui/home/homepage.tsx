@@ -1,10 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
-import {
-  ArrowUpCircleIcon,
-  ArrowDownCircleIcon,
-  MinusCircleIcon,
-} from '@heroicons/react/20/solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ReadParams from '@/app/ui/read-params';
@@ -42,6 +36,7 @@ export default async function HomeComponent() {
 
   return (
     <>
+      <ReadParams url='' />
       <div className='animation-container dark-filter'>
         <RectangleLoopAnimation />
         <div className='my-custom-gap'></div>

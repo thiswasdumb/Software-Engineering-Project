@@ -53,7 +53,6 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
 
   return (
     <>
-      <div className='odark'></div>
       <div>
         <div className='relative'>
           <label htmlFor='search' className='sr-only'>
