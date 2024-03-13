@@ -60,9 +60,9 @@ export default function Navbar(props: { isLoggedIn: boolean }) {
   return (
     <div>
       <div
-        className={`bg-bg-[#4C4B9B] fixed top-0 z-10 h-20 w-full transition-all duration-300 ${isNavVisible ? '' : '-translate-y-full'}`}
+        className={`bg-bg-[#4C4B9B] backdrop-blur-md fixed top-0 z-10 h-20 w-full transition-all duration-300 ${isNavVisible ? '' : '-translate-y-full'}`}
       >
-        <div className='h-full px-4'>
+        <div className='h-full px-4 bg-black bg-opacity-50'>
           <div className='flex h-full items-center justify-between'>
             <div className='flex h-full items-center justify-between gap-x-8'>
               <Logo isOpen={menuToggled} toggle={toggleMenu} />
